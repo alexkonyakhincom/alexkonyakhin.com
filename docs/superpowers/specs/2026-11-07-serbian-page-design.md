@@ -56,7 +56,7 @@ Trust strip (aria-label "Lokacija, jezici i fakturisanje"):
 - Beograd · sastanci uživo ili onlajn (adapted)
 - Radni jezici: srpski i engleski
 - Registrovani preduzetnik u Srbiji · fakturisanje u RSD ili EUR (adapted)
-- Proizvod i inženjering od 2013..
+- Proizvod i inženjering od 2013.
 
 Calls to action: primary button **Zakažite razgovor od 30 minuta** (booking
 page); text link **Pogledajte projekte** → `#work`.
