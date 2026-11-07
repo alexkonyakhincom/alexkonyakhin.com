@@ -18,6 +18,8 @@ INDEX = ROOT / "index.html"
 LLMS = ROOT / "llms.txt"
 DIST = ROOT / "dist"
 MAILTO = "mailto:me@alexkonyakhin.com"
+TELEGRAM = "https://t.me/pieceofwave"
+BOOKING = "https://calendar.app.google/ats6knZjWvwpJUbp9"
 
 REQUIRED_HTML = [
     # Task 3: header and first screen (spec §3.1–3.2)
@@ -91,14 +93,14 @@ REQUIRED_HTML = [
     # Task 8: contact and footer (spec §3.8–3.9)
     "Let's talk about your product.",
     "Tell me about your product, the team you have and what is not moving. I will tell you honestly whether I can help.",
-    "me@alexkonyakhin.com",
+    "Message me on Telegram", "Email me", "me@alexkonyakhin.com",
     "Alexey Konyakhin · Belgrade",
     "LinkedIn", "Telegram",
 ]
 REQUIRED_LLMS = [
     "Fractional CPO", "Belgrade", "English and Serbian", "300,000", "20,000", "3 times", "2.15",
     "April 2024", "June 2026", "paid first month", "me@alexkonyakhin.com",
-    "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave",
+    "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave", "https://calendar.app.google/ats6knZjWvwpJUbp9",
     "16 operational clusters", "since 2013", "Three companies co-founded", "Erasoft.io", "2015", "2022",
 ]
 FORBIDDEN = [
@@ -111,8 +113,9 @@ FORBIDDEN = [
 ]
 EXACT_HREFS = {
     MAILTO,
+    TELEGRAM,
+    BOOKING,
     "https://linkedin.com/in/alexkonyakhin",
-    "https://t.me/pieceofwave",
     "https://copix.app/",
     "https://nicepass.cc/",
     "https://stopwell.app/",
@@ -122,6 +125,7 @@ REQUIRED_CTAS = {
     ("book_call", "hero"),
     ("book_call", "work"),
     ("book_call", "contact"),
+    ("telegram", "contact"),
     ("email", "contact"),
 }
 
@@ -246,11 +250,13 @@ def check_ctas(facts):
     if len(book_hrefs) > 1:
         fails.append(f"FAIL: book_call hrefs differ: {sorted(book_hrefs)}")
     for href in sorted(book_hrefs):
-        if not (href == MAILTO or href.startswith("https://")):
-            fails.append(f"FAIL: book_call href is neither the mailto nor https: {href}")
+        if href != BOOKING:
+            fails.append(f"FAIL: book_call href is not the booking page: {href}")
     for cta, _, href in facts.ctas:
         if cta == "email" and href != MAILTO:
             fails.append(f"FAIL: email CTA href is not the mailto: {href}")
+        if cta == "telegram" and href != TELEGRAM:
+            fails.append(f"FAIL: telegram CTA href is not the Telegram link: {href}")
     return fails
 
 
