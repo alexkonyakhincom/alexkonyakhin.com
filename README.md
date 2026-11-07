@@ -17,11 +17,16 @@ After editing a source file, run `python3 scripts/site.py build` and reload the 
 ## Public files
 
 - `index.html`: homepage, social metadata and Person structured data.
+- `sr/index.html`: the Serbian homepage, served at `/sr/`.
 - `styles.css`: responsive layout and visual styles.
 - `ava_alex_konyakhin.png`: portrait and favicon.
 - `llms.txt`: factual text profile matching the homepage.
 - `robots.txt`: existing crawler policy.
 - `CNAME`: existing custom domain.
+
+## Two languages
+
+The Serbian page is a hand-maintained translation of the English page (Latin script, four lines adapted for local buyers; see the Serbian page spec in `docs/superpowers/specs/`). A copy change is made on both pages. `scripts/check.py` enforces parity between them (same ids, headings, calls to action and destinations) and the alternate-language links on both.
 
 `scripts/site.py` owns this explicit list. It refuses unexpected files in `dist/` and symlinked public files. Private briefs, source decks, reports and local output do not belong in the public output. `dist/` and `output/` are ignored by Git.
 

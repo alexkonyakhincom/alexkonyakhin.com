@@ -9,6 +9,7 @@ outside the repository with ``--forbidden-file``.
 import argparse
 import importlib.util
 import json
+import re
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
@@ -101,6 +102,7 @@ REQUIRED_LLMS = [
     "Fractional CPO", "Belgrade", "English and Serbian", "300,000", "20,000", "3 times", "2.15",
     "April 2024", "June 2026", "paid first month", "me@alexkonyakhin.com",
     "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave", "https://calendar.app.google/ats6knZjWvwpJUbp9",
+    "https://alexkonyakhin.com/sr/",
     "16 operational clusters", "since 2013", "Three companies co-founded", "Erasoft.io", "2015", "2022",
 ]
 FORBIDDEN = [
@@ -135,19 +137,166 @@ BLOCK_TAGS = {
     "table", "tr", "td", "th",
 }
 
+TITLE = "Alexey Konyakhin · Fractional CPO · Belgrade (CET)"
+DESCRIPTION = (
+    "Fractional CPO based in Belgrade, Central European Time. I own product direction, "
+    "priorities and delivery with your existing team. Paid first month, then monthly. "
+    "EU, UK and US East Coast."
+)
+GA_ID = "G-K466B003HF"
+PROD_HOSTS = "'alexkonyakhin.com', 'www.alexkonyakhin.com'"
+TITLE_SR = "Alexey Konyakhin · Fractional CPO · Beograd"
+DESCRIPTION_SR = (
+    "Fractional CPO iz Beograda. Preuzimam pravac proizvoda, prioritete i isporuku zajedno sa vašim "
+    "postojećim timom. Plaćeni prvi mesec, zatim mesečno. Srbija, EU i UK."
+)
+REQUIRED_HTML_SR = [
+    # header and first screen (spec §3.1–3.2)
+    "Preskoči na sadržaj",
+    "Fractional CPO · Beograd",
+    "Projekti", "Kako radim", "Iskustvo",
+    "Fractional CPO za softverske kompanije koje vode osnivači.",
+    "Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
+    "tako da važan posao napreduje, a svaka odluka ne mora da prođe kroz vas.",
+    "Za kompanije koje imaju korisnike koji plaćaju i interni razvojni tim. Srbija, region, EU i UK.",
+    "Beograd · sastanci uživo ili onlajn",
+    "Radni jezici: srpski i engleski",
+    "Registrovani preduzetnik u Srbiji · fakturisanje u RSD ili EUR",
+    "Proizvod i inženjering od 2013",
+    "Zakažite razgovor od 30 minuta", "Pogledajte projekte",
+    # proof band (§3.3)
+    "300k+ mesečno aktivnih korisnika", "aplikacija za zaposlene koju sam vodio kao head of product",
+    "3× mesečni promet", "mreža mobilne štampe, april 2024 – jun 2026",
+    "20.000 prijava za posao", "u prva tri meseca procesa zapošljavanja koji sam vodio",
+    "3 suosnovane kompanije", "2015 – 2022",
+    # work (§3.4)
+    "Aplikacija za zaposlene velikog maloprodajnog lanca",
+    "Head of product za celu aplikaciju · Maloprodaja · Rusija",
+    "Vodio sam proizvod: pravac, prioritete, istraživanje, isporuku i merenje. Vodio sam programere, "
+    "dizajnera i QA i iznosio hipoteze i odluke pred najviše rukovodstvo.",
+    "Mesečno aktivni korisnici", "300k+", "tokom mog rada na proizvodu",
+    "Prijave za posao", "20.000", "u prva tri meseca procesa zapošljavanja",
+    "Analitika: od događaja do odluka.",
+    "Vodio sam implementaciju kompletnog analitičkog sistema sa timom: pokrivenost događaja u Firebase-u, "
+    "pipeline ka BigQuery-ju i prilagođene Looker dashboarde koji su rukovodstvu dali uvid u to kako zaposleni koriste aplikaciju.",
+    "Proces zapošljavanja.",
+    "Otvorili smo aplikaciju i za one koji još nisu zaposleni, tako da su kandidati za kasire i radnike u prodavnicama mogli direktno da se prijave.",
+    "Igra za učenje.",
+    "Ideja jednog zaposlenog koju sam pretvorio u igru unutar aplikacije, zasnovanu na postojećim materijalima za obuku, "
+    "i pilotirao u 16 operativnih klastera.",
+    "Copix, mreža mobilne štampe",
+    "Rad na proizvodu sa osnivačkim timom · Rusija · 2024 – 2026",
+    "Radio sam sa timom na mobilnom korisničkom putu, povraćaju novca za neuspele otiske i povratnoj sprezi od podrške ka proizvodu.",
+    "Mesečni promet karticama", "3×", "april 2024 – jun 2026",
+    "Promet po aktivnom štampaču", "2,15×",
+    "Rezultati cele mreže tokom saradnje, uz promene cena i same mreže.",
+    # situations and process (§3.5–3.6)
+    "Kada me osnivači zovu",
+    "Tim isporučuje, ali poslovni prioritet stalno klizi.",
+    "Jedna inicijativa preseca proizvod, inženjering i operacije, a nema vlasnika.",
+    "Previše odluka i dalje dolazi do vas.",
+    "Plaćeni prvi mesec.",
+    "Dogovaramo poslovni problem, gledamo dokaze koje već imate i postavljamo jedan prioritet sa jasnim vlasnicima "
+    "i praktičnim planom. Obim prati pristup, ljude i budžet koje zaista možete da obezbedite.",
+    "Zatim iz meseca u mesec.",
+    "Ako se uklopimo, nastavljam kao vaš fractional CPO: pravac proizvoda, kompromisi, zavisnosti između proizvoda, "
+    "inženjeringa i operacija, i držanje posla uz cilj koji smo dogovorili. Broj dana nedeljno i obim dogovaramo pojedinačno.",
+    "Kontrolne tačke, bez vezivanja.",
+    "Polazno stanje i kriterijumi uspeha postavljaju se unapred. Na svakom pregledu nastavljamo, menjamo obim ili "
+    "završavamo urednom primopredajom.",
+    "Ko šta radi",
+    "Ja vodim pravac proizvoda, prioritete, kompromise, usklađivanje stejkholdera i merenje. Vi ste vlasnik poslovnog "
+    "cilja, budžeta, pristupa i prava odlučivanja. Vaš CTO i tim su vlasnici tehničkog kvaliteta, procena i svakodnevne isporuke.",
+    "Nije uključeno: neograničen razvoj, dostupnost non-stop, agencijski tim iza mene ni garantovani rezultati.",
+    # background (§3.7)
+    "2025 – danas CPO, platforma za komercijalne nekretnine",
+    "2024 – 2026 Rad na proizvodu sa Copixom, mreža mobilne štampe",
+    "2023 – danas COO i product lead, Erasoft.io, tim koji stoji iza aplikacije za zaposlene u maloprodaji",
+    "2022 Senior Project Manager, Improvado, međunarodni tim",
+    "2020 – 2022 Osnivač, LTVCAC.agency, performans marketing i JTBD istraživanja",
+    "2017 – 2019 Suosnivač, Togezzer, interna komunikacija za distribuirane timove",
+    "2015 – 2017 Suosnivač, Knedlik Tech, mobilna aplikacija za putovanja",
+    "2013 – 2015 PM i tech lead, Globus, portfolio mobilnih i veb projekata",
+    "Pravim i sopstvene proizvode.", "NicePass", "Stopwell", "VPNKill",
+    # contact and footer (§3.8–3.9)
+    "Hajde da razgovaramo o vašem proizvodu.",
+    "Recite mi nešto o svom proizvodu, timu koji imate i onome što ne napreduje. Iskreno ću vam reći da li mogu da pomognem.",
+    "Pišite mi na Telegramu", "Pošaljite imejl", "me@alexkonyakhin.com",
+    "Alexey Konyakhin · Beograd", "LinkedIn", "Telegram",
+]
+
+ALTERNATES = {
+    ("en", "https://alexkonyakhin.com/"),
+    ("sr-Latn", "https://alexkonyakhin.com/sr/"),
+    ("x-default", "https://alexkonyakhin.com/"),
+}
+INTERNAL_PAGES = {"/", "/sr/"}
+LANG_LITERAL = "lang: document.documentElement.lang.split('-')[0]"
+
+
+@dataclass
+class PageSpec:
+    lang: str
+    title: str
+    description: str
+    og_locale: str
+    required: list
+    switch_href: str
+    switch_lang: str
+    switch_text: str
+    home_href: str
+    canonical: str
+    og_title: str
+    og_description: str
+    ld_description: str
+
+
+H1_EN = "Fractional CPO for founder-led software companies."
+SUBHEAD_EN = ("I take ownership of product direction, priorities and delivery alongside your existing team, "
+              "so the important work moves without every decision coming back to you.")
+H1_SR = "Fractional CPO za softverske kompanije koje vode osnivači."
+SUBHEAD_SR = ("Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
+              "tako da važan posao napreduje, a svaka odluka ne mora da prođe kroz vas.")
+
+PAGES = {
+    "index.html": PageSpec(
+        "en", TITLE, DESCRIPTION, "en_GB", REQUIRED_HTML, "/sr/", "sr-Latn", "Srpski",
+        home_href="/", canonical="https://alexkonyakhin.com/", og_title=H1_EN, og_description=SUBHEAD_EN,
+        ld_description="Fractional CPO for founder-led software companies in the EU and UK, based in Belgrade.",
+    ),
+    "sr/index.html": PageSpec(
+        "sr-Latn", TITLE_SR, DESCRIPTION_SR, "sr_RS", REQUIRED_HTML_SR, "/", "en", "English",
+        home_href="/sr/", canonical="https://alexkonyakhin.com/sr/", og_title=H1_SR, og_description=SUBHEAD_SR,
+        ld_description="Fractional CPO za softverske kompanije koje vode osnivači, iz Beograda.",
+    ),
+}
 
 @dataclass
 class PageFacts:
     title: str = ""
     lang: str = ""
     description: str = ""
+    og_locale: str = ""
+    og_url: str = ""
+    og_title: str = ""
+    og_description: str = ""
+    canonical: str = ""
+    identity_href: str = ""
     h1_count: int = 0
+    heading_counts: dict = field(default_factory=dict)
     ids: list = field(default_factory=list)
     hrefs: list = field(default_factory=list)
     fragments: list = field(default_factory=list)
+    local_assets: list = field(default_factory=list)
+    alternates: list = field(default_factory=list)  # (hreflang, href)
+    switches: list = field(default_factory=list)  # (href, lang, hreflang, text)
     ld_json: str = ""
     ctas: list = field(default_factory=list)  # (cta, location, href)
     text: str = ""
+
+
+def _is_local(value):
+    return not value.startswith(("http", "mailto:", "#", "data:"))
 
 
 class _PageParser(HTMLParser):
@@ -158,6 +307,8 @@ class _PageParser(HTMLParser):
         self._in_ld_json = False
         self._title = []
         self._text = []
+        self._switch = None  # (href, lang, hreflang) while inside a switch anchor
+        self._switch_text = []
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -166,23 +317,49 @@ class _PageParser(HTMLParser):
             f.lang = a.get("lang") or ""
         if tag == "h1":
             f.h1_count += 1
+        if tag in ("h1", "h2", "h3", "h4"):
+            f.heading_counts[tag] = f.heading_counts.get(tag, 0) + 1
         if a.get("id"):
             f.ids.append(a["id"])
+        asset = a.get("href") if tag == "link" else a.get("src") if tag in ("img", "script") else None
+        if asset and _is_local(asset):
+            f.local_assets.append(asset)
         if tag == "a" and a.get("href") is not None:
             href = a["href"]
             f.hrefs.append(href)
+            if "identity" in (a.get("class") or "").split():
+                f.identity_href = href
             if href.startswith("#"):
                 f.fragments.append(href[1:])
             if a.get("data-cta"):
                 f.ctas.append((a["data-cta"], a.get("data-cta-location") or "", href))
+            if a.get("hreflang"):
+                self._switch = (href, a.get("lang") or "", a["hreflang"])
+                self._switch_text = []
+        if tag == "link" and a.get("rel") == "alternate" and a.get("hreflang"):
+            f.alternates.append((a["hreflang"], a.get("href") or ""))
+        if tag == "link" and a.get("rel") == "canonical":
+            f.canonical = a.get("href") or ""
         if tag == "meta" and a.get("name") == "description":
             f.description = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:locale":
+            f.og_locale = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:url":
+            f.og_url = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:title":
+            f.og_title = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:description":
+            f.og_description = a.get("content") or ""
         if tag in ("script", "style", "title"):
             self._hidden.append(tag)
             if tag == "script" and a.get("type") == "application/ld+json":
                 self._in_ld_json = True
 
     def handle_endtag(self, tag):
+        if tag == "a" and self._switch is not None:
+            href, lang, hreflang = self._switch
+            self.facts.switches.append((href, lang, hreflang, " ".join("".join(self._switch_text).split())))
+            self._switch = None
         if tag in ("script", "style", "title") and self._hidden and self._hidden[-1] == tag:
             self._hidden.pop()
             if tag == "script":
@@ -197,6 +374,8 @@ class _PageParser(HTMLParser):
             self._title.append(data)
         elif not self._hidden:
             self._text.append(data)
+            if self._switch is not None:
+                self._switch_text.append(data)
 
     def result(self):
         f = self.facts
@@ -228,12 +407,27 @@ def check_sources_forbidden(sources, forbidden):
     return fails
 
 
+def check_sources_private(sources, patterns):
+    """Private terms come from a file outside the repository, one regular expression per line, matched case-insensitively."""
+    fails = []
+    for name, text in sources.items():
+        fails += [f"FAIL: {name}: private term matched: {p.pattern}" for p in patterns if p.search(text)]
+    return fails
+
+
 def check_hrefs(facts):
-    return [
-        f"FAIL: unexpected href: {h}"
-        for h in facts.hrefs
-        if h.startswith(("http", "mailto:")) and h not in EXACT_HREFS
-    ]
+    fails = []
+    for h in facts.hrefs:
+        if h.startswith(("http", "mailto:")):
+            if h not in EXACT_HREFS:
+                fails.append(f"FAIL: unexpected href: {h}")
+        elif not h.startswith("#") and h not in INTERNAL_PAGES:
+            fails.append(f"FAIL: unexpected internal href: {h}")
+    return fails
+
+
+def check_assets(facts):
+    return [f"FAIL: local asset path must start with /: {v}" for v in facts.local_assets if not v.startswith("/")]
 
 
 def check_anchors(facts):
@@ -260,40 +454,66 @@ def check_ctas(facts):
     return fails
 
 
-def check_structure(facts):
+def check_structure(facts, lang):
     fails = []
     if facts.h1_count != 1:
         fails.append(f"FAIL: expected one h1, found {facts.h1_count}")
     duplicates = sorted({i for i in facts.ids if facts.ids.count(i) > 1})
     if duplicates:
         fails.append(f"FAIL: duplicate ids: {duplicates}")
-    if facts.lang != "en":
-        fails.append(f"FAIL: lang is {facts.lang!r}, expected 'en'")
+    if facts.lang != lang:
+        fails.append(f"FAIL: lang is {facts.lang!r}, expected {lang!r}")
     if not facts.title:
         fails.append("FAIL: title missing")
     return fails
 
 
-TITLE = "Alexey Konyakhin · Fractional CPO · Belgrade (CET)"
-DESCRIPTION = (
-    "Fractional CPO based in Belgrade, Central European Time. I own product direction, "
-    "priorities and delivery with your existing team. Paid first month, then monthly. "
-    "EU, UK and US East Coast."
-)
-GA_ID = "G-K466B003HF"
-PROD_HOSTS = "'alexkonyakhin.com', 'www.alexkonyakhin.com'"
-
-
-def check_meta(facts):
+def check_meta(facts, spec):
     fails = []
-    if facts.title != TITLE:
+    if facts.title != spec.title:
         fails.append(f"FAIL: title is {facts.title!r}")
-    if facts.description != DESCRIPTION:
+    if facts.description != spec.description:
         fails.append(f"FAIL: description is {facts.description!r}")
+    if facts.og_locale != spec.og_locale:
+        fails.append(f"FAIL: og:locale is {facts.og_locale!r}, expected {spec.og_locale!r}")
+    if facts.canonical != spec.canonical:
+        fails.append(f"FAIL: canonical is {facts.canonical!r}, expected {spec.canonical!r}")
+    if facts.og_url != spec.canonical:
+        fails.append(f"FAIL: og:url is {facts.og_url!r}, expected {spec.canonical!r}")
+    if facts.og_title != spec.og_title:
+        fails.append(f"FAIL: og:title is {facts.og_title!r}")
+    if facts.og_description != spec.og_description:
+        fails.append(f"FAIL: og:description is {facts.og_description!r}")
     return fails
 
 
-def check_ld_json(facts):
+def check_home(facts, spec):
+    if facts.identity_href != spec.home_href:
+        return [f"FAIL: home (identity) link is {facts.identity_href!r}, expected {spec.home_href!r}"]
+    return []
+
+
+def check_alternates(facts):
+    if set(facts.alternates) != ALTERNATES:
+        return [f"FAIL: alternates are {sorted(facts.alternates)}, expected {sorted(ALTERNATES)}"]
+    return []
+
+
+def check_switch(facts, spec):
+    if len(facts.switches) != 1:
+        return [f"FAIL: switch: expected one language switch, found {len(facts.switches)}"]
+    href, lang, hreflang, text = facts.switches[0]
+    fails = []
+    if href != spec.switch_href:
+        fails.append(f"FAIL: switch href is {href!r}, expected {spec.switch_href!r}")
+    if hreflang != spec.switch_lang or lang != spec.switch_lang:
+        fails.append(f"FAIL: switch lang/hreflang are {lang!r}/{hreflang!r}, expected {spec.switch_lang!r}")
+    if text != spec.switch_text:
+        fails.append(f"FAIL: switch text is {text!r}, expected {spec.switch_text!r}")
+    return fails
+
+
+def check_ld_json(facts, spec):
     try:
         data = json.loads(facts.ld_json)
     except json.JSONDecodeError as error:
@@ -303,6 +523,8 @@ def check_ld_json(facts):
         fails.append("FAIL: ld_json @type is not Person")
     if data.get("jobTitle") != "Fractional CPO":
         fails.append(f"FAIL: jobTitle is {data.get('jobTitle')!r}")
+    if data.get("description") != spec.ld_description:
+        fails.append(f"FAIL: ld_json description is {data.get('description')!r}")
     address = data.get("address") or {}
     if address.get("addressLocality") != "Belgrade" or address.get("addressCountry") != "RS":
         fails.append(f"FAIL: address is {address!r}")
@@ -328,6 +550,24 @@ def check_analytics(html):
         fails.append("FAIL: analytics: trackCta no-op must be defined before the hostname gate")
     if "'cta_click'" not in html:
         fails.append("FAIL: analytics: cta_click event missing")
+    if LANG_LITERAL not in html:
+        fails.append("FAIL: analytics: lang parameter missing from cta_click")
+    return fails
+
+
+def check_parity(en, sr):
+    fails = []
+    if set(en.ids) != set(sr.ids):
+        fails.append(f"FAIL: parity: ids differ: {sorted(set(en.ids) ^ set(sr.ids))}")
+    if en.heading_counts != sr.heading_counts:
+        fails.append(f"FAIL: parity: heading counts differ: {en.heading_counts} vs {sr.heading_counts}")
+    en_ctas = {(c, l) for c, l, _ in en.ctas}
+    sr_ctas = {(c, l) for c, l, _ in sr.ctas}
+    if en_ctas != sr_ctas:
+        fails.append(f"FAIL: parity: CTA sets differ: {sorted(en_ctas ^ sr_ctas)}")
+    external = lambda hrefs: sorted(h for h in hrefs if h.startswith(("http", "mailto:")))
+    if external(en.hrefs) != external(sr.hrefs):
+        fails.append(f"FAIL: parity: external destinations differ: {external(en.hrefs)} vs {external(sr.hrefs)}")
     return fails
 
 
@@ -340,39 +580,59 @@ def check_dist():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     expected = set(module.PUBLIC_FILES)
-    actual = {p.name for p in DIST.iterdir()}
+    actual = {p.relative_to(DIST).as_posix() for p in DIST.rglob("*") if p.is_file()}
     if actual != expected:
         return [f"FAIL: dist contents {sorted(actual)} != public files {sorted(expected)}"]
     return []
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--forbidden-file", type=Path, help="extra forbidden terms, one per line")
-    args = parser.parse_args(argv)
-    extra = []
-    if args.forbidden_file:
-        extra = [line.strip() for line in args.forbidden_file.read_text().splitlines() if line.strip()]
-    forbidden = FORBIDDEN + extra
-
-    html = INDEX.read_text()
+def check_page(path, spec, html):
     facts = parse_page(html)
     fails = []
-    fails += check_structure(facts)
-    fails += check_meta(facts)
-    fails += check_required(facts.text, REQUIRED_HTML)
+    fails += check_structure(facts, spec.lang)
+    fails += check_meta(facts, spec)
+    fails += check_home(facts, spec)
+    fails += check_required(facts.text, spec.required)
     fails += check_hrefs(facts)
+    fails += check_assets(facts)
     fails += check_anchors(facts)
     fails += check_ctas(facts)
-    fails += check_ld_json(facts)
+    fails += check_alternates(facts)
+    fails += check_switch(facts, spec)
+    fails += check_ld_json(facts, spec)
     fails += check_analytics(html)
+    return facts, [f.replace("FAIL:", f"FAIL: {path}:", 1) for f in fails]
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--forbidden-file", type=Path, help="private terms as regular expressions, one per line, matched case-insensitively")
+    args = parser.parse_args(argv)
+    private = []
+    if args.forbidden_file:
+        private = [re.compile(line.strip(), re.IGNORECASE) for line in args.forbidden_file.read_text().splitlines() if line.strip()]
+
+    fails = []
+    pages = {}
+    sources = {}
+    for path, spec in PAGES.items():
+        file = ROOT / path
+        if not file.exists():
+            fails.append(f"FAIL: {path}: file missing")
+            continue
+        html = file.read_text()
+        sources[path] = html
+        pages[path], page_fails = check_page(path, spec, html)
+        fails += page_fails
+    if len(pages) == len(PAGES):
+        fails += check_parity(pages["index.html"], pages["sr/index.html"])
 
     llms_text = LLMS.read_text()
     fails += check_llms(llms_text)
-    fails += check_sources_forbidden(
-        {"index.html": html, "styles.css": (ROOT / "styles.css").read_text(), "llms.txt": llms_text},
-        forbidden,
-    )
+    sources["styles.css"] = (ROOT / "styles.css").read_text()
+    sources["llms.txt"] = llms_text
+    fails += check_sources_forbidden(sources, FORBIDDEN)
+    fails += check_sources_private(sources, private)
 
     if DIST.exists():
         fails += check_dist()

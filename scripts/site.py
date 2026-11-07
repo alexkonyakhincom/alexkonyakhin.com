@@ -16,6 +16,7 @@ PUBLIC_FILES = (
     "llms.txt",
     "robots.txt",
     "CNAME",
+    "sr/index.html",
 )
 OUTPUT = ROOT / "dist"
 
@@ -24,13 +25,21 @@ def build():
     if OUTPUT.is_symlink():
         raise RuntimeError("The public output directory must not be a symlink.")
     OUTPUT.mkdir(exist_ok=True)
-    unexpected = [p.name for p in OUTPUT.iterdir() if p.name not in PUBLIC_FILES]
+    expected = set(PUBLIC_FILES)
+    actual = {p.relative_to(OUTPUT).as_posix() for p in OUTPUT.rglob("*") if p.is_file() or p.is_symlink()}
+    unexpected = sorted(actual - expected)
     if unexpected:
         raise RuntimeError("Unexpected files in dist; review them before staging: " + ", ".join(unexpected))
     for name in PUBLIC_FILES:
         source, destination = ROOT / name, OUTPUT / name
         if source.is_symlink() or destination.is_symlink():
             raise RuntimeError("Public files must not be symlinks: " + name)
+        for folder in destination.parents:
+            if folder == OUTPUT:
+                break
+            if folder.is_symlink():
+                raise RuntimeError("Public folders must not be symlinks: " + folder.relative_to(OUTPUT).as_posix())
+        destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
     return OUTPUT
 
