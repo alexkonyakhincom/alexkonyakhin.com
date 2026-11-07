@@ -101,6 +101,7 @@ REQUIRED_LLMS = [
     "Fractional CPO", "Belgrade", "English and Serbian", "300,000", "20,000", "3 times", "2.15",
     "April 2024", "June 2026", "paid first month", "me@alexkonyakhin.com",
     "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave", "https://calendar.app.google/ats6knZjWvwpJUbp9",
+    "https://alexkonyakhin.com/sr/",
     "16 operational clusters", "since 2013", "Three companies co-founded", "Erasoft.io", "2015", "2022",
 ]
 FORBIDDEN = [
