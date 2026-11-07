@@ -244,11 +244,31 @@ class PageSpec:
     switch_href: str
     switch_lang: str
     switch_text: str
+    home_href: str
+    canonical: str
+    og_title: str
+    og_description: str
+    ld_description: str
 
+
+H1_EN = "Fractional CPO for founder-led software companies."
+SUBHEAD_EN = ("I take ownership of product direction, priorities and delivery alongside your existing team, "
+              "so the important work moves without every decision coming back to you.")
+H1_SR = "Fractional CPO za softverske kompanije koje vode osnivači."
+SUBHEAD_SR = ("Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
+              "tako da važan posao napreduje, a svaka odluka ne mora da prođe kroz vas.")
 
 PAGES = {
-    "index.html": PageSpec("en", TITLE, DESCRIPTION, "en_GB", REQUIRED_HTML, "/sr/", "sr-Latn", "Srpski"),
-    "sr/index.html": PageSpec("sr-Latn", TITLE_SR, DESCRIPTION_SR, "sr_RS", REQUIRED_HTML_SR, "/", "en", "English"),
+    "index.html": PageSpec(
+        "en", TITLE, DESCRIPTION, "en_GB", REQUIRED_HTML, "/sr/", "sr-Latn", "Srpski",
+        home_href="/", canonical="https://alexkonyakhin.com/", og_title=H1_EN, og_description=SUBHEAD_EN,
+        ld_description="Fractional CPO for founder-led software companies in the EU and UK, based in Belgrade.",
+    ),
+    "sr/index.html": PageSpec(
+        "sr-Latn", TITLE_SR, DESCRIPTION_SR, "sr_RS", REQUIRED_HTML_SR, "/", "en", "English",
+        home_href="/sr/", canonical="https://alexkonyakhin.com/sr/", og_title=H1_SR, og_description=SUBHEAD_SR,
+        ld_description="Fractional CPO za softverske kompanije koje vode osnivači, iz Beograda.",
+    ),
 }
 
 @dataclass
@@ -257,6 +277,11 @@ class PageFacts:
     lang: str = ""
     description: str = ""
     og_locale: str = ""
+    og_url: str = ""
+    og_title: str = ""
+    og_description: str = ""
+    canonical: str = ""
+    identity_href: str = ""
     h1_count: int = 0
     heading_counts: dict = field(default_factory=dict)
     ids: list = field(default_factory=list)
@@ -302,6 +327,8 @@ class _PageParser(HTMLParser):
         if tag == "a" and a.get("href") is not None:
             href = a["href"]
             f.hrefs.append(href)
+            if "identity" in (a.get("class") or "").split():
+                f.identity_href = href
             if href.startswith("#"):
                 f.fragments.append(href[1:])
             if a.get("data-cta"):
@@ -311,10 +338,18 @@ class _PageParser(HTMLParser):
                 self._switch_text = []
         if tag == "link" and a.get("rel") == "alternate" and a.get("hreflang"):
             f.alternates.append((a["hreflang"], a.get("href") or ""))
+        if tag == "link" and a.get("rel") == "canonical":
+            f.canonical = a.get("href") or ""
         if tag == "meta" and a.get("name") == "description":
             f.description = a.get("content") or ""
         if tag == "meta" and a.get("property") == "og:locale":
             f.og_locale = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:url":
+            f.og_url = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:title":
+            f.og_title = a.get("content") or ""
+        if tag == "meta" and a.get("property") == "og:description":
+            f.og_description = a.get("content") or ""
         if tag in ("script", "style", "title"):
             self._hidden.append(tag)
             if tag == "script" and a.get("type") == "application/ld+json":
@@ -441,7 +476,21 @@ def check_meta(facts, spec):
         fails.append(f"FAIL: description is {facts.description!r}")
     if facts.og_locale != spec.og_locale:
         fails.append(f"FAIL: og:locale is {facts.og_locale!r}, expected {spec.og_locale!r}")
+    if facts.canonical != spec.canonical:
+        fails.append(f"FAIL: canonical is {facts.canonical!r}, expected {spec.canonical!r}")
+    if facts.og_url != spec.canonical:
+        fails.append(f"FAIL: og:url is {facts.og_url!r}, expected {spec.canonical!r}")
+    if facts.og_title != spec.og_title:
+        fails.append(f"FAIL: og:title is {facts.og_title!r}")
+    if facts.og_description != spec.og_description:
+        fails.append(f"FAIL: og:description is {facts.og_description!r}")
     return fails
+
+
+def check_home(facts, spec):
+    if facts.identity_href != spec.home_href:
+        return [f"FAIL: home (identity) link is {facts.identity_href!r}, expected {spec.home_href!r}"]
+    return []
 
 
 def check_alternates(facts):
@@ -464,7 +513,7 @@ def check_switch(facts, spec):
     return fails
 
 
-def check_ld_json(facts):
+def check_ld_json(facts, spec):
     try:
         data = json.loads(facts.ld_json)
     except json.JSONDecodeError as error:
@@ -474,6 +523,8 @@ def check_ld_json(facts):
         fails.append("FAIL: ld_json @type is not Person")
     if data.get("jobTitle") != "Fractional CPO":
         fails.append(f"FAIL: jobTitle is {data.get('jobTitle')!r}")
+    if data.get("description") != spec.ld_description:
+        fails.append(f"FAIL: ld_json description is {data.get('description')!r}")
     address = data.get("address") or {}
     if address.get("addressLocality") != "Belgrade" or address.get("addressCountry") != "RS":
         fails.append(f"FAIL: address is {address!r}")
@@ -540,6 +591,7 @@ def check_page(path, spec, html):
     fails = []
     fails += check_structure(facts, spec.lang)
     fails += check_meta(facts, spec)
+    fails += check_home(facts, spec)
     fails += check_required(facts.text, spec.required)
     fails += check_hrefs(facts)
     fails += check_assets(facts)
@@ -547,7 +599,7 @@ def check_page(path, spec, html):
     fails += check_ctas(facts)
     fails += check_alternates(facts)
     fails += check_switch(facts, spec)
-    fails += check_ld_json(facts)
+    fails += check_ld_json(facts, spec)
     fails += check_analytics(html)
     return facts, [f.replace("FAIL:", f"FAIL: {path}:", 1) for f in fails]
 

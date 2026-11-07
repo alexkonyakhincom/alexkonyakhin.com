@@ -36,8 +36,8 @@ In addition to the homepage spec §2:
 
 ### 3.1 Header
 
-Skip link: "Preskoči na sadržaj". Identity link aria-label: "Alexey Konyakhin,
-početna". Role line: "Fractional CPO · Beograd". Navigation in page order:
+Skip link: "Preskoči na sadržaj". Identity link `href="/sr/"` (the Serbian
+page is its own home), aria-label: "Alexey Konyakhin, početna". Role line: "Fractional CPO · Beograd". Navigation in page order:
 "Projekti" → `#work`, "Kako radim" → `#how-i-work`, "Iskustvo" →
 `#background`, then the language switch "English" → `/` (see §4).
 
