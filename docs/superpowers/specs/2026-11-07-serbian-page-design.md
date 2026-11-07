@@ -57,7 +57,7 @@ Trust strip (aria-label "Lokacija, jezici i fakturisanje"):
 - Beograd · sastanci uživo ili onlajn (adapted)
 - Radni jezici: srpski i engleski
 - Registrovani preduzetnik u Srbiji · fakturisanje u RSD ili EUR (adapted)
-- Proizvod i inženjering od 2013
+- Proizvod i inženjering od 2013.
 
 Calls to action: primary button **Zakažite razgovor od 30 minuta** (booking
 page); text link **Pogledajte projekte** → `#work`.
@@ -91,7 +91,7 @@ tri meseca procesa zapošljavanja".
   BigQuery-ju i prilagođene Looker dashboarde koji su rukovodstvu dali uvid u
   to kako zaposleni koriste aplikaciju.
 - Proces zapošljavanja. Otvorili smo aplikaciju i za one koji još nisu
-  zaposleni, tako da su kandidati za kasire i radnike u prodavnicama mogli
+  zaposleni, tako da su kandidati za posao kasira i radnika u prodavnicama mogli
   direktno da se prijave.
 - Igra za učenje. Ideja jednog zaposlenog koju sam pretvorio u igru unutar
   aplikacije, zasnovanu na postojećim materijalima za obuku, i pilotirao u 16
@@ -103,7 +103,7 @@ Title: Copix, mreža mobilne štampe (name links to https://copix.app/)
 Context line: Rad na proizvodu sa osnivačkim timom · Rusija · 2024 – 2026
 
 Radio sam sa timom na mobilnom korisničkom putu, povraćaju novca za neuspele
-otiske i povratnoj sprezi od podrške ka proizvodu.
+otiske i povratnim informacijama od podrške ka proizvodu.
 
 Results: label "Mesečni promet karticama", value "3×", qualifier "april 2024 –
 jun 2026"; label "Promet po aktivnom štampaču", value "2,15×".
@@ -114,13 +114,13 @@ After the second case: the primary button **Zakažite razgovor od 30 minuta**.
 
 ### 3.5 Kada me osnivači zovu
 
-- Tim isporučuje, ali poslovni prioritet stalno klizi.
-- Jedna inicijativa preseca proizvod, inženjering i operacije, a nema vlasnika.
+- Tim isporučuje, ali poslovni prioritet stalno pada u drugi plan.
+- Jedna inicijativa obuhvata proizvod, inženjering i operacije, a nema vlasnika.
 - Previše odluka i dalje dolazi do vas.
 
 ### 3.6 Kako radim
 
-1. **Plaćeni prvi mesec.** Dogovaramo poslovni problem, gledamo dokaze koje
+1. **Plaćeni prvi mesec.** Dogovaramo se oko poslovnog problema, gledamo dokaze koje
    već imate i postavljamo jedan prioritet sa jasnim vlasnicima i praktičnim
    planom. Obim prati pristup, ljude i budžet koje zaista možete da obezbedite.
 2. **Zatim iz meseca u mesec.** Ako se uklopimo, nastavljam kao vaš fractional
@@ -158,7 +158,7 @@ English page, until the owner supplies wording.
 
 ### 3.8 Contact
 
-Heading: Hajde da razgovaramo o vašem proizvodu.
+Heading: Razgovarajmo o vašem proizvodu.
 
 Prompt: Recite mi nešto o svom proizvodu, timu koji imate i onome što ne
 napreduje. Iskreno ću vam reći da li mogu da pomognem.
@@ -194,7 +194,7 @@ Serbian page:
 - Open Graph: title = H1, description = subhead, `og:url` the canonical,
   `og:locale` "sr_RS", image and image alt as on the English page.
 - Person structured data as on the English page, with `description`
-  "Fractional CPO za softverske kompanije koje vode osnivači, iz Beograda."
+  "Fractional CPO iz Beograda za softverske kompanije koje vode osnivači."
 
 Both pages carry the same three alternate links:
 
