@@ -46,8 +46,7 @@ page is its own home), aria-label: "Alexey Konyakhin, početna". Role line: "Fra
 H1: **Fractional CPO za softverske kompanije koje vode osnivači.**
 
 Subhead: Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku
-zajedno sa vašim postojećim timom, tako da važan posao napreduje, a svaka
-odluka ne mora da prođe kroz vas.
+zajedno sa vašim postojećim timom, tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.
 
 Fit line (adapted): Za kompanije koje imaju korisnike koji plaćaju i interni
 razvojni tim. Srbija, region, EU i UK.
@@ -57,7 +56,7 @@ Trust strip (aria-label "Lokacija, jezici i fakturisanje"):
 - Beograd · sastanci uživo ili onlajn (adapted)
 - Radni jezici: srpski i engleski
 - Registrovani preduzetnik u Srbiji · fakturisanje u RSD ili EUR (adapted)
-- Proizvod i inženjering od 2013.
+- Proizvod i inženjering od 2013..
 
 Calls to action: primary button **Zakažite razgovor od 30 minuta** (booking
 page); text link **Pogledajte projekte** → `#work`.
@@ -133,11 +132,9 @@ After the second case: the primary button **Zakažite razgovor od 30 minuta**.
 
 "Ko šta radi" box: Ja vodim pravac proizvoda, prioritete, kompromise,
 usklađivanje stejkholdera i merenje. Vi ste vlasnik poslovnog cilja, budžeta,
-pristupa i prava odlučivanja. Vaš CTO i tim su vlasnici tehničkog kvaliteta,
-procena i svakodnevne isporuke.
+pristupa i prava odlučivanja. Vaš CTO i tim odgovorni su za tehnički kvalitet, procene i svakodnevnu isporuku.
 
-Scope note: Nije uključeno: neograničen razvoj, dostupnost non-stop, agencijski
-tim iza mene ni garantovani rezultati.
+Scope note: Nije uključeno: neograničen razvoj, stalna dostupnost, agencijski tim iza mene niti garantovani rezultati.
 
 ### 3.7 Iskustvo
 
