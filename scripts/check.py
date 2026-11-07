@@ -9,6 +9,7 @@ outside the repository with ``--forbidden-file``.
 import argparse
 import importlib.util
 import json
+import re
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
@@ -371,6 +372,14 @@ def check_sources_forbidden(sources, forbidden):
     return fails
 
 
+def check_sources_private(sources, patterns):
+    """Private terms come from a file outside the repository, one regular expression per line, matched case-insensitively."""
+    fails = []
+    for name, text in sources.items():
+        fails += [f"FAIL: {name}: private term matched: {p.pattern}" for p in patterns if p.search(text)]
+    return fails
+
+
 def check_hrefs(facts):
     fails = []
     for h in facts.hrefs:
@@ -545,12 +554,11 @@ def check_page(path, spec, html):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--forbidden-file", type=Path, help="extra forbidden terms, one per line")
+    parser.add_argument("--forbidden-file", type=Path, help="private terms as regular expressions, one per line, matched case-insensitively")
     args = parser.parse_args(argv)
-    extra = []
+    private = []
     if args.forbidden_file:
-        extra = [line.strip() for line in args.forbidden_file.read_text().splitlines() if line.strip()]
-    forbidden = FORBIDDEN + extra
+        private = [re.compile(line.strip(), re.IGNORECASE) for line in args.forbidden_file.read_text().splitlines() if line.strip()]
 
     fails = []
     pages = {}
@@ -571,7 +579,8 @@ def main(argv=None):
     fails += check_llms(llms_text)
     sources["styles.css"] = (ROOT / "styles.css").read_text()
     sources["llms.txt"] = llms_text
-    fails += check_sources_forbidden(sources, forbidden)
+    fails += check_sources_forbidden(sources, FORBIDDEN)
+    fails += check_sources_private(sources, private)
 
     if DIST.exists():
         fails += check_dist()
