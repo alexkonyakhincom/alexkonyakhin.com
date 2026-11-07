@@ -1,196 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alexey Konyakhin — CPO/CTO/COO · Founder</title>
-<meta name="description" content="Alexey Konyakhin — CPO/CTO/COO and founder with 17+ years in tech. Ships products end-to-end: NicePass, Stopwell, VPNKill. Product leadership, engineering, market research.">
-<link rel="canonical" href="https://alexkonyakhin.com/">
-
-<!-- Google Analytics (GA4) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K466B003HF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K466B003HF');
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Alexey Konyakhin",
-  "url": "https://alexkonyakhin.com/",
-  "image": "https://alexkonyakhin.com/ava_alex_konyakhin.png",
-  "email": "mailto:me@alexkonyakhin.com",
-  "jobTitle": "CPO / CTO / COO · Founder",
-  "description": "Multidisciplinary product leader with a deep background in software engineering, startup founding, and market research. Builds and ships products end-to-end.",
-  "worksFor": [
-    { "@type": "Organization", "name": "Vestora" },
-    { "@type": "Organization", "name": "Erasoft.io" }
-  ],
-  "owns": [
-    { "@type": "Product", "name": "NicePass", "url": "https://nicepass.cc", "description": "Loyalty-card platform for restaurants: Apple/Google Wallet passes, AI-driven campaigns, iiko integration." },
-    { "@type": "Product", "name": "Stopwell", "url": "https://stopwell.app", "description": "Flight concierge that plans the trip around arriving in shape for the event, not just price." },
-    { "@type": "Product", "name": "VPNKill", "url": "https://vpnkill.com", "description": "macOS menu-bar kill switch that blocks any traffic not routed through the VPN." }
-  ],
-  "sameAs": [
-    "https://linkedin.com/in/alexkonyakhin",
-    "https://t.me/pieceofwave"
-  ],
-  "knowsAbout": ["Product management", "Market research", "JTBD interviews", "Financial modeling", "Performance marketing", "A/B testing", "Operations management", "Full-cycle software delivery"],
-  "knowsLanguage": ["en", "ru"]
-}
-</script>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #111; line-height: 1.6; max-width: 680px; margin: 0 auto; padding: 0 1.5rem 4rem; }
-  .hero { padding: 3rem 0 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
-  .hero-inner { display: flex; align-items: flex-start; gap: 1.25rem; }
-  .avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-  .hero-text h1 { font-size: 26px; font-weight: 500; line-height: 1.2; }
-  .hero-text .role { font-size: 14px; color: #666; margin-top: 3px; }
-  .tagline { font-size: 15px; color: #444; line-height: 1.7; }
-  .contact-row { display: flex; flex-wrap: wrap; gap: 8px; }
-  .contact-pill { font-size: 12px; padding: 4px 12px; border-radius: 99px; border: 1px solid #ddd; color: #555; text-decoration: none; }
-  .contact-pill:hover { background: #f5f5f5; }
-  .section { padding: 1.5rem 0; border-top: 1px solid #eee; }
-  .section h2 { font-size: 11px; font-weight: 500; color: #999; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 1rem; }
-  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .metric { background: #f7f7f7; border-radius: 8px; padding: .75rem 1rem; }
-  .metric .num { font-size: 20px; font-weight: 500; }
-  .metric .lbl { font-size: 12px; color: #777; margin-top: 2px; }
-  .projects { display: flex; flex-direction: column; gap: 10px; }
-  .project { display: block; padding: .75rem 1rem; border: 1px solid #e5e5e5; border-radius: 8px; text-decoration: none; color: inherit; }
-  .project:hover { background: #f7f7f7; }
-  .project-head { display: flex; align-items: baseline; gap: 8px; }
-  .project-name { font-size: 14px; font-weight: 500; }
-  .project-domain { font-size: 12px; color: #999; }
-  .project-note { font-size: 13px; color: #666; margin-top: 2px; line-height: 1.5; }
-  .jobs { display: flex; flex-direction: column; gap: 14px; }
-  .job { display: grid; grid-template-columns: 80px 1fr; gap: 0 12px; }
-  .job-date { font-size: 12px; color: #aaa; padding-top: 2px; }
-  .job-title { font-size: 14px; font-weight: 500; }
-  .job-note { font-size: 13px; color: #666; margin-top: 2px; line-height: 1.5; }
-  .skills-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .skill-tag { font-size: 13px; padding: 4px 12px; border-radius: 6px; border: 1px solid #e5e5e5; color: #555; }
-  .values { display: flex; flex-direction: column; gap: 8px; }
-  .value-row { display: flex; gap: 10px; align-items: flex-start; }
-  .value-dot { width: 5px; height: 5px; border-radius: 50%; background: #bbb; margin-top: 9px; flex-shrink: 0; }
-  .value-text { font-size: 14px; color: #555; }
-  @media (max-width: 480px) {
-    .metrics { grid-template-columns: repeat(2, 1fr); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexey Konyakhin · Fractional CPO · Belgrade (CET)</title>
+  <meta name="description" content="Fractional CPO based in Belgrade, Central European Time. I own product direction, priorities and delivery with your existing team. Paid first month, then monthly. EU, UK and US East Coast.">
+  <link rel="canonical" href="https://alexkonyakhin.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alexkonyakhin.com/">
+  <meta property="og:title" content="Fractional CPO for founder-led software companies.">
+  <meta property="og:description" content="I take ownership of product direction, priorities and delivery alongside your existing team, so the important work moves without every decision coming back to you.">
+  <meta property="og:image" content="https://alexkonyakhin.com/ava_alex_konyakhin.png">
+  <meta property="og:image:alt" content="Alexey Konyakhin">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="/ava_alex_konyakhin.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    window.trackCta = function () {};
+    if (['alexkonyakhin.com', 'www.alexkonyakhin.com'].includes(window.location.hostname)) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-K466B003HF');
+      const analytics = document.createElement('script');
+      analytics.async = true;
+      analytics.src = 'https://www.googletagmanager.com/gtag/js?id=G-K466B003HF';
+      document.head.appendChild(analytics);
+      window.trackCta = function (cta, location) {
+        gtag('event', 'cta_click', { cta: cta, location: location });
+      };
+    }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Alexey Konyakhin",
+    "jobTitle": "Fractional CPO",
+    "url": "https://alexkonyakhin.com/",
+    "image": "https://alexkonyakhin.com/ava_alex_konyakhin.png",
+    "email": "mailto:me@alexkonyakhin.com",
+    "description": "Fractional CPO for founder-led software companies in the EU and UK, based in Belgrade.",
+    "address": { "@type": "PostalAddress", "addressLocality": "Belgrade", "addressCountry": "RS" },
+    "sameAs": ["https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave"],
+    "knowsLanguage": ["en", "sr", "ru"]
   }
-</style>
+  </script>
 </head>
 <body>
-
-<div class="hero">
-  <div class="hero-inner">
-    <img class="avatar" src="ava_alex_konyakhin.png" alt="Alexey Konyakhin">
-    <div class="hero-text">
-      <h1>Alexey Konyakhin</h1>
-      <div class="role">CPO/CTO/COO · Founder</div>
-    </div>
-  </div>
-  <p class="tagline">Multidisciplinary product leader with a deep background in software engineering, startup founding, and market research. I help businesses grow by building the right things — fast.</p>
-  <div class="contact-row">
-    <a class="contact-pill" href="mailto:me@alexkonyakhin.com">me@alexkonyakhin.com</a>
-    <a class="contact-pill" href="https://linkedin.com/in/alexkonyakhin" target="_blank">LinkedIn</a>
-    <a class="contact-pill" href="https://t.me/pieceofwave" target="_blank">Telegram</a>
-  </div>
-</div>
-
-<div class="section">
-  <h2>By the numbers</h2>
-  <div class="metrics">
-    <div class="metric"><div class="num">17+</div><div class="lbl">Years in tech</div></div>
-    <div class="metric"><div class="num">40+</div><div class="lbl">Teams led</div></div>
-    <div class="metric"><div class="num">300K+</div><div class="lbl">MAU at Erasoft.io</div></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2>Built &amp; shipped</h2>
-  <div class="projects">
-    <a class="project" href="https://nicepass.cc" target="_blank" rel="noopener">
-      <div class="project-head"><span class="project-name">NicePass</span><span class="project-domain">nicepass.cc ↗</span></div>
-      <div class="project-note">Loyalty-card platform for restaurants: Apple/Google Wallet passes, AI-driven campaigns, iiko integration.</div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="identity" href="/" aria-label="Alexey Konyakhin, home">
+      <img src="/ava_alex_konyakhin.png" alt="Alexey Konyakhin" width="56" height="56" fetchpriority="high">
+      <span><span class="identity-name">Alexey Konyakhin</span><span class="identity-role">Fractional CPO · Belgrade</span></span>
     </a>
-    <a class="project" href="https://stopwell.app" target="_blank" rel="noopener">
-      <div class="project-head"><span class="project-name">Stopwell</span><span class="project-domain">stopwell.app ↗</span></div>
-      <div class="project-note">Flight concierge that plans the trip around arriving in shape for the event, not just price.</div>
-    </a>
-    <a class="project" href="https://vpnkill.com" target="_blank" rel="noopener">
-      <div class="project-head"><span class="project-name">VPNKill</span><span class="project-domain">vpnkill.com ↗</span></div>
-      <div class="project-note">macOS menu-bar kill switch that blocks any traffic not routed through the VPN.</div>
-    </a>
-  </div>
-</div>
+    <nav aria-label="Main navigation">
+      <a href="#work">Work</a>
+      <a href="#how-i-work">How I work</a>
+      <a href="#background">Background</a>
+    </nav>
+  </header>
 
-<div class="section">
-  <h2>Experience</h2>
-  <div class="jobs">
-    <div class="job">
-      <div class="job-date">2025 – now</div>
-      <div><div class="job-title">CPO — Vestora</div><div class="job-note">Disrupting business real estate with AI and complex data models. Since April 2025.</div></div>
-    </div>
-    <div class="job">
-      <div class="job-date">2023 – now</div>
-      <div><div class="job-title">COO / PM — Erasoft.io</div><div class="job-note">Leading HR-tech platform for retail, 300K+ MAU. Achieved ×5 ARR in Q1–Q3 2023.</div></div>
-    </div>
-    <div class="job">
-      <div class="job-date">2022</div>
-      <div><div class="job-title">Senior Project Manager — Improvado.io</div><div class="job-note">Marketing analytics automation. 3× conversion uplift; helped build a delivery team from scratch for a $1M+ project.</div></div>
-    </div>
-    <div class="job">
-      <div class="job-date">2020–2022</div>
-      <div><div class="job-title">Founder — LTVCAC.agency</div><div class="job-note">Performance marketing & JTBD-based market research for companies, startups, and investors.</div></div>
-    </div>
-    <div class="job">
-      <div class="job-date">2017–2019</div>
-      <div><div class="job-title">Co-founder — Togezzer.net</div><div class="job-note">Internal comms tool for distributed teams. 60 alpha companies, 70% 3-month retention.</div></div>
-    </div>
-    <div class="job">
-      <div class="job-date">2015–2017</div>
-      <div><div class="job-title">Co-founder — Knedlik Tech</div><div class="job-note">Travel services mobile app. Delivered full product in 4 months from raised capital.</div></div>
-    </div>
-    <div class="job">
-      <div class="job-date">2013–2015</div>
-      <div><div class="job-title">PM / Tech Lead — Globus-ltd.com</div><div class="job-note">Led portfolio of mobile & web projects generating 70% of company revenue.</div></div>
-    </div>
-  </div>
-</div>
+  <main id="main" class="wrap" tabindex="-1">
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Fractional CPO for founder-led software companies.</h1>
+      <p class="hero-intro">I take ownership of product direction, priorities and delivery alongside your existing team, so the important work moves without every decision coming back to you.</p>
+      <p class="hero-fit">For companies with paying customers and an in-house development team. EU and UK first; US East Coast mornings work too.</p>
+      <ul class="trust-strip" aria-label="Location, languages and invoicing">
+        <li>Based in Belgrade, Serbia · Central European Time</li>
+        <li>Working languages: English and Serbian</li>
+        <li>Invoicing in EUR from a registered business in Serbia</li>
+        <li>Product and engineering since 2013</li>
+      </ul>
+      <div class="actions">
+        <a class="button" data-cta="book_call" data-cta-location="hero" href="mailto:me@alexkonyakhin.com">Book a 30-minute call</a>
+        <a class="text-link" href="#work">See the work <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10m-4-4 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </section>
 
-<div class="section">
-  <h2>Skills</h2>
-  <div class="skills-grid">
-    <span class="skill-tag">Product management</span>
-    <span class="skill-tag">Market research</span>
-    <span class="skill-tag">JTBD interviews</span>
-    <span class="skill-tag">Figma & prototyping</span>
-    <span class="skill-tag">Financial modeling</span>
-    <span class="skill-tag">Agile coaching</span>
-    <span class="skill-tag">Performance marketing</span>
-    <span class="skill-tag">A/B testing</span>
-    <span class="skill-tag">Google Analytics</span>
-    <span class="skill-tag">Operations management</span>
-    <span class="skill-tag">Full-cycle software delivery</span>
-    <span class="skill-tag">English C2</span>
-    <span class="skill-tag">Russian native</span>
-  </div>
-</div>
+    <section class="proof" aria-label="Key facts">
+      <ul class="proof-band">
+        <li>
+          <strong class="proof-num">300k+</strong>
+          <span class="proof-label">monthly active users</span>
+          <span class="proof-note">employee app I owned as head of product</span>
+        </li>
+        <li>
+          <strong class="proof-num">3×</strong>
+          <span class="proof-label">monthly turnover</span>
+          <span class="proof-note">mobile printing network, April 2024 to June 2026</span>
+        </li>
+        <li>
+          <strong class="proof-num">20,000</strong>
+          <span class="proof-label">job applications</span>
+          <span class="proof-note">first three months of a recruitment journey I led</span>
+        </li>
+        <li>
+          <strong class="proof-num">3</strong>
+          <span class="proof-label">companies co-founded</span>
+          <span class="proof-note">2015 to 2022</span>
+        </li>
+      </ul>
+    </section>
 
-<div class="section">
-  <h2>What I stand for</h2>
-  <div class="values">
-    <div class="value-row"><div class="value-dot"></div><div class="value-text">Take risk over staying safe and missing the opportunity</div></div>
-    <div class="value-row"><div class="value-dot"></div><div class="value-text">Tell the truth rather than be nice</div></div>
-    <div class="value-row"><div class="value-dot"></div><div class="value-text">Give trust and guidance rather than micro-manage</div></div>
-    <div class="value-row"><div class="value-dot"></div><div class="value-text">Data-driven decisions, statistically significant research, scalable methods</div></div>
-  </div>
-</div>
+    <section id="work" class="section work" aria-labelledby="work-title">
+      <h2 id="work-title">Work</h2>
+      <article class="case" aria-labelledby="retail-title">
+        <div class="case-heading">
+          <h3 id="retail-title">Employee app for a major retail chain</h3>
+          <p class="case-context">Head of product for the whole app · Retail · Russia</p>
+        </div>
+        <p>I owned the product: direction, priorities, research, delivery and measurement. I led developers, a designer and QA, and brought hypotheses and decisions to senior stakeholders.</p>
+        <dl class="case-results">
+          <div><dt>Monthly active users</dt><dd>300k+ <span>during my time on the product</span></dd></div>
+          <div><dt>Job applications</dt><dd>20,000 <span>first three months of the recruitment journey</span></dd></div>
+        </dl>
+        <div class="case-contribution">
+          <h4>Analytics from events to decisions.</h4>
+          <p>I led the team's implementation of the full stack: event coverage in Firebase, a pipeline into BigQuery, and custom Looker dashboards that gave senior managers visibility into how the workforce used the app.</p>
+        </div>
+        <div class="case-contribution">
+          <h4>A recruitment journey.</h4>
+          <p>We opened the app to people who were not yet employees, so candidates for cashier and store roles could apply directly.</p>
+        </div>
+        <div class="case-contribution">
+          <h4>A learning game.</h4>
+          <p>An employee's idea that I shaped into an in-app game on existing training content and piloted across 16 operational clusters.</p>
+        </div>
+      </article>
+      <article class="case" aria-labelledby="copix-title">
+        <div class="case-heading">
+          <h3 id="copix-title"><a href="https://copix.app/">Copix</a>, mobile printing network</h3>
+          <p class="case-context">Product work with the founding team · Russia · 2024 to 2026</p>
+        </div>
+        <p>I worked with the team on the mobile customer journey, refunds for failed prints and the feedback loop from support back into product.</p>
+        <dl class="case-results">
+          <div><dt>Monthly card turnover</dt><dd>3× <span>April 2024 to June 2026</span></dd></div>
+          <div><dt>Turnover per active printer</dt><dd>2.15×</dd></div>
+        </dl>
+        <p class="case-note">Network-wide results during the collaboration, alongside pricing and network changes.</p>
+      </article>
+      <div class="work-contact"><a class="button" data-cta="book_call" data-cta-location="work" href="mailto:me@alexkonyakhin.com">Book a 30-minute call</a></div>
+    </section>
 
+    <section class="section situations-section" aria-labelledby="situations-title">
+      <h2 id="situations-title">When founders call me</h2>
+      <ul class="situations-compact">
+        <li><strong>The team ships, but the business priority keeps slipping.</strong></li>
+        <li><strong>One initiative crosses product, engineering and operations with no owner.</strong></li>
+        <li><strong>Too many decisions still come back to you.</strong></li>
+      </ul>
+    </section>
+
+    <section id="how-i-work" class="section" aria-labelledby="process-title">
+      <h2 id="process-title">How I work</h2>
+      <ol class="steps">
+        <li>
+          <h3>A paid first month.</h3>
+          <p>We agree the business problem, look at the evidence you already have, and set one priority with clear owners and a practical plan. Scope follows the access, people and budget you can actually give it.</p>
+        </li>
+        <li>
+          <h3>Then month by month.</h3>
+          <p>If it fits, I continue as your fractional CPO: product direction, trade-offs, dependencies across product, engineering and operations, and keeping the work tied to the goal we agreed. Days per week and scope are agreed individually.</p>
+        </li>
+        <li>
+          <h3>Checkpoints, not lock-in.</h3>
+          <p>Baseline and success criteria are set up front. At each review we continue, adjust the scope, or finish with a clean handover.</p>
+        </li>
+      </ol>
+      <div class="responsibilities">
+        <h3>Who does what</h3>
+        <p>I own product direction, priorities, trade-offs, stakeholder alignment and measurement. You own the business goal, budget, access and decision authority. Your CTO and team own technical quality, estimates and day-to-day execution.</p>
+        <p class="scope-note">Not included: unlimited development, round-the-clock availability, an agency team behind me, or guaranteed results.</p>
+      </div>
+    </section>
+
+    <section id="background" class="section background" aria-labelledby="background-title">
+      <h2 id="background-title">Background</h2>
+      <dl class="timeline">
+        <div><dt>2025 – now</dt><dd>CPO, commercial real-estate platform</dd></div>
+        <div><dt>2024 – 2026</dt><dd>Product work with Copix, mobile printing network</dd></div>
+        <div><dt>2023 – now</dt><dd>COO and product lead, Erasoft.io, the team behind the retail employee app</dd></div>
+        <div><dt>2022</dt><dd>Senior Project Manager, Improvado, international team</dd></div>
+        <div><dt>2020 – 2022</dt><dd>Founder, LTVCAC.agency, performance marketing and JTBD research</dd></div>
+        <div><dt>2017 – 2019</dt><dd>Co-founder, Togezzer, internal comms for distributed teams</dd></div>
+        <div><dt>2015 – 2017</dt><dd>Co-founder, Knedlik Tech, travel mobile app</dd></div>
+        <div><dt>2013 – 2015</dt><dd>PM and tech lead, Globus, mobile and web portfolio</dd></div>
+      </dl>
+      <div class="maker-work">
+        <p>I also build my own products.</p>
+        <div class="project-links" aria-label="Own products">
+          <a href="https://nicepass.cc/">NicePass</a>
+          <a href="https://stopwell.app/">Stopwell</a>
+          <a href="https://vpnkill.com/">VPNKill</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">Let's talk about your product.</h2>
+      <p>Tell me about your product, the team you have and what is not moving. I will tell you honestly whether I can help.</p>
+      <a class="button" data-cta="book_call" data-cta-location="contact" href="mailto:me@alexkonyakhin.com">Book a 30-minute call</a>
+      <a class="email-address" data-cta="email" data-cta-location="contact" href="mailto:me@alexkonyakhin.com">me@alexkonyakhin.com</a>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Alexey Konyakhin · Belgrade</p>
+    <div class="social-links">
+      <a href="https://linkedin.com/in/alexkonyakhin">LinkedIn</a>
+      <a href="https://t.me/pieceofwave">Telegram</a>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('[data-cta]');
+      if (link) { window.trackCta(link.getAttribute('data-cta'), link.getAttribute('data-cta-location')); }
+    });
+  </script>
 </body>
 </html>
