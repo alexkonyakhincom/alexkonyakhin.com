@@ -6,6 +6,10 @@
   <title>Alexey Konyakhin · Fractional CPO · Belgrade (CET)</title>
   <meta name="description" content="Fractional CPO based in Belgrade, Central European Time. I own product direction, priorities and delivery with your existing team. Paid first month, then monthly. EU, UK and US East Coast.">
   <link rel="canonical" href="https://alexkonyakhin.com/">
+  <link rel="alternate" hreflang="en" href="https://alexkonyakhin.com/">
+  <link rel="alternate" hreflang="sr-Latn" href="https://alexkonyakhin.com/sr/">
+  <link rel="alternate" hreflang="x-default" href="https://alexkonyakhin.com/">
+  <meta property="og:locale" content="en_GB">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://alexkonyakhin.com/">
   <meta property="og:title" content="Fractional CPO for founder-led software companies.">
@@ -27,7 +31,7 @@
       analytics.src = 'https://www.googletagmanager.com/gtag/js?id=G-K466B003HF';
       document.head.appendChild(analytics);
       window.trackCta = function (cta, location) {
-        gtag('event', 'cta_click', { cta: cta, location: location });
+        gtag('event', 'cta_click', { cta: cta, location: location, lang: document.documentElement.lang.split('-')[0] });
       };
     }
   </script>
@@ -58,6 +62,7 @@
       <a href="#work">Work</a>
       <a href="#how-i-work">How I work</a>
       <a href="#background">Background</a>
+      <a class="lang-switch" href="/sr/" lang="sr-Latn" hreflang="sr-Latn">Srpski</a>
     </nav>
   </header>
 

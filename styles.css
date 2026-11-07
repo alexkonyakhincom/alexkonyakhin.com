@@ -43,6 +43,7 @@ section[id], article[id] { scroll-margin-top: var(--space-6); }
 nav { display: flex; gap: var(--space-5); align-items: center; }
 nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; color: var(--body); text-decoration: none; }
 nav a:hover { color: var(--ink); text-decoration: underline; }
+.lang-switch { margin-left: var(--space-3); padding-left: var(--space-4); border-left: 1px solid var(--line); }
 .hero { padding-block: var(--space-6) var(--space-8); }
 .hero-intro { max-width: 39rem; margin-top: var(--space-6); font-size: clamp(1.0625rem, 2vw, 1.25rem); line-height: 1.65; }
 .hero-fit { max-width: 37rem; margin-top: var(--space-4); font-size: .9375rem; color: var(--muted); }
