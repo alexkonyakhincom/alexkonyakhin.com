@@ -99,7 +99,8 @@ nav a:hover { color: var(--ink); text-decoration: underline; }
 .contact { padding-bottom: var(--space-7); }
 .contact h2 { max-width: 20ch; font-size: clamp(2rem, 4.5vw, 2.75rem); margin-bottom: var(--space-5); }
 .contact p { max-width: 38rem; margin-bottom: var(--space-6); }
-.email-address { display: table; min-height: 44px; padding-block: var(--space-3); margin-top: var(--space-2); font-size: .9375rem; overflow-wrap: anywhere; }
+.contact-options { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); }
+.email-address { margin-top: var(--space-5); font-size: .9375rem; color: var(--muted); overflow-wrap: anywhere; }
 .site-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); border-top: 1px solid var(--line); padding-block: var(--space-5) var(--space-7); }
 .site-footer p { font-size: .8125rem; color: var(--muted); }
 .social-links { display: flex; gap: var(--space-5); }
@@ -117,6 +118,7 @@ nav a:hover { color: var(--ink); text-decoration: underline; }
   .hero { padding-bottom: var(--space-7); }
   .hero-intro { margin-top: var(--space-5); }
   .actions { gap: var(--space-2); margin-top: var(--space-5); align-items: flex-start; flex-direction: column; }
+  .contact-options { gap: var(--space-2); align-items: flex-start; flex-direction: column; }
   .responsibilities { padding: var(--space-5); }
   .case-results { gap: var(--space-4); }
   .case-results dt { font-size: .8125rem; }

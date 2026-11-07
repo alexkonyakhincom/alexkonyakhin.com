@@ -39,8 +39,9 @@ These rules bind every line of copy, metadata and the AI profile.
   small context line, never in a title or the first screen.
 - No ruble amounts. Multipliers carry the proof.
 - No price, no days-per-week commitment, no start date, no availability claim.
-- No new contact form, no invented scheduling link. The booking button uses a
-  URL Alexey supplies; until then it sends email.
+- No new contact form, no embed. Every "Book a 30-minute call" button links to
+  the owner's Google Calendar appointment page,
+  https://calendar.app.google/ats6knZjWvwpJUbp9 (supplied 7 November 2026).
 - Private source material (briefs, decks, reports, review notes) never enters
   the repository, HTML comments, metadata, images or structured data.
 
@@ -194,8 +195,11 @@ Heading: Let's talk about your product.
 Prompt: Tell me about your product, the team you have and what is not
 moving. I will tell you honestly whether I can help.
 
-Primary button **Book a 30-minute call**; secondary link shows the email
-address me@alexkonyakhin.com.
+Three channels, whichever suits the visitor: primary button **Book a 30-minute
+call** to the booking page, text link **Message me on Telegram**
+(https://t.me/pieceofwave), text link **Email me** (mailto). The address
+me@alexkonyakhin.com is shown beneath as plain text. (Amended 7 November 2026;
+the first version had the button and an email link only.)
 
 ### 3.9 Footer
 
@@ -226,7 +230,6 @@ None of these block implementation. Each has a stated fallback.
 
 | Item | Fallback if unanswered |
 |---|---|
-| Booking URL (Cal.com or Calendly) | Button sends email |
 | Public wording for the 2026 role | Row is cut |
 | "unnamed" vs plain description for the real-estate role | Plain description without the word "unnamed" |
 | Confirm three co-founded companies | Tile stays as drafted |
@@ -286,8 +289,8 @@ ratings or reviews.
 
 Analytics: GA4 ID G-K466B003HF stays, loaded only when the hostname is
 alexkonyakhin.com or www.alexkonyakhin.com. Add a `cta_click` event with
-parameters `cta` ("book_call" or "email") and `location` ("hero", "work" or
-"contact"), fired only when `gtag` exists. No other tracking.
+parameters `cta` ("book_call", "telegram" or "email") and `location` ("hero",
+"work" or "contact"), fired only when `gtag` exists. No other tracking.
 
 AI profile: `llms.txt` is rewritten to state the same facts as the page, in
 the same order, in plain text, with the same contact destinations.
