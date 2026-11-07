@@ -157,12 +157,12 @@ REQUIRED_HTML_SR = [
     "Projekti", "Kako radim", "Iskustvo",
     "Fractional CPO za softverske kompanije koje vode osnivači.",
     "Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
-    "tako da važan posao napreduje, a svaka odluka ne mora da prođe kroz vas.",
+    "tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.",
     "Za kompanije koje imaju korisnike koji plaćaju i interni razvojni tim. Srbija, region, EU i UK.",
     "Beograd · sastanci uživo ili onlajn",
     "Radni jezici: srpski i engleski",
     "Registrovani preduzetnik u Srbiji · fakturisanje u RSD ili EUR",
-    "Proizvod i inženjering od 2013",
+    "Proizvod i inženjering od 2013.",
     "Zakažite razgovor od 30 minuta", "Pogledajte projekte",
     # proof band (§3.3)
     "300k+ mesečno aktivnih korisnika", "aplikacija za zaposlene koju sam vodio kao head of product",
@@ -180,23 +180,23 @@ REQUIRED_HTML_SR = [
     "Vodio sam implementaciju kompletnog analitičkog sistema sa timom: pokrivenost događaja u Firebase-u, "
     "pipeline ka BigQuery-ju i prilagođene Looker dashboarde koji su rukovodstvu dali uvid u to kako zaposleni koriste aplikaciju.",
     "Proces zapošljavanja.",
-    "Otvorili smo aplikaciju i za one koji još nisu zaposleni, tako da su kandidati za kasire i radnike u prodavnicama mogli direktno da se prijave.",
+    "Otvorili smo aplikaciju i za one koji još nisu zaposleni, tako da su kandidati za posao kasira i radnika u prodavnicama mogli direktno da se prijave.",
     "Igra za učenje.",
     "Ideja jednog zaposlenog koju sam pretvorio u igru unutar aplikacije, zasnovanu na postojećim materijalima za obuku, "
     "i pilotirao u 16 operativnih klastera.",
     "Copix, mreža mobilne štampe",
     "Rad na proizvodu sa osnivačkim timom · Rusija · 2024 – 2026",
-    "Radio sam sa timom na mobilnom korisničkom putu, povraćaju novca za neuspele otiske i povratnoj sprezi od podrške ka proizvodu.",
+    "Radio sam sa timom na mobilnom korisničkom putu, povraćaju novca za neuspele otiske i povratnim informacijama od podrške ka proizvodu.",
     "Mesečni promet karticama", "3×", "april 2024 – jun 2026",
     "Promet po aktivnom štampaču", "2,15×",
     "Rezultati cele mreže tokom saradnje, uz promene cena i same mreže.",
     # situations and process (§3.5–3.6)
     "Kada me osnivači zovu",
-    "Tim isporučuje, ali poslovni prioritet stalno klizi.",
-    "Jedna inicijativa preseca proizvod, inženjering i operacije, a nema vlasnika.",
+    "Tim isporučuje, ali poslovni prioritet stalno pada u drugi plan.",
+    "Jedna inicijativa obuhvata proizvod, inženjering i operacije, a nema vlasnika.",
     "Previše odluka i dalje dolazi do vas.",
     "Plaćeni prvi mesec.",
-    "Dogovaramo poslovni problem, gledamo dokaze koje već imate i postavljamo jedan prioritet sa jasnim vlasnicima "
+    "Dogovaramo se oko poslovnog problema, gledamo dokaze koje već imate i postavljamo jedan prioritet sa jasnim vlasnicima "
     "i praktičnim planom. Obim prati pristup, ljude i budžet koje zaista možete da obezbedite.",
     "Zatim iz meseca u mesec.",
     "Ako se uklopimo, nastavljam kao vaš fractional CPO: pravac proizvoda, kompromisi, zavisnosti između proizvoda, "
@@ -206,8 +206,8 @@ REQUIRED_HTML_SR = [
     "završavamo urednom primopredajom.",
     "Ko šta radi",
     "Ja vodim pravac proizvoda, prioritete, kompromise, usklađivanje stejkholdera i merenje. Vi ste vlasnik poslovnog "
-    "cilja, budžeta, pristupa i prava odlučivanja. Vaš CTO i tim su vlasnici tehničkog kvaliteta, procena i svakodnevne isporuke.",
-    "Nije uključeno: neograničen razvoj, dostupnost non-stop, agencijski tim iza mene ni garantovani rezultati.",
+    "cilja, budžeta, pristupa i prava odlučivanja. Vaš CTO i tim odgovorni su za tehnički kvalitet, procene i svakodnevnu isporuku.",
+    "Nije uključeno: neograničen razvoj, stalna dostupnost, agencijski tim iza mene niti garantovani rezultati.",
     # background (§3.7)
     "2025 – danas CPO, platforma za komercijalne nekretnine",
     "2024 – 2026 Rad na proizvodu sa Copixom, mreža mobilne štampe",
@@ -219,7 +219,7 @@ REQUIRED_HTML_SR = [
     "2013 – 2015 PM i tech lead, Globus, portfolio mobilnih i veb projekata",
     "Pravim i sopstvene proizvode.", "NicePass", "Stopwell", "VPNKill",
     # contact and footer (§3.8–3.9)
-    "Hajde da razgovaramo o vašem proizvodu.",
+    "Razgovarajmo o vašem proizvodu.",
     "Recite mi nešto o svom proizvodu, timu koji imate i onome što ne napreduje. Iskreno ću vam reći da li mogu da pomognem.",
     "Pišite mi na Telegramu", "Pošaljite imejl", "me@alexkonyakhin.com",
     "Alexey Konyakhin · Beograd", "LinkedIn", "Telegram",
@@ -256,7 +256,7 @@ SUBHEAD_EN = ("I take ownership of product direction, priorities and delivery al
               "so the important work moves without every decision coming back to you.")
 H1_SR = "Fractional CPO za softverske kompanije koje vode osnivači."
 SUBHEAD_SR = ("Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
-              "tako da važan posao napreduje, a svaka odluka ne mora da prođe kroz vas.")
+              "tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.")
 
 PAGES = {
     "index.html": PageSpec(
@@ -267,7 +267,7 @@ PAGES = {
     "sr/index.html": PageSpec(
         "sr-Latn", TITLE_SR, DESCRIPTION_SR, "sr_RS", REQUIRED_HTML_SR, "/", "en", "English",
         home_href="/sr/", canonical="https://alexkonyakhin.com/sr/", og_title=H1_SR, og_description=SUBHEAD_SR,
-        ld_description="Fractional CPO za softverske kompanije koje vode osnivači, iz Beograda.",
+        ld_description="Fractional CPO iz Beograda za softverske kompanije koje vode osnivači.",
     ),
 }
 
