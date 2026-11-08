@@ -186,7 +186,8 @@ no per-role metrics. Newest first.
 
 Below the list, one line: "I also build my own products." with links to
 NicePass (https://nicepass.cc/), Stopwell (https://stopwell.app/) and
-VPNKill (https://vpnkill.com/). Rostok is added only if a URL is supplied.
+VPNKill (https://vpnkill.com/), plus Rostok (https://rostok.dance/), whose
+URL the owner supplied on 8 November 2026.
 
 ### 3.8 Contact
 
@@ -234,64 +235,76 @@ None of these block implementation. Each has a stated fallback.
 | "unnamed" vs plain description for the real-estate role | Plain description without the word "unnamed" |
 | Confirm three co-founded companies | Tile stays as drafted |
 | Earlier start year than 2013 | "since 2013" stays |
-| Rostok URL | Not mentioned |
+| Rostok URL | Resolved 8 November 2026: https://rostok.dance/ |
 | Russian shown as a visible language | Stays in structured data only |
 
 ## 6. Design
 
-Editorial visual system, approved by the owner on 8 November 2026. It
-replaces the earlier white, system-font look; copy and structure are
-unchanged.
+The existing editorial identity was refined on 8 November 2026 at the
+owner's request: clearer hierarchy, a wider grid and open case studies. A
+second pass replaces the serif typography. The owner's icebreaker scroll
+concept was clarified on 9 November: the page itself splits and moves
+aside, with no separate ship illustration.
+The approved copy, section order, contact destinations and bilingual
+structure are retained; Rostok is the owner's requested content addition.
 
-- Colour: warm paper `#faf7f2`, cream panels and bands `#f2ece2`, near-black
-  ink `#1b1916`, one rust accent `#b4441f`. Every text style measures at or
-  above 4.5:1 against its own background.
-- Type: Fraunces (variable weight and optical size, SIL Open Font License)
-  sets the H1, section headings, case titles and large figures; the system
-  sans sets everything read at length. The Latin and Latin Extended font
-  files (about 126 KB together) and `OFL.txt` are self-hosted in `fonts/` and
-  published with the site; nothing loads from a font service. The English
-  page needs only the Latin file; the Serbian page also loads Latin Extended
-  for č, ć, š, ž and đ.
-- One black primary button that turns rust on hover; 54rem page width.
-- Motion: on load the first screen rises into place and the portrait's rust
-  ring draws in; proof tiles, the three situations and the steps rise as they
-  scroll in (CSS scroll-driven animation, skipped where unsupported). The
-  first screen moves but never fades, so it stays readable when the animation
-  clock is paused. All motion is off under `prefers-reduced-motion: reduce`.
+- Colour: warm paper `#faf7f2`, cream `#f0ebe2`, ink `#25231f`, rust
+  `#a6472b`, body text `#514d46`, secondary text `#716a60` and rules
+  `#d9d2c6`. Text contrast is at least 4.5:1 for normal-size text and
+  3:1 for large display text.
+- Type: self-hosted Instrument Sans variable fonts, with Latin and Latin
+  Extended coverage for Serbian. Headline weight 600, section headings
+  550, body text 400. Display tracking is modestly tightened; normal
+  prose is 16px and meaningful supporting details are at least 13px.
+  Instrument Sans was compared with Space Grotesk and Manrope using the
+  actual English headline and Serbian characters. Its two subsets total
+  about 41 KB; the SIL OFL licence ships with them.
+- Layout: a 72rem maximum width, fluid page gutters and a shared spacing
+  scale. Desktop compositions become one column at 900px. At 420px,
+  credentials and timeline rows simplify further.
+- Header: one 44px portrait, personal identity and a compact navigation.
+- Hero: a large title beside the introduction, fit statement and actions.
+  The role carries the rust accent. Credentials sit in an unboxed row
+  below; the booking action precedes the supporting details in DOM order.
+- Proof: four columns on desktop and two on smaller screens. Ink figures
+  sit above the original labels and qualifiers, without decorative bars.
+- Work: open two-column studies separated by rules. Title, context and
+  summary form the left column; outcomes and contributions form the
+  right. On small screens they follow the same sequence in one column.
+- Situations: a cream band with a left heading rail and three large
+  statements separated by fine rules.
+- Process and background: a shared heading rail, sequential process rows,
+  and a compact timeline. Own products form a two-column link directory
+  with consistent SVG arrows, including Rostok.
+- Contact: an ink band with a large heading on the left and the invitation
+  and contact actions on the right. The footer continues the same band.
+- Controls: rust primary action, outlined secondary booking action, cream
+  contact action; 52px minimum button height and visible keyboard focus.
+- Motion: the actual sections part along an irregular central fracture as
+  they leave the reading area. Semantic content groups travel with two
+  page-coloured sheets, revealing a pale green channel beneath; there are
+  no duplicated text layers, separate scenes or extra scroll space.
+  Native scrolling controls progress directly and reversal follows the
+  same path. A small dependency-free `motion.js` batches geometry reads
+  before transform writes, with passive scroll handling, one pending
+  frame at most and no idle loop. Hidden pages stop work; unchanged
+  sections skip transform writes. Mobile displacement is smaller. Focus
+  or text selection holds the relevant section intact. Reduced motion
+  and unavailable JavaScript retain the ordinary, complete page.
+  Pointer-only arrow and navigation underline feedback lasts 180–250ms,
+  with a 160ms press response.
 
-Components:
-
-- Hero: the portrait repeats at 136px beside the headline with an offset rust
-  ring (decorative, empty alt); hidden at or below 700px, where the header
-  portrait is enough. H1 measure about 17ch: three lines on desktop and
-  tablet, four on a 360px phone. "founder-led" never breaks across lines.
-- Trust strip: four bordered chips that wrap, no separator characters.
-- Proof band: four columns (two at or below 700px), each with a short rust
-  rule, a rust Fraunces numeral with tabular figures, label and qualifier.
-- Work: each case on a cream panel; results in Fraunces between hairlines.
-  No "Case 01 / 02" labels: they would need English text in CSS on the
-  Serbian page and add no information.
-- Situations: a full-width cream band; the three lines set large in Fraunces,
-  each with a rust marker.
-- How I work: three columns with rust "01 02 03" numerals above 900px; below
-  that, numerals sit beside each step.
-- Background: timeline rows between hairlines, years in Fraunces.
-- Contact and footer: one full-width ink band that closes the page, with a
-  cream primary button and light focus rings.
-- Browser surfaces: rust-tinted text selection, rust underlines and focus
-  rings, a paper-toned scrollbar.
-
-Accessibility targets carried over: one H1, unique ids, skip link, visible
-focus, minimum 4.5:1 text contrast, 44px minimum interactive height, no
-horizontal scroll at 360px.
+Accessibility: semantic headings and lists, one H1, unique ids, working
+skip link, keyboard focus, bilingual font coverage and no horizontal
+scroll at the checked 360, 390, 768 and 1280px viewports. All functionality
+works without animation or additional JavaScript.
 
 ## 7. Technical plan
 
-Files changed: `index.html`, `styles.css`, `llms.txt`, `README.md` (short
-update of the description and checks). Unchanged: `scripts/site.py`, the
-Pages workflow, `robots.txt`, `CNAME`, the portrait. The public-file
-allowlist in `scripts/site.py` stays exactly six files.
+Public files: both language pages, `styles.css`, `motion.js`, `llms.txt`,
+the portrait, `robots.txt`, `CNAME`, and the two Instrument Sans subsets
+with their licence. The explicit allowlist in `scripts/site.py` contains
+these eleven files. The Pages workflow and existing domain are retained.
 
 Metadata:
 
