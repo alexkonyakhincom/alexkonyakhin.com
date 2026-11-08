@@ -247,13 +247,15 @@ concept was clarified on 9 November: the page itself splits and moves
 aside, with no separate ship illustration.
 The approved copy, section order, contact destinations and bilingual
 structure are retained; Rostok is the owner's requested content addition.
+On 9 November, a published-site refinement adds staged fracture motion,
+shared sheet/content pivots, shaded edges, and a cooler mineral palette.
 
-- Colour: warm paper `#faf7f2`, cream `#f0ebe2`, ink `#25231f`, rust
-  `#a6472b`, body text `#514d46`, secondary text `#716a60` and rules
-  `#d9d2c6`. Text contrast is at least 4.5:1 for normal-size text and
+- Colour: pale paper `#f7f8f4`, cream `#edf1ea`, ink `#25332e`, rust
+  `#a14d35`, body text `#4b5952`, secondary text `#606e64` and rules
+  `#d5ddd3`. Text contrast is at least 4.5:1 for normal-size text and
   3:1 for large display text.
 - Type: self-hosted Instrument Sans variable fonts, with Latin and Latin
-  Extended coverage for Serbian. Headline weight 600, section headings
+  Extended coverage for Serbian. Headline weight 550, section headings
   550, body text 400. Display tracking is modestly tightened; normal
   prose is 16px and meaningful supporting details are at least 13px.
   Instrument Sans was compared with Space Grotesk and Manrope using the
@@ -279,17 +281,22 @@ structure are retained; Rostok is the owner's requested content addition.
 - Contact: an ink band with a large heading on the left and the invitation
   and contact actions on the right. The footer continues the same band.
 - Controls: rust primary action, outlined secondary booking action, cream
-  contact action; 52px minimum button height and visible keyboard focus.
+  contact action; 54px minimum button height and visible keyboard focus.
 - Motion: the actual sections part along an irregular central fracture as
   they leave the reading area. Semantic content groups travel with two
-  page-coloured sheets, revealing a pale green channel beneath; there are
+  page-coloured sheets, revealing a shaded green channel beneath; there are
   no duplicated text layers, separate scenes or extra scroll space.
   Native scrolling controls progress directly and reversal follows the
-  same path. A small dependency-free `motion.js` batches geometry reads
-  before transform writes, with passive scroll handling, one pending
-  frame at most and no idle loop. Hidden pages stop work; unchanged
-  sections skip transform writes. Mobile displacement is smaller. Focus
-  or text selection holds the relevant section intact. Reduced motion
+  same path. A narrow crack precedes weighted drift and delayed rotation;
+  real content and each sheet share a pose and a common world pivot.
+  Complementary irregular edges have a shallow bevel and soft shadow.
+  A small dependency-free `motion.js` caches child geometry on layout
+  changes and batches parent geometry reads before transform writes,
+  with passive scroll handling, one pending frame at most and no idle
+  loop. Hidden pages stop work; unchanged sections skip transform writes.
+  Mobile uses one sheet for its single reading column, opening the
+  fracture at the left margin, with at most 14px travel and no rotation.
+  Focus or any part of a text selection holds its section intact. Reduced motion
   and unavailable JavaScript retain the ordinary, complete page.
   Pointer-only arrow and navigation underline feedback lasts 180–250ms,
   with a 160ms press response.

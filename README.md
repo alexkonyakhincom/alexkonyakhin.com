@@ -19,7 +19,7 @@ After editing a source file, run `python3 scripts/site.py build` and reload the 
 - `index.html`: homepage, social metadata and Person structured data.
 - `sr/index.html`: the Serbian homepage, served at `/sr/`.
 - `styles.css`: responsive layout, typography and interaction states.
-- `motion.js`: scroll-linked section splitting. Real content and fractured page surfaces move apart as they leave the reading area; native scrolling, no dependencies, and a static reduced-motion alternative.
+- `motion.js`: scroll-linked section splitting. A narrow fracture opens before the heavier sheets drift and turn. Real content and its sheet share a rigid pose and a common pivot; native scrolling, no dependencies, and a static reduced-motion alternative. Shaded edges and a recessed mineral-green channel give the opening depth. Mobile travel is limited to 14px per side, with no rotation.
 - `ava_alex_konyakhin.png`: portrait and favicon.
 - `fonts/`: Instrument Sans variable fonts (Latin and Latin Extended subsets), with `instrument-sans-OFL.txt`. The same family handles headings and body text. Self-hosted so the page loads nothing from a font service.
 - `llms.txt`: factual text profile matching the homepage.
@@ -44,4 +44,4 @@ There is no package-based build, lint or test suite. `python3 scripts/check.py` 
 
 Before deployment, run `python3 scripts/check.py`, `git diff --check` and `python3 scripts/site.py build`, then review the local page at 360, 390, 768 and 1280 pixels, at increased zoom, and with keyboard navigation. Check public assets and exact contact destinations without sending messages.
 
-The section-splitting behavior can also be checked with `node --test scripts/motion.test.cjs`. It verifies scroll reversal, fast jumps, mobile travel, focus and text-selection protection, reduced-motion changes, hidden-page cancellation and the absence of an idle animation loop. Keyboard focus or text selection holds the relevant section intact. The page remains complete when JavaScript is unavailable.
+The section-splitting behavior can also be checked with `node --test scripts/motion.test.cjs`. It verifies staged opening, shared sheet/content pivots, scroll reversal, fast jumps, mobile travel, focus and cross-section text-selection protection, reduced-motion changes, hidden-page cancellation and the absence of an idle animation loop. Keyboard focus or text selection holds the relevant section intact. Child geometry is cached on layout changes; scroll frames read only the stable parent bounds. The page remains complete when JavaScript is unavailable.
