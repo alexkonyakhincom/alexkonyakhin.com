@@ -575,11 +575,24 @@ def check_llms(llms_text):
     return [f"FAIL: llms.txt missing: {s}" for s in REQUIRED_LLMS if s not in llms_text]
 
 
-def check_dist():
+def public_files():
     spec = importlib.util.spec_from_file_location("site_build", ROOT / "scripts" / "site.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    expected = set(module.PUBLIC_FILES)
+    return set(module.PUBLIC_FILES)
+
+
+def check_published(pages, css):
+    """Every local file a page or the stylesheet points at must be in the published set."""
+    published = public_files()
+    referenced = {asset for facts in pages.values() for asset in facts.local_assets}
+    referenced |= {url for url in re.findall(r"url\(\s*['\"]?([^'\")]+)['\"]?\s*\)", css) if _is_local(url)}
+    return [f"FAIL: referenced but not published: {ref}" for ref in sorted(referenced)
+            if ref.lstrip("/").split("#")[0].split("?")[0] not in published]
+
+
+def check_dist():
+    expected = public_files()
     actual = {p.relative_to(DIST).as_posix() for p in DIST.rglob("*") if p.is_file()}
     if actual != expected:
         return [f"FAIL: dist contents {sorted(actual)} != public files {sorted(expected)}"]
@@ -631,6 +644,7 @@ def main(argv=None):
     fails += check_llms(llms_text)
     sources["styles.css"] = (ROOT / "styles.css").read_text()
     sources["llms.txt"] = llms_text
+    fails += check_published(pages, sources["styles.css"])
     fails += check_sources_forbidden(sources, FORBIDDEN)
     fails += check_sources_private(sources, private)
 
