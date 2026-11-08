@@ -12,14 +12,15 @@ ROOT = Path(__file__).resolve().parent.parent
 PUBLIC_FILES = (
     "index.html",
     "styles.css",
+    "motion.js",
     "ava_alex_konyakhin.png",
     "llms.txt",
     "robots.txt",
     "CNAME",
     "sr/index.html",
-    "fonts/fraunces-latin-opsz-normal.woff2",
-    "fonts/fraunces-latin-ext-opsz-normal.woff2",
-    "fonts/OFL.txt",
+    "fonts/instrument-sans-latin.woff2",
+    "fonts/instrument-sans-latin-ext.woff2",
+    "fonts/instrument-sans-OFL.txt",
 )
 OUTPUT = ROOT / "dist"
 

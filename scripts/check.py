@@ -90,7 +90,7 @@ REQUIRED_HTML = [
     "2015 – 2017 Co-founder, Knedlik Tech, travel mobile app",
     "2013 – 2015 PM and tech lead, Globus, mobile and web portfolio",
     "I also build my own products.",
-    "NicePass", "Stopwell", "VPNKill",
+    "NicePass", "Stopwell", "VPNKill", "Rostok",
     # Task 8: contact and footer (spec §3.8–3.9)
     "Let's talk about your product.",
     "Tell me about your product, the team you have and what is not moving. I will tell you honestly whether I can help.",
@@ -103,6 +103,7 @@ REQUIRED_LLMS = [
     "April 2024", "June 2026", "paid first month", "me@alexkonyakhin.com",
     "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave", "https://calendar.app.google/ats6knZjWvwpJUbp9",
     "https://alexkonyakhin.com/sr/",
+    "Rostok", "https://rostok.dance/",
     "16 operational clusters", "since 2013", "Three companies co-founded", "Erasoft.io", "2015", "2022",
 ]
 FORBIDDEN = [
@@ -110,8 +111,8 @@ FORBIDDEN = [
     "world-class", "full-stack executive",
     # Task 6: Codex headings that must be gone
     "Is this your situation?", "One priority. Clear responsibilities.", "Start with a paid first month",
-    # Task 7: old heading, product without a URL, and the "unnamed" label (spec §5 fallback)
-    "About me", "Rostok", "unnamed",
+    # Task 7: old heading and the "unnamed" label (spec §5 fallback)
+    "About me", "unnamed",
 ]
 EXACT_HREFS = {
     MAILTO,
@@ -122,6 +123,7 @@ EXACT_HREFS = {
     "https://nicepass.cc/",
     "https://stopwell.app/",
     "https://vpnkill.com/",
+    "https://rostok.dance/",
 }
 REQUIRED_CTAS = {
     ("book_call", "hero"),
@@ -217,7 +219,7 @@ REQUIRED_HTML_SR = [
     "2017 – 2019 Suosnivač, Togezzer, interna komunikacija za distribuirane timove",
     "2015 – 2017 Suosnivač, Knedlik Tech, mobilna aplikacija za putovanja",
     "2013 – 2015 PM i tech lead, Globus, portfolio mobilnih i veb projekata",
-    "Pravim i sopstvene proizvode.", "NicePass", "Stopwell", "VPNKill",
+    "Pravim i sopstvene proizvode.", "NicePass", "Stopwell", "VPNKill", "Rostok",
     # contact and footer (§3.8–3.9)
     "Razgovarajmo o vašem proizvodu.",
     "Recite mi nešto o svom proizvodu, timu koji imate i onome što ne napreduje. Iskreno ću vam reći da li mogu da pomognem.",
