@@ -239,26 +239,48 @@ None of these block implementation. Each has a stated fallback.
 
 ## 6. Design
 
-Keep the Codex visual system: white background, near-black text, system font
-stack, one black primary button, light hairline separators, 54rem page width.
-No new fonts or external dependencies.
+Editorial visual system, approved by the owner on 8 November 2026. It
+replaces the earlier white, system-font look; copy and structure are
+unchanged.
 
-New components:
+- Colour: warm paper `#faf7f2`, cream panels and bands `#f2ece2`, near-black
+  ink `#1b1916`, one rust accent `#b4441f`. Every text style measures at or
+  above 4.5:1 against its own background.
+- Type: Fraunces (variable weight and optical size, SIL Open Font License)
+  sets the H1, section headings, case titles and large figures; the system
+  sans sets everything read at length. The Latin and Latin Extended font
+  files (about 126 KB together) and `OFL.txt` are self-hosted in `fonts/` and
+  published with the site; nothing loads from a font service. The English
+  page needs only the Latin file; the Serbian page also loads Latin Extended
+  for č, ć, š, ž and đ.
+- One black primary button that turns rust on hover; 54rem page width.
+- Motion: on load the first screen rises into place and the portrait's rust
+  ring draws in; proof tiles, the three situations and the steps rise as they
+  scroll in (CSS scroll-driven animation, skipped where unsupported). The
+  first screen moves but never fades, so it stays readable when the animation
+  clock is paused. All motion is off under `prefers-reduced-motion: reduce`.
 
-- Trust strip: small muted text in a two-column CSS grid, one column at or
-  below 700px. No separator characters: an earlier dot-separated flex row put
-  a stray dot at the start of the wrapped line at desktop width.
-- Proof band: definition list in a four-column grid (two columns at or below
-  700px). Numeral at about 2.5rem with tabular numerals; label and qualifier
-  beneath in body and muted sizes.
-- Situations: three bold lines at body size with generous line spacing.
-- Timeline: two-column grid, roughly 7rem for years and the rest for the
-  role; single column on phones with the year above the role.
-- H1 measure widens from 13ch to about 18ch so the headline sets on two
-  lines on desktop and three on a phone.
+Components:
 
-Existing `.case`, `.steps`, `.responsibilities`, `.contact` and footer styles
-are reused with copy changes only.
+- Hero: the portrait repeats at 136px beside the headline with an offset rust
+  ring (decorative, empty alt); hidden at or below 700px, where the header
+  portrait is enough. H1 measure about 17ch: three lines on desktop and
+  tablet, four on a 360px phone. "founder-led" never breaks across lines.
+- Trust strip: four bordered chips that wrap, no separator characters.
+- Proof band: four columns (two at or below 700px), each with a short rust
+  rule, a rust Fraunces numeral with tabular figures, label and qualifier.
+- Work: each case on a cream panel; results in Fraunces between hairlines.
+  No "Case 01 / 02" labels: they would need English text in CSS on the
+  Serbian page and add no information.
+- Situations: a full-width cream band; the three lines set large in Fraunces,
+  each with a rust marker.
+- How I work: three columns with rust "01 02 03" numerals above 900px; below
+  that, numerals sit beside each step.
+- Background: timeline rows between hairlines, years in Fraunces.
+- Contact and footer: one full-width ink band that closes the page, with a
+  cream primary button and light focus rings.
+- Browser surfaces: rust-tinted text selection, rust underlines and focus
+  rings, a paper-toned scrollbar.
 
 Accessibility targets carried over: one H1, unique ids, skip link, visible
 focus, minimum 4.5:1 text contrast, 44px minimum interactive height, no
