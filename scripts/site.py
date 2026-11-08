@@ -17,6 +17,9 @@ PUBLIC_FILES = (
     "robots.txt",
     "CNAME",
     "sr/index.html",
+    "fonts/fraunces-latin-opsz-normal.woff2",
+    "fonts/fraunces-latin-ext-opsz-normal.woff2",
+    "fonts/OFL.txt",
 )
 OUTPUT = ROOT / "dist"
 
