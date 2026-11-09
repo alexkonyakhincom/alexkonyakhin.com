@@ -5,12 +5,17 @@ const vm = require('node:vm');
 const path = require('node:path');
 const source = fs.readFileSync(path.join(__dirname, '../motion.js'), 'utf8');
 
-function setup({ reduced = false, count = 2, hero = false, water = false, height = 960, rendererAvailable = true } = {}) {
-  let scroll = 0, nextFrame = 0, width = 1280;
+function setup({ reduced = false, count = 2, hero = false, scene: withScene = false, height = 960, rendererAvailable = true, rendererSuccess = true } = {}) {
+  let scroll = 0, nextFrame = 0, width = 1280, now = 0;
+  let renderSuccess = rendererSuccess, renderReady = rendererSuccess;
+  const hasHero = hero || withScene;
   const queue = new Map(), windowEvents = new Map(), documentEvents = new Map();
   const classes = new Set(), trace = [], waterTrace = [];
   const styled = () => ({
-    style: new Proxy({ removeProperty(key) { delete this[key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())]; } }, {
+    style: new Proxy({
+      removeProperty(key) { delete this[key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())]; },
+      setProperty(key, value) { this[key] = value; },
+    }, {
       set(target, key, value) { trace.push('write'); target[key] = value; return true; },
     }),
   });
@@ -59,10 +64,16 @@ function setup({ reduced = false, count = 2, hero = false, water = false, height
     const surfaces = [makePart('left', index, true), makePart('right', index, true)];
     const sectionClasses = new Set(['split-section']);
     const copies = [];
+    const fractureLine = attributed({}), fractureBranches = attributed({});
+    const fracture = hasHero && index === 0 ? {
+      ...styled(), ...attributed({}), line: fractureLine, branches: fractureBranches,
+      querySelector: selector => selector === '[data-fracture-line]' ? fractureLine : fractureBranches,
+    } : null;
     return {
-      parts, surfaces, copies, classes: sectionClasses, dataset: { split: hero && index === 0 ? 'hero' : 'case' },
+      ...styled(), parts, surfaces, copies, fracture, classes: sectionClasses, dataset: { split: hasHero && index === 0 ? 'hero' : 'case' },
       classList: { toggle(name, value) { value ? sectionClasses.add(name) : sectionClasses.delete(name); } },
       querySelectorAll: selector => selector === '[data-drift]' ? parts : surfaces,
+      querySelector: selector => selector === '[data-fracture]' ? fracture : null,
       getBoundingClientRect: () => {
         trace.push('read');
         return { left: 64, width: width - 128, height: 700, top: index * 700 - scroll, bottom: 700 + index * 700 - scroll };
@@ -82,7 +93,7 @@ function setup({ reduced = false, count = 2, hero = false, water = false, height
             remove: (...names) => names.forEach(name => cloneClasses.delete(name)),
           },
           querySelectorAll(selector) {
-            if (selector === '.split-surface') return clonedSurfaces.filter(node => !node.removed);
+            if (selector === '.split-surface' || selector === '.split-surface, .ice-fracture') return clonedSurfaces.filter(node => !node.removed);
             if (selector === '*') return children.filter(node => !node.removed);
             if (selector === 'a') return links;
             return [];
@@ -92,43 +103,70 @@ function setup({ reduced = false, count = 2, hero = false, water = false, height
       },
     };
   });
-  const proof = water ? {
+  const proof = withScene ? {
     parts: Array.from({ length: 4 }, (_, index) => {
-      const reflection = styled(), ripple = styled();
+      const number = {
+        ...styled(), textContent: ['300k+', '3×', '20,000', '3'][index],
+        getBoundingClientRect() {
+          trace.push('child-read');
+          return { left: 64 + index * 288, top: 880 - scroll, width: 220, height: 64, bottom: 944 - scroll };
+        },
+      };
       return {
-        ...styled(), dataset: { float: '' }, reflection, ripple,
-        querySelector: selector => selector === '.proof-reflection' ? reflection : selector === '.proof-ripple' ? ripple : null,
+        ...styled(), dataset: { float: '' }, number,
+        querySelector: selector => selector === '.proof-num' ? number : null,
         getBoundingClientRect() {
           trace.push('child-read');
           return { left: 64 + index * 288, top: 880 - scroll, width: 256, height: 180, bottom: 1060 - scroll };
         },
       };
     }),
-    canvas: {},
     contains(node) { return this.parts.includes(node); },
-    querySelector(selector) { return selector === '[data-water-canvas]' ? this.canvas : null; },
     querySelectorAll(selector) { return selector === '[data-float]' ? this.parts : []; },
     getBoundingClientRect() {
       trace.push('read');
       return { left: 64, width: width - 128, height: 720, top: 720 - scroll, bottom: 1440 - scroll };
     },
   } : null;
+  const canvasEvents = new Map();
+  const canvas = {
+    addEventListener: (name, fn) => canvasEvents.set(name, fn),
+    getBoundingClientRect() {
+      trace.push('child-read');
+      return { left: 0, width, height: 1440, top: -scroll, bottom: 1440 - scroll };
+    },
+  };
+  const sceneClasses = new Set();
+  const scene = withScene ? {
+    canvas, classes: sceneClasses, floes: [styled(), styled(), styled()],
+    classList: { toggle(name, value) { value ? sceneClasses.add(name) : sceneClasses.delete(name); } },
+    querySelector: selector => selector === '[data-water-canvas]' ? canvas : null,
+    querySelectorAll(selector) { return selector === '[data-floe]' ? this.floes : []; },
+    getBoundingClientRect() {
+      trace.push('read');
+      return { left: 0, width, height: 1440, top: -scroll, bottom: 1440 - scroll };
+    },
+  } : null;
   const root = { clientWidth: 1280, classList: { toggle(name, value) { value ? classes.add(name) : classes.delete(name); } } };
   const document = {
     hidden: false, activeElement: null, documentElement: root,
     querySelectorAll: selector => selector === '[data-split]' ? sections : [],
-    querySelector: selector => selector === '[data-water-proof]' ? proof : null,
+    querySelector: selector => selector === '[data-water-proof]' ? proof : selector === '[data-ice-scene]' ? scene : null,
     addEventListener: (name, fn) => documentEvents.set(name, fn),
   };
   const window = {
     innerHeight: height, get scrollY() { return scroll; }, getSelection: () => selection, matchMedia: () => preference,
+    performance: { now: () => now },
+    getComputedStyle() { trace.push('font-read'); return { font: '500 64px Instrument Sans', fontSize: '64px', letterSpacing: '-2px' }; },
     requestAnimationFrame(fn) { queue.set(++nextFrame, fn); return nextFrame; },
     cancelAnimationFrame: id => queue.delete(id),
     addEventListener: (name, fn, options) => windowEvents.set(name, { fn, options }),
-    createProofWater: rendererAvailable ? () => {
-      waterTrace.push(['create']);
+    createProofWater: rendererAvailable ? target => {
+      waterTrace.push(['create', target]);
       return {
-        render: progress => waterTrace.push(['render', progress]),
+        get ready() { return renderReady; },
+        configure: layout => waterTrace.push(['configure', layout]),
+        render: frame => { waterTrace.push(['render', frame]); return renderSuccess; },
         resize: () => waterTrace.push(['resize']),
         destroy: () => waterTrace.push(['destroy']),
       };
@@ -137,9 +175,13 @@ function setup({ reduced = false, count = 2, hero = false, water = false, height
   vm.runInNewContext(source, { window, document });
   trace.length = 0;
   return {
-    sections, proof, queue, classes, trace, waterTrace, windowEvents,
+    sections, proof, scene, queue, classes, trace, waterTrace, windowEvents,
     scroll(value) { scroll = value; windowEvents.get('scroll').fn(); },
-    flush() { const frames = [...queue.values()]; queue.clear(); for (const frame of frames) frame(); },
+    flush(ms = 1000 / 60) { now += ms; const frames = [...queue.values()]; queue.clear(); for (const frame of frames) frame(now); },
+    advance(ms) { const end = now + ms; while (now < end) this.flush(Math.min(1000 / 60, end - now)); },
+    settle(limit = 4000) { const end = now + limit; while (queue.size && now < end) this.flush(); assert.equal(queue.size, 0, 'the scene must stop scheduling after its bounded response'); },
+    renderer(value) { renderSuccess = value; renderReady = value; },
+    contextLost() { renderSuccess = false; renderReady = false; canvasEvents.get('webglcontextlost')(); },
     reduced(value) { preference.matches = value; onPreference(); },
     hidden(value) { document.hidden = value; documentEvents.get('visibilitychange')(); },
     focus(part) { document.activeElement = part; documentEvents.get('focusin')(); },
@@ -408,108 +450,185 @@ test('hero fractures earlier without changing later reading sections or the init
   assert.ok(positions(heroPage.sections[0]).every(pose => pose === restingPose));
   heroPage.scroll(100); heroPage.flush();
   plainPage.scroll(100); plainPage.flush();
-  assert.ok(positions(heroPage.sections[0]).some(pose => pose !== restingPose));
+  assert.ok(heroPage.sections[0].copies.some(copy => copy.style.transform !== restingPose));
   assert.ok(positions(plainPage.sections[0]).every(pose => pose === restingPose));
   assert.deepEqual(positions(heroPage.sections[1]), positions(plainPage.sections[1]));
   const tallPage = setup({ hero: true, height: 2000 });
   assert.ok(positions(tallPage.sections[0]).every(pose => pose === restingPose), 'a tall viewport must not start with broken hero copy');
 });
 
-const verticalTranslation = pose => Number(pose.match(/translate3d\([^,]+,\s*([-\d.]+)/)[1]);
-const waterPoses = page => page.proof.parts.map(part => ({ transform: part.style.transform, opacity: part.style.opacity }));
+const focalPoses = page => page.sections[0].copies.map(copy => copy.style.transform);
+const renderedFrames = page => page.waterTrace.filter(([event]) => event === 'render').map(([, value]) => value);
+const lastFrame = page => renderedFrames(page).at(-1);
+const sourceNumbers = page => page.proof.parts.map(part => part.number.textContent);
+const close = (actual, expected, tolerance = .001) => assert.ok(Math.abs(actual - expected) <= tolerance, `${actual} should be close to ${expected}`);
 
-test('proof figures rise as the water enters, settle, and reverse exactly with scroll', () => {
-  const page = setup({ water: true });
-  const initial = waterPoses(page);
-  page.scroll(260); page.flush();
-  const middle = waterPoses(page);
-  assert.ok(middle.every((pose, index) => verticalTranslation(pose.transform) < verticalTranslation(initial[index].transform)));
-  assert.ok(middle.every(pose => Number(pose.opacity) >= .62), 'real figures stay readable while submerged');
-  page.scroll(700); page.flush();
-  const settled = waterPoses(page);
-  assert.ok(settled.every(pose => Math.abs(verticalTranslation(pose.transform)) < 1), 'all figures reach the surface');
-  page.scroll(260); page.flush();
-  assert.deepEqual(waterPoses(page), middle);
-  assert.equal(page.queue.size, 0, 'water does not leave an idle animation loop');
+test('one shared renderer receives scene geometry and the real proof figures', () => {
+  const page = setup({ scene: true });
+  const creates = page.waterTrace.filter(([event]) => event === 'create');
+  assert.equal(creates.length, 1);
+  assert.equal(creates[0][1], page.scene.canvas);
+  const layout = page.waterTrace.find(([event]) => event === 'configure')[1];
+  assert.ok(layout.width > 0 && layout.height > layout.heroHeight && layout.heroHeight > 0);
+  assert.deepEqual(Array.from(layout.figures, figure => figure.text), sourceNumbers(page));
+  assert.ok(layout.figures.every(figure => figure.y >= layout.heroHeight && figure.width > 0 && figure.font.includes('Instrument Sans')));
+  assert.equal(page.queue.size, 0, 'loading an untouched scene does not start an idle loop');
+  page.scroll(500); page.settle();
+  assert.equal(page.waterTrace.filter(([event]) => event === 'create').length, 1);
 });
 
-test('water geometry is read before all split and figure writes', () => {
-  const page = setup({ water: true });
-  page.scroll(260); page.flush();
+test('the focal crack propagates before the two slabs release', () => {
+  const page = setup({ scene: true });
+  const section = page.sections[0];
+  assert.ok(section.fracture.line.attributes.d.startsWith('M'));
+  assert.ok(section.fracture.branches.attributes.d.includes(' l'));
+  page.scroll(100); page.settle();
+  assert.notEqual(section.fracture.style.clipPath, 'inset(0 0 100% 0)');
+  assert.ok(Number(section.fracture.style.opacity) > 0);
+  assert.ok(!section.classes.has('split-released'));
+  assert.ok(!section.classes.has('split-rendered'));
+  page.scroll(500); page.settle();
+  assert.ok(section.classes.has('split-released'));
+  assert.ok(section.classes.has('split-rendered'));
+  assert.ok(translation(focalPoses(page)[0]) < 0 && translation(focalPoses(page)[1]) > 0);
+  assert.ok(focalPoses(page).some(pose => Math.abs(rotation(pose)) > 0));
+  assert.ok(positions(section).every(pose => pose === restingPose), 'the semantic source stays intact');
+  page.resize(390); page.settle();
+  assert.equal(section.copies.length, 2);
+  assert.ok(translation(focalPoses(page)[0]) < 0 && translation(focalPoses(page)[1]) > 0);
+  assert.ok(focalPoses(page).every(pose => Math.abs(translation(pose)) <= 52));
+  assert.ok(focalPoses(page).every(pose => Math.abs(rotation(pose)) > 0), 'mobile floes retain their restrained rocking motion');
+});
+
+test('slabs and water continue responding after scroll stops, then become idle', () => {
+  const page = setup({ scene: true });
+  page.scroll(500); page.advance(150);
+  const early = focalPoses(page), earlyFrame = lastFrame(page);
+  page.advance(350);
+  assert.notDeepEqual(focalPoses(page), early, 'motion must carry momentum beyond the input event');
+  assert.ok(lastFrame(page).time > earlyFrame.time, 'water time advances while scroll is stationary');
+  assert.ok(lastFrame(page).fracture > earlyFrame.fracture);
+  page.settle();
+  const frames = renderedFrames(page).length;
+  page.advance(1000);
+  assert.equal(renderedFrames(page).length, frames);
+});
+
+test('reversing an active scene retargets continuously and reaches the same settled destination', () => {
+  const page = setup({ scene: true });
+  page.scroll(400); page.settle();
+  const destination = focalPoses(page), rises = Array.from(lastFrame(page).rises);
+  page.scroll(650); page.advance(120);
+  const beforeReverse = focalPoses(page);
+  page.scroll(400); page.flush(1);
+  const afterReverse = focalPoses(page);
+  assert.ok(afterReverse.every((pose, i) => Math.abs(translation(pose) - translation(beforeReverse[i])) < 5), 'reversal must not teleport to its target');
+  page.settle();
+  focalPoses(page).forEach((pose, i) => close(translation(pose), translation(destination[i])));
+  Array.from(lastFrame(page).rises).forEach((rise, i) => close(rise, rises[i]));
+});
+
+test('scene frames use cached typography and child geometry until a resize', () => {
+  const page = setup({ scene: true });
+  page.scroll(450); page.flush();
   const firstWrite = page.trace.indexOf('write');
-  assert.equal(firstWrite, 3, 'two stable split bounds and one water bound');
+  assert.equal(firstWrite, 4, 'two stable section bounds, the scene, and proof are read first');
   assert.ok(!page.trace.slice(firstWrite).includes('read'));
+  page.advance(500);
   assert.ok(!page.trace.includes('child-read'));
-});
-
-test('proof remains functional without a water renderer', () => {
-  const page = setup({ water: true, rendererAvailable: false });
-  page.scroll(700); page.flush();
-  assert.ok(waterPoses(page).every(pose => Math.abs(verticalTranslation(pose.transform)) < 1));
-  assert.equal(page.waterTrace.length, 0);
-});
-
-test('selecting proof text holds every figure at the surface until selection ends', () => {
-  const page = setup({ water: true });
-  page.scroll(260); page.flush();
-  const before = waterPoses(page);
-  page.select(page.proof.parts[0], page.proof.parts[3]); page.flush();
-  const selected = waterPoses(page);
-  assert.ok(selected.every(pose => Math.abs(verticalTranslation(pose.transform)) < 1));
-  page.scroll(350); page.flush();
-  assert.deepEqual(waterPoses(page), selected);
-  page.scroll(260); page.flush();
-  page.select(null); page.flush();
-  assert.deepEqual(waterPoses(page), before);
-});
-
-test('mobile proof has a shorter ascent and keeps its surface destination', () => {
-  const page = setup({ water: true });
-  const desktop = waterPoses(page);
+  assert.ok(!page.trace.includes('font-read'));
+  assert.equal(page.waterTrace.filter(([event]) => event === 'configure').length, 1);
   page.resize(390); page.flush();
-  const mobile = waterPoses(page);
-  assert.ok(mobile.every((pose, index) => verticalTranslation(pose.transform) < verticalTranslation(desktop[index].transform)));
-  assert.ok(mobile.every(pose => Math.abs(translation(pose.transform)) <= 3));
-  page.scroll(700); page.flush();
-  assert.ok(waterPoses(page).every(pose => Math.abs(verticalTranslation(pose.transform)) < 1));
+  assert.ok(page.trace.includes('child-read'));
+  assert.ok(page.trace.includes('font-read'));
+  assert.equal(page.waterTrace.filter(([event]) => event === 'configure').length, 2);
 });
 
-test('reduced motion clears all proof poses and cancels scheduled rendering', () => {
-  const page = setup({ water: true });
-  page.scroll(260); page.flush();
-  page.scroll(300);
+test('numbers remain available when rendering is absent, unsuccessful, or lost', () => {
+  const absent = setup({ scene: true, rendererAvailable: false });
+  absent.scroll(500); absent.settle();
+  assert.ok(!absent.scene.classes.has('scene-rendered'));
+  assert.deepEqual(sourceNumbers(absent), ['300k+', '3×', '20,000', '3']);
+  const failed = setup({ scene: true, rendererSuccess: false });
+  assert.ok(!failed.scene.classes.has('scene-rendered'));
+  failed.renderer(true); failed.scroll(400); failed.advance(100);
+  assert.ok(failed.scene.classes.has('scene-rendered'));
+  failed.renderer(false); failed.advance(100);
+  assert.ok(!failed.scene.classes.has('scene-rendered'));
+  failed.renderer(true); failed.advance(100);
+  assert.ok(failed.scene.classes.has('scene-rendered'));
+  failed.contextLost();
+  assert.ok(!failed.scene.classes.has('scene-rendered'), 'context loss restores DOM numbers immediately');
+  assert.deepEqual(sourceNumbers(failed), sourceNumbers(absent));
+});
+
+test('source focus and selection restore readable content without waiting for a spring', () => {
+  const page = setup({ scene: true });
+  page.scroll(500); page.advance(400);
+  const section = page.sections[0];
+  assert.ok(section.classes.has('split-rendered'));
+  page.focus(section.parts[0]);
+  assert.ok(!section.classes.has('split-rendered'));
+  assert.ok(section.surfaces.every(surface => surface.style.transform === restingPose));
+  page.focus(null); page.advance(400);
+  assert.ok(section.classes.has('split-rendered'));
+  page.select(page.proof.parts[0], page.proof.parts[3]); page.flush();
+  assert.ok(!page.scene.classes.has('scene-rendered'), 'selecting facts reveals the real text');
+  assert.equal(lastFrame(page).showFigures, false);
+  page.select(null); page.advance(100);
+  assert.ok(page.scene.classes.has('scene-rendered'));
+});
+
+test('selecting an animated focal copy freezes its actual pose during further scrolling', () => {
+  const page = setup({ scene: true });
+  page.scroll(500); page.advance(400);
+  const section = page.sections[0];
+  page.select(section.copies[0].links[0]); page.flush();
+  const selected = focalPoses(page);
+  page.scroll(650); page.advance(500);
+  assert.deepEqual(focalPoses(page), selected);
+  assert.ok(section.classes.has('split-rendered'));
+  page.select(null); page.settle();
+  assert.notDeepEqual(focalPoses(page), selected);
+});
+
+test('reduced motion immediately cancels the scene and restores its static source', () => {
+  const page = setup({ scene: true });
+  page.scroll(500); page.advance(300);
   page.reduced(true);
   assert.equal(page.queue.size, 0);
-  for (const part of page.proof.parts) {
-    for (const element of [part, part.reflection, part.ripple]) {
-      assert.equal(element.style.transform, undefined);
-      assert.equal(element.style.opacity, undefined);
-    }
-  }
-  const renders = page.waterTrace.filter(([event]) => event === 'render').length;
-  page.scroll(400); page.flush();
-  assert.equal(page.waterTrace.filter(([event]) => event === 'render').length, renders);
+  assert.ok(!page.scene.classes.has('scene-rendered'));
+  assert.ok(!page.sections[0].classes.has('split-rendered'));
+  assert.ok(positions(page.sections[0]).every(pose => pose === undefined));
+  assert.ok(page.waterTrace.some(([event]) => event === 'destroy'));
+  const count = renderedFrames(page).length;
+  page.scroll(600); page.advance(1000);
+  assert.equal(renderedFrames(page).length, count);
   page.reduced(false);
-  assert.ok(waterPoses(page).every(pose => typeof pose.transform === 'string'));
-  const staticPage = setup({ water: true, reduced: true });
-  assert.ok(waterPoses(staticPage).every(pose => pose.transform === undefined));
-  assert.ok(!staticPage.waterTrace.some(([event]) => event === 'render'));
+  assert.ok(page.scene.classes.has('scene-rendered'));
+  const staticPage = setup({ scene: true, reduced: true });
+  assert.equal(staticPage.waterTrace.length, 0);
+  assert.equal(staticPage.queue.size, 0);
+  assert.deepEqual(sourceNumbers(staticPage), sourceNumbers(page));
 });
 
-test('hidden and offscreen water does not render or keep work queued', () => {
-  const page = setup({ water: true });
-  page.scroll(300); page.hidden(true);
-  const before = page.waterTrace.filter(([event]) => event === 'render').length;
-  page.scroll(400); page.flush();
-  assert.equal(page.waterTrace.filter(([event]) => event === 'render').length, before);
+test('hidden or offscreen scenes stop rendering and resume safely after a long suspension', () => {
+  const page = setup({ scene: true });
+  page.scroll(500); page.advance(200);
+  page.hidden(true);
   assert.equal(page.queue.size, 0);
-  page.hidden(false); page.flush();
-  assert.ok(page.waterTrace.filter(([event]) => event === 'render').length > before);
+  const count = renderedFrames(page).length;
+  page.scroll(650); page.flush(120000);
+  assert.equal(renderedFrames(page).length, count);
+  page.hidden(false); page.advance(100);
+  assert.ok(renderedFrames(page).length > count);
+  assert.ok(focalPoses(page).every(pose => !/NaN|Infinity/.test(pose) && Math.abs(translation(pose)) <= 252));
   page.scroll(5000); page.flush();
-  const offscreen = page.waterTrace.filter(([event]) => event === 'render').length;
-  page.trace.length = 0;
-  page.scroll(8000); page.flush();
-  assert.equal(page.waterTrace.filter(([event]) => event === 'render').length, offscreen);
-  assert.ok(!page.trace.includes('write'));
   assert.equal(page.queue.size, 0);
+  const offscreen = renderedFrames(page).length;
+  page.advance(1000);
+  assert.equal(renderedFrames(page).length, offscreen);
+  page.scroll(400); page.settle();
+  assert.ok(renderedFrames(page).length > offscreen);
+  assert.ok(lastFrame(page).rises.every(rise => Number.isFinite(rise) && rise >= 0 && rise <= 1));
 });

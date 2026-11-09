@@ -1,89 +1,153 @@
-/* Original procedural daylight-water shader. The scroll controller owns time:
-   this renderer has no scroll listener, animation loop, or external dependency. */
+/* One orthographic water scene: surface, transmitted lettering, reflections,
+   and contact waves share coordinates and normals. The controller owns time.
+   Original procedural shader; no assets, dependencies, or idle loop here. */
 (() => {
   'use strict';
-
   const vertexSource = `
     attribute vec2 a_position;
     void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
   `;
-
   const fragmentSource = `
     precision highp float;
-    uniform vec2 u_resolution;
-    uniform float u_progress;
+    uniform sampler2D u_letters;
+    uniform vec4 u_canvas;
+    uniform vec4 u_scene;
+    uniform vec4 u_rises;
+    uniform vec4 u_rect[4];
+    uniform vec4 u_atlas[4];
+    uniform vec4 u_pulse[5];
+    const float TAU = 6.28318530718;
 
     float hash(vec2 p) {
       vec3 p3 = fract(vec3(p.xyx) * .1031);
       p3 += dot(p3, p3.yzx + 33.33);
       return fract((p3.x + p3.y) * p3.z);
     }
-
     float noise(vec2 p) {
       vec2 i = floor(p), f = fract(p);
       vec2 u = f * f * (3.0 - 2.0 * f);
       return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
                  mix(hash(i + vec2(0.0, 1.0)), hash(i + 1.0), u.x), u.y);
     }
-
-    float swell(vec2 p, float time) {
-      // Incommensurate directions and wavelengths prevent a repeating grid.
-      float a = sin(dot(p, vec2(.87, .49)) * 2.8 + time * .7);
-      float b = sin(dot(p, vec2(-.39, .92)) * 4.6 - time * .46 + 2.1);
-      float c = sin(dot(p, vec2(.21, .98)) * 8.3 + time * .39 + .7);
-      float broken = noise(p * 2.4 + vec2(time * .07, -time * .035));
-      return a * .105 + b * .054 + c * .019 + broken * .14;
+    void wave(inout vec3 field, vec2 p, vec2 direction, float wavelength,
+              float amplitude, float speed, float phase) {
+      float k = TAU / wavelength;
+      float a = dot(p, direction) * k + u_scene.w * speed + phase;
+      field += amplitude * vec3(sin(a), cos(a) * k * direction);
     }
-
+    vec3 surface(vec2 pixel) {
+      // An orthographic camera compresses the water plane consistently in y.
+      vec2 p = pixel / vec2(1.0, .61);
+      vec2 warped = p + vec2(noise(p / 230.0), noise(p / 283.0 + 9.0)) * 84.0;
+      vec3 field = vec3(0.0);
+      wave(field, warped, vec2(.91, .415), 335.0, 2.6, .46, .5);
+      wave(field, warped, vec2(-.42, .908), 211.0, 1.65, -.58, 2.3);
+      wave(field, warped, vec2(.28, .96), 95.0, .11, .71, 1.1);
+      wave(field, warped, vec2(.78, -.626), 44.0, .018, -.97, 3.4);
+      for (int i = 0; i < 5; i++) {
+        vec4 pulse = u_pulse[i];
+        float age = u_scene.w - pulse.z;
+        if (pulse.w > .001 && age >= 0.0 && age < 5.0) {
+          vec2 delta = (pixel - pulse.xy) / vec2(1.0, .61);
+          float radius = max(length(delta), 1.0);
+          float front = age * 47.0;
+          float spread = 15.0 + age * 10.0;
+          float distance = radius - front;
+          float envelope = exp(-distance * distance / (spread * spread)) * exp(-age * .85);
+          float phase = distance * .15;
+          float amplitude = pulse.w * 2.5;
+          float displacement = sin(phase) * envelope * amplitude;
+          float derivative = amplitude * envelope *
+            (.15 * cos(phase) - 2.0 * distance / (spread * spread) * sin(phase));
+          field += vec3(displacement, derivative * delta / radius);
+        }
+      }
+      return field;
+    }
+    float glyph(vec2 pixel, vec4 rect, vec4 atlas) {
+      vec2 uv = (pixel - rect.xy) / max(rect.zw, vec2(1.0));
+      if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) return 0.0;
+      return texture2D(u_letters, atlas.xy + uv * atlas.zw).a;
+    }
     void main() {
-      vec2 uv = gl_FragCoord.xy / u_resolution;
-      float aspect = u_resolution.x / u_resolution.y;
-      float time = u_progress * 2.8;
-      // A shallow view across a plane; distant waves become slightly finer.
-      float perspective = mix(1.08, .74, uv.y);
-      vec2 p = vec2((uv.x - .5) * aspect, uv.y - .5) * 7.0 / perspective;
-      p += vec2(.12, -.10) * time;
-      float warp = noise(p * .44 + 7.0);
-      p += vec2(warp, noise(p * .39 + 15.0)) * .52;
+      vec2 pixel = vec2(gl_FragCoord.x, u_canvas.y - gl_FragCoord.y) * u_canvas.zw / u_canvas.xy;
+      vec3 field = surface(pixel);
+      vec3 normal = normalize(vec3(-field.y, -field.z, 1.0));
+      vec3 view = normalize(vec3(0.0, -.7924, .61));
+      vec3 reflected = reflect(-view, normal);
+      float fresnel = .035 + .965 * pow(1.0 - max(dot(normal, view), 0.0), 5.0);
 
-      float h = swell(p, time);
-      float hx = swell(p + vec2(.035, 0.0), time);
-      float hy = swell(p + vec2(0.0, .035), time);
-      vec2 slope = vec2(hx - h, hy - h) / .035;
-      vec3 normal = normalize(vec3(-slope * .56, 1.0));
-      vec3 view = normalize(vec3(0.0, .52, 1.0));
-      vec3 reflection = reflect(-view, normal);
-      float fresnel = .035 + .965 * pow(1.0 - max(dot(view, normal), 0.0), 5.0);
+      // Broad, reflected overcast light gives the ripples their shape. The
+      // finer waves disturb those same reflections, rather than a second grid.
+      float sky = smoothstep(-.12, .85, reflected.z);
+      float cloud = noise(reflected.xy * 3.4 + vec2(2.0, 9.0));
+      vec3 environment = mix(vec3(.48, .66, .57), vec3(.91, .94, .87), sky);
+      environment += (cloud - .5) * .18;
+      // Water's body color does not alternate at each crest. Broad reflected
+      // light, rather than height-painted stripes, describes the calm surface.
+      vec3 water = vec3(.65, .78, .70);
+      vec3 color = mix(water, environment, .53 + fresnel * .35);
+      vec3 halfLight = normalize(view + normalize(vec3(-.5, -.35, 1.0)));
+      float sheen = pow(max(dot(normal, halfLight), 0.0), 32.0);
+      color += vec3(.055, .06, .045) * sheen;
+      // Preserve readable dark semantic captions, including over wave troughs.
+      vec3 linearColor = pow(max(color, vec3(.001)), vec3(2.2));
+      float luminance = dot(linearColor, vec3(.2126, .7152, .0722));
+      color = pow(linearColor * max(1.0, .37 / max(luminance, .001)), vec3(1.0 / 2.2));
 
-      vec3 deepWater = vec3(.50, .66, .58);
-      vec3 shallowWater = vec3(.70, .80, .72);
-      float depth = smoothstep(-.5, .7, h + (uv.y - .5) * .28);
-      vec3 color = mix(deepWater, shallowWater, depth * .6 + .32);
+      for (int i = 0; i < 4; i++) {
+        vec4 target = u_rect[i];
+        if (target.z < 1.0 || target.w < 1.0 || u_scene.z < .5) continue;
+        float rise = u_rises[i];
+        float line = target.y + target.w * .82;
+        // Surface height and the lettering's contact line use the same waves.
+        float waterline = line + field.x * .42;
+        vec4 body = target;
+        body.y += (1.0 - rise) * target.w * 1.22;
+        float below = pixel.y - waterline;
+        if (pixel.x > target.x - 28.0 && pixel.x < target.x + target.z + 28.0 &&
+            pixel.y > target.y - target.w * .25 && pixel.y < line + target.w * 2.0) {
+          // Reflection samples the exposed glyph through the current normal.
+          if (below > 0.0 && below < target.w * .75) {
+            vec2 mirror = vec2(pixel.x + normal.x * 19.0,
+              waterline - below + normal.y * 12.0);
+            float reflection = glyph(mirror, body, u_atlas[i]);
+            reflection *= smoothstep(2.0, 9.0, below) * exp(-below / (target.w * .38)) * .23;
+            reflection *= 1.0 - smoothstep(waterline - 2.0, waterline + 2.0, mirror.y);
+            color = mix(color, vec3(.18, .35, .28), reflection);
+          }
 
-      // Broad reflections belong to an overcast sky and a light bank of ice.
-      float skyBand = smoothstep(-.12, .8, reflection.y);
-      vec3 sky = mix(vec3(.54, .69, .62), vec3(.88, .93, .86), skyBand);
-      float cloud = noise(reflection.xy * 3.2 + vec2(2.0, 8.0));
-      sky += (cloud - .45) * .10;
-      color = mix(color, sky, .22 + fresnel * .55);
+          // Snell-like vertical compression and shared-normal displacement
+          // make the transmitted part belong below this particular surface.
+          if (below >= -1.0) {
+            vec2 transmitted = vec2(pixel.x + normal.x * (11.0 + below * .07),
+              waterline + below / .57 + normal.y * 8.0);
+            float softness = min(2.0, max(0.0, below) * .025);
+            float under = glyph(transmitted, body, u_atlas[i]) * .5;
+            under += glyph(transmitted + vec2(softness, 0.0), body, u_atlas[i]) * .25;
+            under += glyph(transmitted - vec2(softness, 0.0), body, u_atlas[i]) * .25;
+            under *= exp(-max(0.0, below) / (target.w * .9)) * .60;
+            under *= smoothstep(-1.0, 2.0, below);
+            color = mix(color, vec3(.25, .43, .34), under);
+          }
 
-      // Refracted daylight gathers into irregular, interrupted caustic threads.
-      vec2 refracted = p * 2.1 + slope * .8;
-      float c1 = sin(refracted.x + sin(refracted.y * 1.13 + time * .12));
-      float c2 = sin(refracted.y * 1.37 + sin(refracted.x * .83 - time * .09));
-      float caustic = pow(max(0.0, 1.0 - abs(c1 + c2) * 2.5), 10.0);
-      float causticMask = smoothstep(.22, .78, noise(p * .8 + 18.0));
-      color += vec3(.12, .14, .095) * caustic * causticMask * .5;
+          if (below < 2.0) {
+            float air = 1.0 - smoothstep(-1.0, 1.0, below);
+            float edge = glyph(pixel - vec2(1.0, 2.0), body, u_atlas[i]) * air;
+            color = mix(color, vec3(.13, .26, .21), edge * .65);
+            float letter = glyph(pixel, body, u_atlas[i]);
+            float highlight = max(0.0, letter - glyph(pixel - vec2(.8, 1.0), body, u_atlas[i]));
+            vec3 ink = vec3(.125, .235, .204) + highlight * vec3(.32, .38, .30);
+            color = mix(color, ink, letter * air);
+          }
 
-      vec3 light = normalize(vec3(-.38, .62, 1.0));
-      vec3 halfway = normalize(light + view);
-      float specular = pow(max(dot(normal, halfway), 0.0), 100.0);
-      float brokenHighlight = smoothstep(.35, .78, noise(p * 5.8 + time * .03));
-      color += vec3(.24, .25, .20) * specular * (.3 + brokenHighlight * .7);
-
-      // A soft broad reflection keeps the scene legible without a flat overlay.
-      float iceReflection = exp(-pow((uv.y - .93) * 4.0, 2.0));
-      color = mix(color, vec3(.76, .84, .76), iceReflection * .24);
+          // A narrow meniscus is the physical boundary, not an ellipse behind
+          // the whole word. It appears only where a glyph meets the water.
+          float meniscus = (1.0 - smoothstep(.25, 1.7, abs(below))) *
+            glyph(vec2(pixel.x, waterline), body, u_atlas[i]);
+          color = mix(color, vec3(.85, .92, .81), meniscus * .65);
+        }
+      }
       gl_FragColor = vec4(color, 1.0);
     }
   `;
@@ -98,22 +162,26 @@
         preserveDrawingBuffer: false, powerPreference: 'low-power',
       });
     } catch (_) { return null; }
-    if (!gl) return null;
+    if (!gl || gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS) < 20) return null;
 
-    let program, buffer, vertex, fragment, resolution, progressLocation;
-    let available = false;
-    let disposed = false;
-    let lastProgress = 0;
+    let program, buffer, vertex, fragment, texture, uniforms;
+    let available = false, configured = false, disposed = false;
+    let configuration = null, lastFrame = null;
+    let previousRises = null, previousFracture = 0, lastRupture = -10;
+    const pulses = new Float32Array(20);
+    const rects = new Float32Array(16), atlasRects = new Float32Array(16);
+    const rises = new Float32Array(4);
+    const finite = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 
     function release() {
+      if (texture) gl.deleteTexture(texture);
       if (buffer) gl.deleteBuffer(buffer);
       if (program) gl.deleteProgram(program);
       if (vertex) gl.deleteShader(vertex);
       if (fragment) gl.deleteShader(fragment);
-      buffer = program = vertex = fragment = null;
-      available = false;
+      texture = buffer = program = vertex = fragment = null;
+      available = configured = false;
     }
-
     function compile(type, source) {
       const shader = gl.createShader(type);
       if (!shader) return null;
@@ -125,13 +193,12 @@
       }
       return shader;
     }
-
     function initialize() {
       const precision = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
-      const source = precision && precision.precision > 0 ? fragmentSource
-        : fragmentSource.replace('precision highp float;', 'precision mediump float;');
+      // Pixel-space refraction and text atlas sampling need high precision.
+      if (!precision || precision.precision < 16) return false;
       vertex = compile(gl.VERTEX_SHADER, vertexSource);
-      fragment = compile(gl.FRAGMENT_SHADER, source);
+      fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
       if (!vertex || !fragment) { release(); return false; }
       program = gl.createProgram();
       if (!program) { release(); return false; }
@@ -140,54 +207,194 @@
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { release(); return false; }
       buffer = gl.createBuffer();
-      if (!buffer) { release(); return false; }
+      texture = gl.createTexture();
+      if (!buffer || !texture) { release(); return false; }
       gl.useProgram(program);
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       const position = gl.getAttribLocation(program, 'a_position');
       gl.enableVertexAttribArray(position);
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-      resolution = gl.getUniformLocation(program, 'u_resolution');
-      progressLocation = gl.getUniformLocation(program, 'u_progress');
+      uniforms = Object.fromEntries(['canvas', 'scene', 'rises', 'rect', 'atlas', 'pulse', 'letters']
+        .map(name => [name, gl.getUniformLocation(program, `u_${name}${['rect', 'atlas', 'pulse'].includes(name) ? '[0]' : ''}`)]));
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.uniform1i(uniforms.letters, 0);
       available = true;
       return true;
     }
 
-    function resize() {
-      if (!available || disposed) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      // Cap pixel work on wide/retina displays. Canvas CSS owns its layout.
-      const scale = Math.min(dpr, 1600 / Math.max(1, canvas.clientWidth));
-      const width = Math.max(1, Math.round(canvas.clientWidth * scale));
-      const height = Math.max(1, Math.round(canvas.clientHeight * scale));
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
+    function configure(input) {
+      if (!input || disposed) return false;
+      configuration = {
+        width: Math.max(1, finite(input.width, canvas.clientWidth)),
+        height: Math.max(1, finite(input.height, canvas.clientHeight)),
+        heroHeight: Math.max(0, finite(input.heroHeight)),
+        figures: (input.figures || []).slice(0, 4).map(figure => ({ ...figure })),
+      };
+      if (!available || gl.isContextLost()) return false;
+      try {
+        const figures = configuration.figures;
+        const padding = 8;
+        const widths = figures.map(figure => Math.max(1, finite(figure.width)));
+        const heights = figures.map(figure => Math.max(1, finite(figure.height)));
+        const atlasWidth = Math.ceil(Math.max(1, ...widths) + padding * 2);
+        const atlasHeight = Math.ceil(heights.reduce((sum, height) => sum + height + padding * 2, 0)) || 1;
+        const maxTexture = Math.min(4096, gl.getParameter(gl.MAX_TEXTURE_SIZE));
+        const scale = Math.min(2, window.devicePixelRatio || 1, maxTexture / atlasWidth, maxTexture / atlasHeight);
+        const atlas = document.createElement('canvas');
+        atlas.width = Math.max(1, Math.ceil(atlasWidth * scale));
+        atlas.height = Math.max(1, Math.ceil(atlasHeight * scale));
+        const context = atlas.getContext('2d');
+        if (!context) return false;
+        context.scale(scale, scale);
+        context.fillStyle = '#ffffff';
+        context.textBaseline = 'alphabetic';
+        rects.fill(0); atlasRects.fill(0);
+        let row = 0;
+        figures.forEach((figure, index) => {
+          const size = Math.max(1, finite(figure.fontSize, heights[index]));
+          context.font = figure.font || `500 ${size}px 'Instrument Sans', sans-serif`;
+          const tracking = finite(figure.letterSpacing, -size * .04);
+          const text = String(figure.text || '');
+          const metrics = context.measureText(text);
+          const ascent = metrics.fontBoundingBoxAscent || size * .9;
+          const descent = metrics.fontBoundingBoxDescent || size * .2;
+          const baseline = row + padding + (heights[index] - ascent - descent) / 2 + ascent;
+          let cursor = 0, left = 0, right = 0;
+          const characters = [...text];
+          // Measure the complete tracked run, including ink overhang. Canvas
+          // lacks CSS tabular-nums; fit its actual run to the native text box
+          // instead of cropping the last glyph at that box's right edge.
+          const run = characters.map((letter, character) => {
+            const measurement = context.measureText(letter);
+            left = Math.min(left, cursor - finite(measurement.actualBoundingBoxLeft));
+            right = Math.max(right, cursor + finite(measurement.actualBoundingBoxRight, measurement.width));
+            const position = cursor;
+            const next = characters[character + 1] || '';
+            cursor += context.measureText(letter + next).width - context.measureText(next).width + tracking;
+            return { letter, position };
+          });
+          const fit = Math.min(1, Math.max(1, widths[index] - 1.5) / Math.max(1, right - left));
+          context.save();
+          context.translate(padding + .5 - left * fit, 0);
+          context.scale(fit, 1);
+          for (const { letter, position } of run) context.fillText(letter, position, baseline);
+          context.restore();
+          rects.set([finite(figure.x), finite(figure.y), widths[index], heights[index]], index * 4);
+          atlasRects.set([padding * scale / atlas.width, (row + padding) * scale / atlas.height,
+            widths[index] * scale / atlas.width, heights[index] * scale / atlas.height], index * 4);
+          row += heights[index] + padding * 2;
+        });
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlas);
+        configured = true;
+        pulses.fill(0);
+        previousRises = null;
+        resize();
+        return true;
+      } catch (_) {
+        configured = false;
+        canvas.style.opacity = '0';
+        return false;
       }
-      gl.viewport(0, 0, width, height);
     }
 
-    function render(progress) {
-      lastProgress = Math.max(0, Math.min(1, Number(progress) || 0));
-      if (!available || disposed || gl.isContextLost()) return;
+    function resize() {
+      if (!available || !configuration || disposed) return;
+      const { width, height } = configuration;
+      const scale = Math.min(window.devicePixelRatio || 1, 1.25, 1440 / width, 2000 / height);
+      const w = Math.max(1, Math.round(width * scale));
+      const h = Math.max(1, Math.round(height * scale));
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      gl.viewport(0, 0, w, h);
+    }
+
+    function sampleSurface(x, y, time) {
+      const fract = value => value - Math.floor(value);
+      const hash = (a, b) => {
+        const p = [fract(a * .1031), fract(b * .1031), fract(a * .1031)];
+        const dot = p[0] * (p[1] + 33.33) + p[1] * (p[2] + 33.33) + p[2] * (p[0] + 33.33);
+        return fract((p[0] + p[1] + dot * 2) * (p[2] + dot));
+      };
+      const noise = (a, b) => {
+        const ix = Math.floor(a), iy = Math.floor(b), fx = fract(a), fy = fract(b);
+        const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+        const low = hash(ix, iy) * (1 - ux) + hash(ix + 1, iy) * ux;
+        const high = hash(ix, iy + 1) * (1 - ux) + hash(ix + 1, iy + 1) * ux;
+        return low * (1 - uy) + high * uy;
+      };
+      const px = x, py = y / .61;
+      const wx = px + noise(px / 230, py / 230) * 84;
+      const wy = py + noise(px / 283 + 9, py / 283 + 9) * 84;
+      const components = [
+        [.91, .415, 335, 2.6, .46, .5], [-.42, .908, 211, 1.65, -.58, 2.3],
+        [.28, .96, 95, .11, .71, 1.1], [.78, -.626, 44, .018, -.97, 3.4],
+      ];
+      let height = components.reduce((total, [dx, dy, wavelength, amplitude, speed, phase]) =>
+        total + amplitude * Math.sin((wx * dx + wy * dy) * Math.PI * 2 / wavelength + time * speed + phase), 0);
+      for (let index = 0; index < 5; index++) {
+        const offset = index * 4, age = time - pulses[offset + 2];
+        if (pulses[offset + 3] <= .001 || age < 0 || age >= 5) continue;
+        const radius = Math.max(1, Math.hypot(x - pulses[offset], (y - pulses[offset + 1]) / .61));
+        const distance = radius - age * 47, spread = 15 + age * 10;
+        height += Math.sin(distance * .15) * Math.exp(-distance * distance / (spread * spread) - age * .85) * pulses[offset + 3] * 2.5;
+      }
+      return height;
+    }
+
+    function render(frame = {}) {
+      if (!available || !configured || disposed || gl.isContextLost()) return false;
+      const time = Math.max(0, finite(frame.time));
+      const energy = Math.max(0, Math.min(1, finite(frame.energy)));
+      const fracture = Math.max(0, Math.min(1, finite(frame.fracture)));
+      const values = frame.rises || [1, 1, 1, 1];
+      for (let index = 0; index < 4; index++) {
+        rises[index] = Math.max(-.08, Math.min(1.12, finite(values[index], 1)));
+        if (previousRises && previousRises[index] < .42 && rises[index] >= .42) {
+          const offset = index * 4;
+          pulses.set([rects[offset] + rects[offset + 2] * .5,
+            rects[offset + 1] + rects[offset + 3] * .82, time, .65 + energy * .45], offset);
+        }
+      }
+      if (fracture > .03 && fracture < .98 && fracture > previousFracture + .0001 && time - lastRupture > .7) {
+        pulses.set([configuration.width * .5, configuration.heroHeight * (.15 + fracture * .8), time, 1.3 + energy * .5], 16);
+        lastRupture = time;
+      }
+      if (lastFrame && time < lastFrame.time) pulses.fill(0);
+      previousRises = Array.from(rises);
+      previousFracture = fracture;
+      lastFrame = { time, rises: Array.from(rises), energy, fracture, showFigures: frame.showFigures !== false };
       gl.useProgram(program);
-      gl.uniform2f(resolution, canvas.width, canvas.height);
-      gl.uniform1f(progressLocation, lastProgress);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.uniform4f(uniforms.canvas, canvas.width, canvas.height, configuration.width, configuration.height);
+      gl.uniform4f(uniforms.scene, configuration.heroHeight, fracture, frame.showFigures === false ? 0 : 1, time);
+      gl.uniform4fv(uniforms.rises, rises);
+      gl.uniform4fv(uniforms.rect, rects);
+      gl.uniform4fv(uniforms.atlas, atlasRects);
+      gl.uniform4fv(uniforms.pulse, pulses);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       canvas.style.opacity = '1';
+      return true;
     }
 
     function lost(event) {
       event.preventDefault();
-      available = false;
+      available = configured = false;
       canvas.style.opacity = '0';
     }
-
     function restored() {
       if (disposed) return;
-      if (initialize()) { resize(); render(lastProgress); }
+      if (initialize() && configuration && configure(configuration) && lastFrame) render(lastFrame);
     }
-
     function destroy() {
       disposed = true;
       canvas.removeEventListener('webglcontextlost', lost);
@@ -195,11 +402,9 @@
       release();
       canvas.style.opacity = '0';
     }
-
     if (!initialize()) return null;
     canvas.addEventListener('webglcontextlost', lost, false);
     canvas.addEventListener('webglcontextrestored', restored, false);
-    resize();
-    return { render, resize, destroy };
+    return { configure, render, resize, sampleSurface, destroy, get ready() { return available && configured && !disposed; } };
   };
 })();
