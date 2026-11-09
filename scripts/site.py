@@ -13,6 +13,7 @@ PUBLIC_FILES = (
     "index.html",
     "styles.css",
     "motion.js",
+    "water.js",
     "ava_alex_konyakhin.png",
     "llms.txt",
     "robots.txt",
