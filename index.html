@@ -71,9 +71,15 @@
 
   <div class="page-shell">
   <main id="main" class="wrap" tabindex="-1">
+    <div class="ice-scene" data-ice-scene>
+      <div class="scene-water" aria-hidden="true"><canvas data-water-canvas></canvas></div>
     <section class="hero split-section" data-split="hero" aria-labelledby="hero-title">
       <div class="split-surface split-surface-left" aria-hidden="true"></div>
       <div class="split-surface split-surface-right" aria-hidden="true"></div>
+      <svg class="ice-fracture" data-fracture aria-hidden="true" preserveAspectRatio="none">
+        <path data-fracture-line/>
+        <path data-fracture-branches/>
+      </svg>
       <div class="hero-main">
         <h1 id="hero-title" data-drift="left"><span class="hero-role">Fractional CPO</span> for <span class="nowrap">founder-led</span> software companies.</h1>
         <div class="hero-summary" data-drift="right">
@@ -94,19 +100,13 @@
     </section>
 
     <section class="proof water-proof" data-water-proof aria-label="Key facts">
-      <div class="proof-water" aria-hidden="true">
-        <canvas data-water-canvas></canvas>
-        <span class="water-ice water-ice-near"></span>
-        <span class="water-ice water-ice-far"></span>
-        <span class="water-ice water-ice-chip"></span>
-        <span class="water-ice water-ice-last"></span>
-      </div>
+      <span class="scene-floe scene-floe-near" data-floe aria-hidden="true"></span>
+      <span class="scene-floe scene-floe-far" data-floe aria-hidden="true"></span>
+      <span class="scene-floe scene-floe-small" data-floe aria-hidden="true"></span>
       <ul class="proof-band">
         <li data-float>
           <span class="proof-figure">
             <strong class="proof-num">300k+</strong>
-            <span class="proof-reflection" data-value="300k+" aria-hidden="true"></span>
-            <span class="proof-ripple" aria-hidden="true"></span>
           </span>
           <span class="proof-label">monthly active users</span>
           <span class="proof-note">employee app I owned as head of product</span>
@@ -114,8 +114,6 @@
         <li data-float>
           <span class="proof-figure">
             <strong class="proof-num">3×</strong>
-            <span class="proof-reflection" data-value="3×" aria-hidden="true"></span>
-            <span class="proof-ripple" aria-hidden="true"></span>
           </span>
           <span class="proof-label">monthly turnover</span>
           <span class="proof-note">mobile printing network, April 2024 to June 2026</span>
@@ -123,8 +121,6 @@
         <li data-float>
           <span class="proof-figure">
             <strong class="proof-num">20,000</strong>
-            <span class="proof-reflection" data-value="20,000" aria-hidden="true"></span>
-            <span class="proof-ripple" aria-hidden="true"></span>
           </span>
           <span class="proof-label">job applications</span>
           <span class="proof-note">first three months of a recruitment journey I led</span>
@@ -132,14 +128,13 @@
         <li data-float>
           <span class="proof-figure">
             <strong class="proof-num">3</strong>
-            <span class="proof-reflection" data-value="3" aria-hidden="true"></span>
-            <span class="proof-ripple" aria-hidden="true"></span>
           </span>
           <span class="proof-label">companies co-founded</span>
           <span class="proof-note">2015 to 2022</span>
         </li>
       </ul>
     </section>
+    </div>
 
     <section id="work" class="section work" aria-labelledby="work-title">
       <h2 id="work-title">Work</h2>

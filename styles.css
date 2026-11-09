@@ -111,11 +111,23 @@ nav a:hover { text-decoration: underline; }
 .proof-label { font-size: .875rem; line-height: 1.5; }
 .proof-note { max-width: 27ch; margin-top: var(--space-2); font-size: .8125rem; line-height: 1.65; color: var(--muted); }
 
-/* Open water follows the hero's broken sheet. Figures remain real, selectable
-   text; only their reflected image and the water are decorative. */
+/* A single water plane continues beneath the intact hero and its open proof.
+   The shader owns water and numeral optics; the source text stays accessible. */
+.ice-scene { position: relative; isolation: isolate; background: #a4bfb0; }
+.ice-scene > .hero { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); clip-path: inset(0 -100vmax); }
+.scene-water {
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc((100% - 100vw) / 2);
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 24% 12%, rgb(234 244 221 / .45), transparent 62%),
+    linear-gradient(160deg, #bed3bd, #95b5a2 54%, #b6cebb);
+}
+.scene-water canvas { display: block; width: 100%; height: 100%; }
 .water-proof {
   position: relative;
-  isolation: isolate;
   display: grid;
   align-items: center;
   min-height: 35rem;
@@ -123,82 +135,46 @@ nav a:hover { text-decoration: underline; }
   border: 0;
   color: #203c34;
 }
-.proof-water {
-  position: absolute;
-  z-index: -1;
-  inset: 0 calc((100% - 100vw) / 2);
-  overflow: hidden;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 22% 15%, rgb(234 244 221 / .6), transparent 65%),
-    linear-gradient(160deg, #bed3bd, #8db29f 54%, #b6cebb);
-}
-.proof-water canvas { display: block; width: 100%; height: 100%; }
-.proof-water::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 22px 28px -24px #244b40, inset 0 -20px 30px -26px #244b40;
-}
 .water-proof .proof-band { align-items: start; gap: clamp(1.5rem, 3vw, 3rem); }
-.water-proof [data-float] { position: relative; transform-origin: 50% 1.8rem; }
+.water-proof [data-float] { position: relative; }
 .water-proof [data-float]:nth-child(2) { margin-top: 2.5rem; }
 .water-proof [data-float]:nth-child(3) { margin-top: .75rem; }
 .water-proof [data-float]:nth-child(4) { margin-top: 3.75rem; }
-.proof-figure { position: relative; display: block; margin-bottom: 2.75rem; }
+.proof-figure {
+  position: relative;
+  display: block;
+  min-height: 2.25em;
+  margin-bottom: .5rem;
+  font-size: clamp(3rem, 5.8vw, 5.25rem);
+  line-height: 1;
+}
 .water-proof .proof-num {
   position: relative;
   display: block;
   margin: 0;
-  font-size: clamp(3rem, 5.8vw, 5.25rem);
+  font-size: inherit;
   font-weight: 500;
   letter-spacing: -.04em;
-  text-shadow: 0 1px 0 rgb(239 250 229 / .6), 0 7px 10px rgb(31 64 49 / .16);
 }
+.scene-rendered .proof-num { opacity: 0; }
 .water-proof .proof-label { font-size: .9375rem; font-weight: 550; line-height: 1.5; }
 .water-proof .proof-note { max-width: 26ch; color: #203c34; line-height: 1.6; }
-.proof-reflection {
+/* Broken floes are raised faces over translucent, shaded ice edges. Their
+   motion follows the hero release rather than an independent decorative loop. */
+.scene-floe {
   position: absolute;
-  inset: .8em 0 auto;
-  font-size: clamp(3rem, 5.8vw, 5.25rem);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -.04em;
-  opacity: .17;
-  transform: scaleY(-.42) skewX(-7deg);
-  filter: blur(1px);
-  mask-image: linear-gradient(transparent 15%, #000 100%);
-  user-select: none;
+  pointer-events: none;
+  width: 6.5rem;
+  height: 2.75rem;
+  filter: drop-shadow(2px 7px 5px rgb(35 63 51 / .18));
+  --floe-shape: polygon(3% 36%, 25% 4%, 70% 0, 99% 38%, 78% 91%, 27% 100%, 0 69%);
 }
-.proof-reflection::before { content: attr(data-value); }
-.proof-ripple {
-  position: absolute;
-  z-index: -1;
-  top: 74%;
-  left: -12%;
-  width: 124%;
-  height: 42%;
-  border: 1px solid rgb(240 250 227 / .52);
-  border-radius: 50%;
-  box-shadow: 0 2px 1px rgb(39 78 61 / .12);
-  opacity: .7;
-}
-.proof-ripple::after {
-  content: "";
-  position: absolute;
-  inset: -9px -16px;
-  border: 1px solid rgb(234 248 220 / .28);
-  border-radius: 50%;
-}
-/* Thin bevels, submerged edges and irregular silhouettes carry the ice into
-   the next section without putting the facts on another set of cards. */
-.water-ice { position: absolute; background: #d4e2d4; filter: drop-shadow(0 8px 6px rgb(35 71 53 / .22)); }
-.water-ice::after { content: ""; position: absolute; inset: 0 0 5px; background: var(--paper); clip-path: inherit; }
-.water-ice-near { top: -1px; left: -1%; width: 36%; height: 46px; clip-path: polygon(0 0, 100% 0, 89% 31%, 76% 29%, 61% 65%, 47% 58%, 29% 94%, 0 71%); }
-.water-ice-far { top: -1px; right: -1%; width: 27%; height: 68px; clip-path: polygon(0 0, 100% 0, 100% 72%, 81% 93%, 63% 61%, 41% 73%, 25% 31%, 12% 34%); }
-.water-ice-chip { top: 14%; right: 5%; width: 46px; height: 29px; opacity: .87; transform: rotate(-17deg); clip-path: polygon(12% 6%, 68% 0, 100% 47%, 71% 100%, 0 76%); }
-.water-ice-last { bottom: -1px; left: -1%; width: 101%; height: 34px; clip-path: polygon(0 36%, 9% 22%, 16% 59%, 24% 51%, 34% 81%, 43% 63%, 51% 88%, 64% 66%, 73% 77%, 85% 31%, 93% 42%, 100% 12%, 100% 100%, 0 100%); }
-.water-ice-last::after { inset: 5px 0 0; }
+.scene-floe::before, .scene-floe::after { content: ""; position: absolute; inset: 0; clip-path: var(--floe-shape); }
+.scene-floe::before { background: linear-gradient(125deg, #dce9dc, #7e9d8e 57%, #c7d9c9); }
+.scene-floe::after { inset: 0 1px 5px -1px; background: linear-gradient(135deg, #fcfdf8, #edf2e9 70%, #dce6d9); }
+.scene-floe-near { top: 3%; left: -1%; transform: rotate(-11deg); }
+.scene-floe-far { top: 7%; right: 1%; width: 4.25rem; height: 2rem; transform: rotate(13deg); }
+.scene-floe-small { top: 15%; left: 49%; width: 1.75rem; height: 1rem; transform: rotate(-24deg); }
 
 /* Open case studies: the brief on the left, the evidence on the right. */
 .section { padding-block: var(--section-gap); }
@@ -353,7 +329,7 @@ nav a:hover { text-decoration: underline; }
 .motion-ready .split-open > .split-surface-right::after {
   transform: translate(3px, -2px);
 }
-.motion-ready [data-split="hero"] { --split-at: 58%; --seam-lean: -9px; }
+
 .motion-ready [data-split="case"] { --split-at: 46%; --seam-lean: 12px; }
 .motion-ready .case + .case { --seam-lean: -12px; }
 .motion-ready [data-split="situations"],
@@ -364,6 +340,63 @@ nav a:hover { text-decoration: underline; }
 .motion-ready [data-split="contact"] { --split-at: 54%; --sheet: var(--ink); --ice-edge: #4c6e5b; --water: #6a9380; --water-deep: #183f32; }
 .motion-ready .case > .split-surface::after,
 .motion-ready .background > .split-surface::after { border-top: 1px solid var(--line); }
+
+/* The rendered copies inherit the source layout, but are purely visual.
+   Non-hero desktop sections continue using their existing content movers. */
+.motion-ready .hero.split-rendered > :not(.split-surface):not(.split-copy):not(.ice-fracture) { opacity: 0; pointer-events: none; }
+.motion-ready .split-rendered > .split-copy {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: inherit;
+  border: inherit;
+  grid-template-columns: inherit;
+  gap: inherit;
+  background: transparent;
+  box-shadow: none;
+  clip-path: var(--fracture-shape);
+}
+.motion-ready .hero.split-rendered > .split-copy { display: inherit; }
+.split-copy-left { --fracture-shape: polygon(0 0, var(--fracture-seam), 0 100%); }
+.split-copy-right { --fracture-shape: polygon(var(--fracture-seam), 100% 100%, 100% 0); }
+
+/* Fine fracture branches arrive before the heavy sheets release. The same
+   water remains visible below their beveled edges and into the proof. */
+.ice-fracture { display: none; }
+.motion-ready .hero { --split-at: 50%; --seam-lean: 0px; clip-path: inset(0 -100vmax -24px); }
+.motion-ready .hero::before { background: var(--paper); }
+.motion-ready .hero.split-released::before { background: transparent; }
+.motion-ready .hero > .split-surface { filter: none; }
+.motion-ready .hero > .split-surface::before { background: var(--paper); }
+.motion-ready .hero > .split-surface::after { transform: none; }
+.motion-ready .hero.split-released > .split-surface-left { filter: drop-shadow(2px 8px 6px rgb(26 60 47 / .21)); }
+.motion-ready .hero.split-released > .split-surface-right { filter: drop-shadow(-1px 6px 4px rgb(26 60 47 / .17)); }
+.motion-ready .hero.split-released > .split-surface::before { background: linear-gradient(115deg, #d9e7d9, #7b9c8c 49%, #bcd2c1 65%, #e3ecdf); }
+.motion-ready .hero.split-released > .split-surface::after { background: linear-gradient(155deg, #fcfdf8, var(--paper) 52%, #edf2e9); }
+.motion-ready .hero.split-released > .split-surface-left::after { transform: translate(-3px, -4px); }
+.motion-ready .hero.split-released > .split-surface-right::after { transform: translate(3px, -3px); }
+.motion-ready .ice-fracture {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  inset: 0 calc((100% - 100vw) / 2);
+  width: 100vw;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  fill: none;
+  stroke: #64877b;
+  stroke-width: 1.1px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  filter: drop-shadow(1px 1px 0 rgb(255 255 247 / .85));
+}
+.ice-fracture path { vector-effect: non-scaling-stroke; }
+.ice-fracture [data-fracture-branches] { stroke-width: .65px; opacity: .66; }
 
 /* Small, interruptible feedback for pointer actions; no touch hover movement. */
 nav a:not(.lang-switch) { position: relative; }
@@ -388,7 +421,6 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
 @media (max-width: 1100px) {
   :root { --hero-gap: var(--space-7); }
   .hero-main, .trust-strip { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
-  .motion-ready [data-split="hero"] { --split-at: 56%; }
   .hero-intro { font-size: 1rem; }
   .case, .situations-section, #how-i-work, .background, .contact { column-gap: var(--space-7); }
   .contact .button { margin-right: 0; }
@@ -397,25 +429,8 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   /* The mobile layout stays stacked; its two rendered halves part along the
      central fracture, so the ink travels with the ice just as on desktop. */
   .motion-ready .split-section { --split-at: 50%; --seam-lean: 0px; }
-  .motion-ready .split-rendered > :not(.split-surface):not(.split-copy) { opacity: 0; pointer-events: none; }
-  .motion-ready .split-rendered > .split-copy {
-    display: inherit;
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    width: auto;
-    height: auto;
-    margin: 0;
-    padding: inherit;
-    border: inherit;
-    grid-template-columns: inherit;
-    gap: inherit;
-    background: transparent;
-    box-shadow: none;
-    clip-path: var(--fracture-shape);
-  }
-  .split-copy-left { --fracture-shape: polygon(0 0, var(--fracture-seam), 0 100%); }
-  .split-copy-right { --fracture-shape: polygon(var(--fracture-seam), 100% 100%, 100% 0); }
+  .motion-ready .split-rendered > :not(.split-surface):not(.split-copy):not(.ice-fracture) { opacity: 0; pointer-events: none; }
+  .motion-ready .split-rendered > .split-copy { display: inherit; }
   .site-header { gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-5); }
   nav { gap: var(--space-5); }
   .lang-switch { margin-left: 0; padding-left: var(--space-5); }
@@ -435,11 +450,8 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   .water-proof [data-float]:nth-child(2) { margin-top: 2rem; }
   .water-proof [data-float]:nth-child(3) { margin-top: 0; }
   .water-proof [data-float]:nth-child(4) { margin-top: 2rem; }
-  .water-proof .proof-num, .proof-reflection { font-size: clamp(2.75rem, 7vw, 4.5rem); }
+  .water-proof .proof-figure { font-size: clamp(2.75rem, 7vw, 4.5rem); }
   .water-proof .proof-note { max-width: 29ch; }
-  .water-ice-near { width: 44%; height: 34px; }
-  .water-ice-far { width: 33%; height: 44px; }
-  .water-ice-chip { width: 27px; height: 18px; top: 8%; }
   .work > h2 { margin-bottom: var(--space-6); }
   .case { grid-template-columns: 1fr; gap: var(--space-6); padding-bottom: var(--space-7); }
   .case + .case { padding-top: var(--space-7); }
@@ -477,9 +489,9 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   .proof-label { font-size: .8125rem; }
   .water-proof { min-height: 44rem; padding-block: 5rem 6rem; }
   .water-proof .proof-band { gap: 3.5rem 1.5rem; }
-  .water-proof .proof-num, .proof-reflection { font-size: clamp(2.375rem, 10.5vw, 2.75rem); }
+  .water-proof .proof-figure { font-size: clamp(2.375rem, 10.5vw, 2.75rem); }
   .water-proof .proof-label { font-size: .875rem; }
-  .proof-figure { margin-bottom: 2.25rem; }
+  .proof-figure { margin-bottom: .5rem; }
   .case-results { gap: var(--space-5); }
   .case-results dt { font-size: .8125rem; }
   .case-results dd { font-size: 2.75rem; }
@@ -493,6 +505,9 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   html { scroll-behavior: auto; }
   [data-drift], .split-surface { transform: none !important; }
   [data-float] { transform: none !important; opacity: 1 !important; }
-  .proof-water canvas { visibility: hidden; }
+  .scene-water canvas { visibility: hidden; }
+  .scene-rendered .proof-num { opacity: 1; }
+  .ice-fracture { display: none !important; }
+  .scene-floe { transform: none !important; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
