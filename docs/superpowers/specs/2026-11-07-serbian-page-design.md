@@ -66,9 +66,9 @@ page); text link **Pogledajte projekte** → `#work`.
 | Numeral | Label | Qualifier |
 |---|---|---|
 | 300k+ | mesečno aktivnih korisnika | aplikacija za zaposlene koju sam vodio kao head of product |
-| 3× | mesečni promet | mreža mobilne štampe, april 2024 – jun 2026 |
-| 20.000 | prijava za posao | u prva tri meseca procesa zapošljavanja koji sam vodio |
-| 3 | suosnovane kompanije | 2015 – 2022 |
+| 3× | mesečni promet karticama | Copix, april 2024 – jun 2026 |
+| 20.000 | prijava kandidata | u prva tri meseca funkcije za zapošljavanje koju sam predložio i vodio |
+| 3 | osnovane ili suosnovane kompanije | 2015 – 2022 |
 
 ### 3.4 Projekti
 
@@ -82,16 +82,15 @@ Vodio sam programere, dizajnera i QA i iznosio hipoteze i odluke pred najviše
 rukovodstvo.
 
 Results: label "Mesečno aktivni korisnici", value "300k+", qualifier "tokom mog
-rada na proizvodu"; label "Prijave za posao", value "20.000", qualifier "u prva
-tri meseca procesa zapošljavanja".
+rada na proizvodu"; label "Prijave kandidata", value "20.000", qualifier "u prva
+tri meseca funkcije za zapošljavanje".
 
 - Analitika: od događaja do odluka. Vodio sam implementaciju kompletnog
   analitičkog sistema sa timom: pokrivenost događaja u Firebase-u, pipeline ka
   BigQuery-ju i prilagođene Looker dashboarde koji su rukovodstvu dali uvid u
   to kako zaposleni koriste aplikaciju.
-- Proces zapošljavanja. Otvorili smo aplikaciju i za one koji još nisu
-  zaposleni, tako da su kandidati za posao kasira i radnika u prodavnicama mogli
-  direktno da se prijave.
+- Funkcija za zapošljavanje koja je rešila i problem sa App Store-om. Apple je počeo da odbija aplikaciju jer je bila namenjena samo zaposlenima, a recenzije u App Store-u su pokazivale da je ljudi preuzimaju u nadi da će naći posao. Predložio sam da je otvorimo za sve, tako da kandidati za posao kasira i radnika u prodavnicama mogu direktno da se prijave. Apple ju je prihvatio kao javnu aplikaciju, a u prva tri meseca stiglo je oko 20.000 prijava.
+  (Translation not yet reviewed by a native speaker.)
 - Igra za učenje. Ideja jednog zaposlenog koju sam pretvorio u igru unutar
   aplikacije, zasnovanu na postojećim materijalima za obuku, i pilotirao u 16
   operativnih klastera.
@@ -257,3 +256,19 @@ publishes, so the owner approves after the local preview, as before.
 - A Serbian `llms.txt`.
 - Automatic language detection or redirects.
 - Translating the design spec, plan or README.
+
+## Revisions, 9 November 2026
+
+Mirrors the English spec's revisions of the same date. Serbian strings, not yet
+reviewed by a native speaker:
+
+- Proof heading: "Posao koji se pokrenuo".
+- Header link: "Zakažite razgovor".
+- Analytics steps: Događaji · Firebase, Pipeline · BigQuery, Dashboardi ·
+  Looker, Odluke · Rukovodstvo.
+- Timeline: "1. mesec" (plaćeni prvi mesec), "2. mesec", "3. mesec". Caption:
+  "Kontrolna tačka: nastavljamo, menjamo obim ili radimo primopredaju."
+- "Ko šta radi" columns: "Ja vodim", "Vi ste vlasnik", "Vaš CTO i tim
+  odgovorni su za".
+- Own-product descriptions and the Copix founder's quote are translated from
+  the English page; the portrait files are shared.

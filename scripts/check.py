@@ -38,21 +38,21 @@ REQUIRED_HTML = [
     "See the work",
     # Task 4: proof band (spec §3.3)
     "300k+ monthly active users", "employee app I owned as head of product",
-    "3× monthly turnover", "mobile printing network, April 2024 to June 2026",
-    "20,000 job applications", "first three months of a recruitment journey I led",
-    "3 companies co-founded", "2015 to 2022",
+    "3× monthly card turnover", "Copix, April 2024 to June 2026",
+    "20,000 candidate applications", "first three months of a hiring feature I proposed and led",
+    "3 companies founded or co-founded", "2015 to 2022",
     # Task 5: work section (spec §3.4)
     "Employee app for a major retail chain",
     "Head of product for the whole app · Retail · Russia",
     "I owned the product: direction, priorities, research, delivery and measurement. "
     "I led developers, a designer and QA, and brought hypotheses and decisions to senior stakeholders.",
     "Monthly active users", "300k+", "during my time on the product",
-    "Job applications", "20,000", "first three months of the recruitment journey",
+    "Candidate applications", "20,000", "first three months of the hiring feature",
     "Analytics from events to decisions.",
     "I led the team's implementation of the full stack: event coverage in Firebase, a pipeline into BigQuery, "
     "and custom Looker dashboards that gave senior managers visibility into how the workforce used the app.",
-    "A recruitment journey.",
-    "We opened the app to people who were not yet employees, so candidates for cashier and store roles could apply directly.",
+    "A hiring feature that also solved an App Store problem.",
+    "Apple had started rejecting the app as employee-only, while store reviews showed people downloading it in the hope of finding a job. I proposed opening it to everyone, so candidates for cashier and store roles could apply directly. Apple accepted it as a public app, and about 20,000 applications came in over the first three months.",
     "A learning game.",
     "An employee's idea that I shaped into an in-app game on existing training content and piloted across 16 operational clusters.",
     "Copix, mobile printing network",
@@ -104,7 +104,7 @@ REQUIRED_LLMS = [
     "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave", "https://calendar.app.google/ats6knZjWvwpJUbp9",
     "https://alexkonyakhin.com/sr/",
     "Rostok", "https://rostok.dance/",
-    "16 operational clusters", "since 2013", "Three companies co-founded", "Erasoft.io", "2015", "2022",
+    "16 operational clusters", "since 2013", "Three companies founded or co-founded", "Erasoft.io", "2015", "2022",
 ]
 FORBIDDEN = [
     "17+", "40+", "×5 ARR", "5× over", "3× conversion", "$1M", "₽", "RUB",
@@ -126,6 +126,7 @@ EXACT_HREFS = {
     "https://rostok.dance/",
 }
 REQUIRED_CTAS = {
+    ("book_call", "header"),
     ("book_call", "hero"),
     ("book_call", "work"),
     ("book_call", "contact"),
@@ -168,21 +169,21 @@ REQUIRED_HTML_SR = [
     "Zakažite razgovor od 30 minuta", "Pogledajte projekte",
     # proof band (§3.3)
     "300k+ mesečno aktivnih korisnika", "aplikacija za zaposlene koju sam vodio kao head of product",
-    "3× mesečni promet", "mreža mobilne štampe, april 2024 – jun 2026",
-    "20.000 prijava za posao", "u prva tri meseca procesa zapošljavanja koji sam vodio",
-    "3 suosnovane kompanije", "2015 – 2022",
+    "3× mesečni promet karticama", "Copix, april 2024 – jun 2026",
+    "20.000 prijava kandidata", "u prva tri meseca funkcije za zapošljavanje koju sam predložio i vodio",
+    "3 osnovane ili suosnovane kompanije", "2015 – 2022",
     # work (§3.4)
     "Aplikacija za zaposlene velikog maloprodajnog lanca",
     "Head of product za celu aplikaciju · Maloprodaja · Rusija",
     "Vodio sam proizvod: pravac, prioritete, istraživanje, isporuku i merenje. Vodio sam programere, "
     "dizajnera i QA i iznosio hipoteze i odluke pred najviše rukovodstvo.",
     "Mesečno aktivni korisnici", "300k+", "tokom mog rada na proizvodu",
-    "Prijave za posao", "20.000", "u prva tri meseca procesa zapošljavanja",
+    "Prijave kandidata", "20.000", "u prva tri meseca funkcije za zapošljavanje",
     "Analitika: od događaja do odluka.",
     "Vodio sam implementaciju kompletnog analitičkog sistema sa timom: pokrivenost događaja u Firebase-u, "
     "pipeline ka BigQuery-ju i prilagođene Looker dashboarde koji su rukovodstvu dali uvid u to kako zaposleni koriste aplikaciju.",
-    "Proces zapošljavanja.",
-    "Otvorili smo aplikaciju i za one koji još nisu zaposleni, tako da su kandidati za posao kasira i radnika u prodavnicama mogli direktno da se prijave.",
+    "Funkcija za zapošljavanje koja je rešila i problem sa App Store-om.",
+    "Apple je počeo da odbija aplikaciju jer je bila namenjena samo zaposlenima, a recenzije u App Store-u su pokazivale da je ljudi preuzimaju u nadi da će naći posao. Predložio sam da je otvorimo za sve, tako da kandidati za posao kasira i radnika u prodavnicama mogu direktno da se prijave. Apple ju je prihvatio kao javnu aplikaciju, a u prva tri meseca stiglo je oko 20.000 prijava.",
     "Igra za učenje.",
     "Ideja jednog zaposlenog koju sam pretvorio u igru unutar aplikacije, zasnovanu na postojećim materijalima za obuku, "
     "i pilotirao u 16 operativnih klastera.",

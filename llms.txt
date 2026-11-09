@@ -19,7 +19,7 @@ Alexey owns product direction, priorities, trade-offs, stakeholder alignment and
 
 ### Employee app for a major retail chain
 
-Head of product for the whole app (retail, Russia). Alexey owned the product: direction, priorities, research, delivery and measurement. He led developers, a designer and QA, and brought hypotheses and decisions to senior stakeholders. The app had more than 300,000 monthly active users during his time on the product. A recruitment journey he led, which opened the app to people who were not yet employees so candidates for cashier and store roles could apply directly, received 20,000 job applications in its first three months.
+Head of product for the whole app (retail, Russia). Alexey owned the product: direction, priorities, research, delivery and measurement. He led developers, a designer and QA, and brought hypotheses and decisions to senior stakeholders. The app had more than 300,000 monthly active users during his time on the product. Apple had started rejecting the app as employee-only, while store reviews showed people downloading it in the hope of finding a job. Alexey proposed and led a hiring feature that opened the app to everyone, so candidates for cashier and store roles could apply directly. Apple accepted it as a public app, and about 20,000 candidate applications came in over its first three months.
 
 He led the team's implementation of the full analytics stack: event coverage in Firebase, a pipeline into BigQuery, and custom Looker dashboards that gave senior managers visibility into how the workforce used the app. He also shaped an employee's idea into an in-app learning game on existing training content and piloted it across 16 operational clusters.
 
@@ -38,11 +38,11 @@ Product work with the founding team (Russia, 2024 to 2026). Website: https://cop
 - 2015 to 2017: Co-founder, Knedlik Tech, travel mobile app.
 - 2013 to 2015: PM and tech lead, Globus, mobile and web portfolio.
 
-Three companies co-founded between 2015 and 2022.
+Three companies founded or co-founded between 2015 and 2022.
 
 ## Products
 
-Alexey also builds his own products: NicePass (https://nicepass.cc/), Stopwell (https://stopwell.app/), VPNKill (https://vpnkill.com/) and Rostok (https://rostok.dance/).
+Alexey also builds his own products: NicePass (https://nicepass.cc/), a Wallet pass restaurant guests get in 30 seconds, built to bring them back; Stopwell (https://stopwell.app/), flight search built around the traveller's event that scores how rested they arrive, in closed beta; VPNKill (https://vpnkill.com/), a packet-level VPN kill switch for macOS; and Rostok (https://rostok.dance/), a tool for dance teachers that keeps lessons, students and progress in one place, before launch.
 
 ## Contact
 
