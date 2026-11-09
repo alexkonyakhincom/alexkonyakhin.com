@@ -133,7 +133,7 @@ nav a:hover { text-decoration: underline; }
   min-height: 35rem;
   padding-block: 7rem 8rem;
   border: 0;
-  color: #203c34;
+  color: #182e26;
 }
 .water-proof .proof-band { align-items: start; gap: clamp(1.5rem, 3vw, 3rem); }
 .water-proof [data-float] { position: relative; }
@@ -158,7 +158,7 @@ nav a:hover { text-decoration: underline; }
 }
 .scene-rendered .proof-num { opacity: 0; }
 .water-proof .proof-label { font-size: .9375rem; font-weight: 550; line-height: 1.5; }
-.water-proof .proof-note { max-width: 26ch; color: #203c34; line-height: 1.6; }
+.water-proof .proof-note { max-width: 26ch; color: #182e26; line-height: 1.6; }
 /* Broken floes are raised faces over translucent, shaded ice edges. Their
    motion follows the hero release rather than an independent decorative loop. */
 .scene-floe {
@@ -166,15 +166,25 @@ nav a:hover { text-decoration: underline; }
   pointer-events: none;
   width: 6.5rem;
   height: 2.75rem;
-  filter: drop-shadow(2px 7px 5px rgb(35 63 51 / .18));
+  filter: drop-shadow(1px 3px 2px rgb(35 63 51 / .26)) drop-shadow(0 6px 4px rgb(35 63 51 / .1));
+  --floe-depth: 11px;
   --floe-shape: polygon(3% 36%, 25% 4%, 70% 0, 99% 38%, 78% 91%, 27% 100%, 0 69%);
 }
 .scene-floe::before, .scene-floe::after { content: ""; position: absolute; inset: 0; clip-path: var(--floe-shape); }
-.scene-floe::before { background: linear-gradient(125deg, #dce9dc, #7e9d8e 57%, #c7d9c9); }
-.scene-floe::after { inset: 0 1px 5px -1px; background: linear-gradient(135deg, #fcfdf8, #edf2e9 70%, #dce6d9); }
+.scene-floe::before {
+  transform: translate(2px, var(--floe-depth));
+  background:
+    linear-gradient(108deg, transparent 18%, rgb(238 249 233 / .16) 21%, transparent 24%, transparent 63%, rgb(228 243 226 / .1) 68%, transparent 71%),
+    radial-gradient(ellipse at 37% 17%, rgb(238 250 234 / .18), transparent 51%),
+    linear-gradient(120deg, #b6d0c0, #789e8e 58%, #bed7c5);
+}
+.scene-floe::after {
+  background: linear-gradient(135deg, #fcfdf8, #edf2e9 70%, #dce6d9);
+  box-shadow: inset 0 -2px 0 rgb(251 255 244 / .9);
+}
 .scene-floe-near { top: 3%; left: -1%; transform: rotate(-11deg); }
-.scene-floe-far { top: 7%; right: 1%; width: 4.25rem; height: 2rem; transform: rotate(13deg); }
-.scene-floe-small { top: 15%; left: 49%; width: 1.75rem; height: 1rem; transform: rotate(-24deg); }
+.scene-floe-far { top: 7%; right: 1%; width: 4.25rem; height: 2rem; --floe-depth: 9px; transform: rotate(13deg); }
+.scene-floe-small { top: 15%; left: 49%; width: 1.75rem; height: 1rem; --floe-depth: 7px; transform: rotate(-24deg); }
 
 /* Open case studies: the brief on the left, the evidence on the right. */
 .section { padding-block: var(--section-gap); }
@@ -366,18 +376,30 @@ nav a:hover { text-decoration: underline; }
 /* Fine fracture branches arrive before the heavy sheets release. The same
    water remains visible below their beveled edges and into the proof. */
 .ice-fracture { display: none; }
-.motion-ready .hero { --split-at: 50%; --seam-lean: 0px; clip-path: inset(0 -100vmax -24px); }
+.motion-ready .hero { --split-at: 50%; --seam-lean: 0px; --ice-thickness: 16px; --ice-depth: 14px; clip-path: inset(0 -100vmax -30px); }
 .motion-ready .hero::before { background: var(--paper); }
 .motion-ready .hero.split-released::before { background: transparent; }
 .motion-ready .hero > .split-surface { filter: none; }
 .motion-ready .hero > .split-surface::before { background: var(--paper); }
 .motion-ready .hero > .split-surface::after { transform: none; }
-.motion-ready .hero.split-released > .split-surface-left { filter: drop-shadow(2px 8px 6px rgb(26 60 47 / .21)); }
-.motion-ready .hero.split-released > .split-surface-right { filter: drop-shadow(-1px 6px 4px rgb(26 60 47 / .17)); }
-.motion-ready .hero.split-released > .split-surface::before { background: linear-gradient(115deg, #d9e7d9, #7b9c8c 49%, #bcd2c1 65%, #e3ecdf); }
-.motion-ready .hero.split-released > .split-surface::after { background: linear-gradient(155deg, #fcfdf8, var(--paper) 52%, #edf2e9); }
-.motion-ready .hero.split-released > .split-surface-left::after { transform: translate(-3px, -4px); }
-.motion-ready .hero.split-released > .split-surface-right::after { transform: translate(3px, -3px); }
+/* Extrude the submerged sidewall beneath the stationary top face. The ink
+   shares that face's exact silhouette; only the thickness enters the channel. */
+.motion-ready .hero.split-released > .split-surface-left { filter: drop-shadow(1px 3px 2px rgb(26 60 47 / .3)) drop-shadow(0 7px 5px rgb(26 60 47 / .1)); }
+.motion-ready .hero.split-released > .split-surface-right { filter: drop-shadow(-1px 3px 2px rgb(26 60 47 / .25)) drop-shadow(0 6px 4px rgb(26 60 47 / .08)); }
+.motion-ready .hero.split-released > .split-surface::before {
+  background:
+    linear-gradient(103deg, transparent 17%, rgb(239 250 234 / .11) 17.4%, transparent 18.1%, transparent 45.8%, rgb(229 244 226 / .13) 46.1%, transparent 46.7%, transparent 73%, rgb(240 250 235 / .09) 73.6%, transparent 74.1%),
+    radial-gradient(ellipse at 32% 76%, rgb(228 244 227 / .16), transparent 43%),
+    radial-gradient(ellipse at 69% 29%, rgb(49 91 74 / .08), transparent 38%),
+    linear-gradient(110deg, #c2d9c9, #7c9f90 42%, #a4c2b1 58%, #c7ddcd);
+}
+.motion-ready .hero.split-released > .split-surface-left::before { transform: translate(var(--ice-thickness), var(--ice-depth)); }
+.motion-ready .hero.split-released > .split-surface-right::before { transform: translate(calc(-1 * var(--ice-thickness)), var(--ice-depth)); }
+.motion-ready .hero.split-released > .split-surface::after {
+  background: linear-gradient(155deg, #fcfdf8, var(--paper) 52%, #edf2e9);
+  box-shadow: inset 0 -2px 0 rgb(251 255 245 / .95);
+  transform: none;
+}
 .motion-ready .ice-fracture {
   display: block;
   position: absolute;
@@ -429,6 +451,10 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   /* The mobile layout stays stacked; its two rendered halves part along the
      central fracture, so the ink travels with the ice just as on desktop. */
   .motion-ready .split-section { --split-at: 50%; --seam-lean: 0px; }
+  .motion-ready .hero { --ice-thickness: 9px; --ice-depth: 9px; }
+  .scene-floe { --floe-depth: 8px; }
+  .scene-floe-far { --floe-depth: 7px; }
+  .scene-floe-small { --floe-depth: 5px; }
   .motion-ready .split-rendered > :not(.split-surface):not(.split-copy):not(.ice-fracture) { opacity: 0; pointer-events: none; }
   .motion-ready .split-rendered > .split-copy { display: inherit; }
   .site-header { gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-5); }

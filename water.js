@@ -23,42 +23,63 @@
       p3 += dot(p3, p3.yzx + 33.33);
       return fract((p3.x + p3.y) * p3.z);
     }
-    float noise(vec2 p) {
+    vec3 noiseField(vec2 p) {
       vec2 i = floor(p), f = fract(p);
       vec2 u = f * f * (3.0 - 2.0 * f);
-      return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-                 mix(hash(i + vec2(0.0, 1.0)), hash(i + 1.0), u.x), u.y);
+      vec2 du = 6.0 * f * (1.0 - f);
+      float a = hash(i), b = hash(i + vec2(1.0, 0.0));
+      float c = hash(i + vec2(0.0, 1.0)), d = hash(i + 1.0);
+      return vec3(mix(mix(a, b, u.x), mix(c, d, u.x), u.y),
+        mix(b - a, d - c, u.y) * du.x, mix(c - a, d - b, u.x) * du.y);
     }
+    float noise(vec2 p) { return noiseField(p).x; }
     void wave(inout vec3 field, vec2 p, vec2 direction, float wavelength,
               float amplitude, float speed, float phase) {
       float k = TAU / wavelength;
       float a = dot(p, direction) * k + u_scene.w * speed + phase;
-      field += amplitude * vec3(sin(a), cos(a) * k * direction);
+      float crest = sin(a);
+      // A slightly steeper crest and wider trough avoid a sine-sheet surface.
+      field += amplitude * vec3(crest + .18 * (crest * crest - .5),
+        cos(a) * (1.0 + .36 * crest) * k * direction);
     }
     vec3 surface(vec2 pixel) {
       // An orthographic camera compresses the water plane consistently in y.
       vec2 p = pixel / vec2(1.0, .61);
-      vec2 warped = p + vec2(noise(p / 230.0), noise(p / 283.0 + 9.0)) * 84.0;
+      vec2 flow = vec2(u_scene.w * .021, -u_scene.w * .013);
+      vec3 warpX = noiseField(p / 235.0 + flow);
+      vec3 warpY = noiseField(p / 197.0 + vec2(9.0, 13.0) + flow * .63);
+      vec2 warped = p + (vec2(warpX.x, warpY.x) - .5) * 60.0;
       vec3 field = vec3(0.0);
-      wave(field, warped, vec2(.91, .415), 335.0, 2.6, .46, .5);
-      wave(field, warped, vec2(-.42, .908), 211.0, 1.65, -.58, 2.3);
-      wave(field, warped, vec2(.28, .96), 95.0, .11, .71, 1.1);
-      wave(field, warped, vec2(.78, -.626), 44.0, .018, -.97, 3.4);
+      wave(field, warped, vec2(.96, .28), 296.0, 5.8, .53, .5);
+      wave(field, warped, vec2(-.60, .80), 173.0, 3.8, -.74, 2.3);
+      wave(field, warped, vec2(.25, .968), 106.0, 1.9, .96, 1.1);
+      wave(field, warped, vec2(.82, -.572), 63.0, .78, -1.23, 3.4);
+      wave(field, warped, vec2(-.34, .94), 39.0, .28, 1.72, .8);
+      wave(field, warped, vec2(.98, .199), 23.0, .105, -2.15, 4.1);
+      // Carry the domain warp's Jacobian into the normals, so moving reflected
+      // light follows the actual curved wave fronts rather than painted bands.
+      field.yz = vec2(field.y * (1.0 + warpX.y * 60.0 / 235.0) + field.z * warpY.y * 60.0 / 197.0,
+        field.y * warpX.z * 60.0 / 235.0 + field.z * (1.0 + warpY.z * 60.0 / 197.0));
       for (int i = 0; i < 5; i++) {
         vec4 pulse = u_pulse[i];
         float age = u_scene.w - pulse.z;
-        if (pulse.w > .001 && age >= 0.0 && age < 5.0) {
+        if (pulse.w > .001 && age >= 0.0 && age < 2.7) {
           vec2 delta = (pixel - pulse.xy) / vec2(1.0, .61);
           float radius = max(length(delta), 1.0);
-          float front = age * 47.0;
-          float spread = 15.0 + age * 10.0;
-          float distance = radius - front;
-          float envelope = exp(-distance * distance / (spread * spread)) * exp(-age * .85);
-          float phase = distance * .15;
-          float amplitude = pulse.w * 2.5;
+          float angle = atan(delta.y, delta.x);
+          float distortion = sin(angle * 3.0 + pulse.z * 1.3) * min(radius * .06, 7.0);
+          distortion += (noise(p / 47.0 + pulse.xy * .002) - .5) * 7.0;
+          float front = age * 42.0;
+          float spread = 8.0 + age * 7.0;
+          float distance = radius + distortion - front;
+          float broken = .5 + .5 * noise(delta / 26.0 + pulse.xy * .002);
+          float envelope = exp(-distance * distance / (spread * spread) - age * 1.5) * broken;
+          envelope *= smoothstep(0.0, .15, age) * (1.0 - smoothstep(1.7, 2.7, age));
+          float phase = distance * .19;
+          float amplitude = pulse.w * 1.65 * u_scene.x;
           float displacement = sin(phase) * envelope * amplitude;
           float derivative = amplitude * envelope *
-            (.15 * cos(phase) - 2.0 * distance / (spread * spread) * sin(phase));
+            (.19 * cos(phase) - 2.0 * distance / (spread * spread) * sin(phase));
           field += vec3(displacement, derivative * delta / radius);
         }
       }
@@ -79,21 +100,27 @@
 
       // Broad, reflected overcast light gives the ripples their shape. The
       // finer waves disturb those same reflections, rather than a second grid.
-      float sky = smoothstep(-.12, .85, reflected.z);
-      float cloud = noise(reflected.xy * 3.4 + vec2(2.0, 9.0));
-      vec3 environment = mix(vec3(.48, .66, .57), vec3(.91, .94, .87), sky);
-      environment += (cloud - .5) * .18;
-      // Water's body color does not alternate at each crest. Broad reflected
-      // light, rather than height-painted stripes, describes the calm surface.
-      vec3 water = vec3(.65, .78, .70);
-      vec3 color = mix(water, environment, .53 + fresnel * .35);
-      vec3 halfLight = normalize(view + normalize(vec3(-.5, -.35, 1.0)));
-      float sheen = pow(max(dot(normal, halfLight), 0.0), 32.0);
-      color += vec3(.055, .06, .045) * sheen;
+      float sky = smoothstep(.08, .88, reflected.z);
+      float cloud = noise(reflected.xy * 3.1 + vec2(2.0, 9.0));
+      cloud = mix(cloud, noise(reflected.xy * 6.7 + 4.0), .22);
+      vec3 environment = mix(vec3(.27, .47, .39), vec3(.94, .97, .91), sky);
+      environment += (cloud - .5) * .16;
+      // The deeper transmitted body stays quiet. Changing surface normals
+      // reveal the bright sky and darker horizon as distinct moving shapes.
+      vec3 water = vec3(.43, .62, .53);
+      vec3 color = mix(water, environment, .57 + fresnel * .38);
+      vec3 halfLight = normalize(view + normalize(vec3(-.31, .82, .48)));
+      float aligned = max(dot(normal, halfLight), 0.0);
+      float brokenCrest = smoothstep(.18, .70, noise(pixel / 48.0 + vec2(u_scene.w * .035, 0.0)));
+      float sheen = pow(aligned, 34.0);
+      float glint = pow(aligned, 170.0) * brokenCrest;
+      color += vec3(.10, .12, .09) * sheen + vec3(.22, .24, .19) * glint;
       // Preserve readable dark semantic captions, including over wave troughs.
       vec3 linearColor = pow(max(color, vec3(.001)), vec3(2.2));
       float luminance = dot(linearColor, vec3(.2126, .7152, .0722));
-      color = pow(linearColor * max(1.0, .37 / max(luminance, .001)), vec3(1.0 / 2.2));
+      // A soft lower bound retains trough variation while protecting captions.
+      float lifted = .30 + .035 * log(1.0 + exp((luminance - .30) / .035));
+      color = pow(linearColor * lifted / max(luminance, .001), vec3(1.0 / 2.2));
 
       for (int i = 0; i < 4; i++) {
         vec4 target = u_rect[i];
@@ -167,7 +194,7 @@
     let program, buffer, vertex, fragment, texture, uniforms;
     let available = false, configured = false, disposed = false;
     let configuration = null, lastFrame = null;
-    let previousRises = null, previousFracture = 0, lastRupture = -10;
+    let previousRises = null, previousFracture = 0, lastRupture = -10, activity = 1;
     const pulses = new Float32Array(20);
     const rects = new Float32Array(16), atlasRects = new Float32Array(16);
     const rises = new Float32Array(4);
@@ -332,20 +359,33 @@
         return low * (1 - uy) + high * uy;
       };
       const px = x, py = y / .61;
-      const wx = px + noise(px / 230, py / 230) * 84;
-      const wy = py + noise(px / 283 + 9, py / 283 + 9) * 84;
+      const flowX = time * .021, flowY = -time * .013;
+      const wx = px + (noise(px / 235 + flowX, py / 235 + flowY) - .5) * 60;
+      const wy = py + (noise(px / 197 + 9 + flowX * .63, py / 197 + 13 + flowY * .63) - .5) * 60;
       const components = [
-        [.91, .415, 335, 2.6, .46, .5], [-.42, .908, 211, 1.65, -.58, 2.3],
-        [.28, .96, 95, .11, .71, 1.1], [.78, -.626, 44, .018, -.97, 3.4],
+        [.96, .28, 296, 5.8, .53, .5], [-.60, .80, 173, 3.8, -.74, 2.3],
+        [.25, .968, 106, 1.9, .96, 1.1], [.82, -.572, 63, .78, -1.23, 3.4],
+        [-.34, .94, 39, .28, 1.72, .8], [.98, .199, 23, .105, -2.15, 4.1],
       ];
-      let height = components.reduce((total, [dx, dy, wavelength, amplitude, speed, phase]) =>
-        total + amplitude * Math.sin((wx * dx + wy * dy) * Math.PI * 2 / wavelength + time * speed + phase), 0);
+      let height = components.reduce((total, [dx, dy, wavelength, amplitude, speed, phase]) => {
+        const crest = Math.sin((wx * dx + wy * dy) * Math.PI * 2 / wavelength + time * speed + phase);
+        return total + amplitude * (crest + .18 * (crest * crest - .5));
+      }, 0);
+      const smooth = (start, end, value) => {
+        const t = Math.max(0, Math.min(1, (value - start) / (end - start)));
+        return t * t * (3 - 2 * t);
+      };
       for (let index = 0; index < 5; index++) {
         const offset = index * 4, age = time - pulses[offset + 2];
-        if (pulses[offset + 3] <= .001 || age < 0 || age >= 5) continue;
-        const radius = Math.max(1, Math.hypot(x - pulses[offset], (y - pulses[offset + 1]) / .61));
-        const distance = radius - age * 47, spread = 15 + age * 10;
-        height += Math.sin(distance * .15) * Math.exp(-distance * distance / (spread * spread) - age * .85) * pulses[offset + 3] * 2.5;
+        if (pulses[offset + 3] <= .001 || age < 0 || age >= 2.7) continue;
+        const dx = x - pulses[offset], dy = (y - pulses[offset + 1]) / .61;
+        const radius = Math.max(1, Math.hypot(dx, dy));
+        let distortion = Math.sin(Math.atan2(dy, dx) * 3 + pulses[offset + 2] * 1.3) * Math.min(radius * .06, 7);
+        distortion += (noise(px / 47 + pulses[offset] * .002, py / 47 + pulses[offset + 1] * .002) - .5) * 7;
+        const distance = radius + distortion - age * 42, spread = 8 + age * 7;
+        const broken = .5 + .5 * noise(dx / 26 + pulses[offset] * .002, dy / 26 + pulses[offset + 1] * .002);
+        const envelope = Math.exp(-distance * distance / (spread * spread) - age * 1.5) * broken * smooth(0, .15, age) * (1 - smooth(1.7, 2.7, age));
+        height += Math.sin(distance * .19) * envelope * pulses[offset + 3] * 1.65 * activity;
       }
       return height;
     }
@@ -354,6 +394,7 @@
       if (!available || !configured || disposed || gl.isContextLost()) return false;
       const time = Math.max(0, finite(frame.time));
       const energy = Math.max(0, Math.min(1, finite(frame.energy)));
+      activity = Math.max(0, Math.min(1, finite(frame.activity, 1)));
       const fracture = Math.max(0, Math.min(1, finite(frame.fracture)));
       const values = frame.rises || [1, 1, 1, 1];
       for (let index = 0; index < 4; index++) {
@@ -369,14 +410,17 @@
         lastRupture = time;
       }
       if (lastFrame && time < lastFrame.time) pulses.fill(0);
+      // The controller forces this terminal frame before pausing time. Clear
+      // events too, so an old ring cannot return when the next scroll wakes it.
+      if (activity === 0) pulses.fill(0);
       previousRises = Array.from(rises);
       previousFracture = fracture;
-      lastFrame = { time, rises: Array.from(rises), energy, fracture, showFigures: frame.showFigures !== false };
+      lastFrame = { time, rises: Array.from(rises), energy, activity, fracture, showFigures: frame.showFigures !== false };
       gl.useProgram(program);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.uniform4f(uniforms.canvas, canvas.width, canvas.height, configuration.width, configuration.height);
-      gl.uniform4f(uniforms.scene, configuration.heroHeight, fracture, frame.showFigures === false ? 0 : 1, time);
+      gl.uniform4f(uniforms.scene, activity, fracture, frame.showFigures === false ? 0 : 1, time);
       gl.uniform4fv(uniforms.rises, rises);
       gl.uniform4fv(uniforms.rect, rects);
       gl.uniform4fv(uniforms.atlas, atlasRects);

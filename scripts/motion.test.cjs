@@ -514,6 +514,23 @@ test('slabs and water continue responding after scroll stops, then become idle',
   assert.equal(renderedFrames(page).length, frames);
 });
 
+test('contact activity tapers and draws an exact zero before idle even between render ticks', () => {
+  const page = setup({ scene: true });
+  page.scroll(500); page.advance(2500);
+  assert.ok(lastFrame(page).activity > 0 && lastFrame(page).activity < 1, 'contact disturbances fade during the final part of the response');
+  page.flush(490);
+  assert.ok(lastFrame(page).activity > 0);
+  const before = renderedFrames(page).length;
+  // The final frame arrives only 10ms after a positive-activity draw, inside
+  // the normal 32ms render cap. It must still clear the remaining disturbances.
+  page.flush(10);
+  assert.equal(renderedFrames(page).length, before + 1);
+  assert.equal(lastFrame(page).activity, 0);
+  assert.equal(page.queue.size, 0);
+  page.advance(1000);
+  assert.equal(renderedFrames(page).length, before + 1);
+});
+
 test('reversing an active scene retargets continuously and reaches the same settled destination', () => {
   const page = setup({ scene: true });
   page.scroll(400); page.settle();
