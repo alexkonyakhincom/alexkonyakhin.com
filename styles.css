@@ -280,6 +280,7 @@ nav a:hover { text-decoration: underline; }
    recessed channel and bevels are painted once, then the whole slab moves. */
 .page-shell { overflow: clip; }
 .split-surface { display: none; }
+.split-copy { display: none; }
 .motion-ready body { overflow-x: clip; }
 .motion-ready .split-section {
   position: relative;
@@ -393,9 +394,28 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   .contact .button { margin-right: 0; }
 }
 @media (max-width: 900px) {
-  /* One reading column sits on one sheet. The fracture moves to the margin
-     rather than opening a dark channel underneath full-width mobile text. */
-  .motion-ready .split-section { --split-at: 0%; --seam-lean: 0px; }
+  /* The mobile layout stays stacked; its two rendered halves part along the
+     central fracture, so the ink travels with the ice just as on desktop. */
+  .motion-ready .split-section { --split-at: 50%; --seam-lean: 0px; }
+  .motion-ready .split-rendered > :not(.split-surface):not(.split-copy) { opacity: 0; pointer-events: none; }
+  .motion-ready .split-rendered > .split-copy {
+    display: inherit;
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: inherit;
+    border: inherit;
+    grid-template-columns: inherit;
+    gap: inherit;
+    background: transparent;
+    box-shadow: none;
+    clip-path: var(--fracture-shape);
+  }
+  .split-copy-left { --fracture-shape: polygon(0 0, var(--fracture-seam), 0 100%); }
+  .split-copy-right { --fracture-shape: polygon(var(--fracture-seam), 100% 100%, 100% 0); }
   .site-header { gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-5); }
   nav { gap: var(--space-5); }
   .lang-switch { margin-left: 0; padding-left: var(--space-5); }
