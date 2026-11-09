@@ -14,18 +14,26 @@ function setup({ reduced = false, count = 2, hero = false, water = false, height
       set(target, key, value) { trace.push('write'); target[key] = value; return true; },
     }),
   });
+  const attributed = attributes => ({
+    attributes: { ...attributes },
+    setAttribute(name, value) { this.attributes[name] = value; },
+    removeAttribute(name) { delete this.attributes[name]; },
+  });
   const selection = {
     isCollapsed: true, anchorNode: null, focusNode: null,
     get rangeCount() { return this.isCollapsed ? 0 : 1; },
     getRangeAt(index) {
       assert.equal(index, 0);
       const nodes = proof ? [sections[0], proof, ...sections.slice(1)].filter(Boolean) : sections;
-      const start = nodes.findIndex(section => section.parts.includes(this.anchorNode));
-      const end = nodes.findIndex(section => section.parts.includes(this.focusNode));
+      const ordered = nodes.flatMap(section => [section, ...section.parts,
+        ...(section.copies || []).flatMap(copy => [copy, ...copy.children])]);
+      const start = ordered.indexOf(this.anchorNode);
+      const end = ordered.indexOf(this.focusNode);
       return {
         intersectsNode(node) {
-          const index = nodes.indexOf(node);
-          return index >= Math.min(start, end) && index <= Math.max(start, end);
+          const first = ordered.indexOf(node);
+          const last = ordered.reduce((last, candidate, index) => node.contains?.(candidate) ? index : last, first);
+          return first <= Math.max(start, end) && last >= Math.min(start, end);
         },
       };
     },
@@ -49,16 +57,39 @@ function setup({ reduced = false, count = 2, hero = false, water = false, height
   const sections = Array.from({ length: count }, (_, index) => {
     const parts = [makePart('left', index), makePart('right', index)];
     const surfaces = [makePart('left', index, true), makePart('right', index, true)];
-    const sectionClasses = new Set();
+    const sectionClasses = new Set(['split-section']);
+    const copies = [];
     return {
-      parts, surfaces, classes: sectionClasses, dataset: { split: hero && index === 0 ? 'hero' : 'case' },
+      parts, surfaces, copies, classes: sectionClasses, dataset: { split: hero && index === 0 ? 'hero' : 'case' },
       classList: { toggle(name, value) { value ? sectionClasses.add(name) : sectionClasses.delete(name); } },
       querySelectorAll: selector => selector === '[data-drift]' ? parts : surfaces,
       getBoundingClientRect: () => {
         trace.push('read');
         return { left: 64, width: width - 128, height: 700, top: index * 700 - scroll, bottom: 700 + index * 700 - scroll };
       },
-      contains: node => parts.includes(node),
+      contains: node => parts.includes(node) || copies.some(copy => copy === node || copy.contains(node)),
+      append: (...elements) => copies.push(...elements),
+      cloneNode() {
+        const links = [{ ...attributed({ id: `cta-${index}`, href: '#work', 'data-cta': 'book_call' }), tabIndex: 0 }];
+        const clonedSurfaces = [0, 1].map(() => ({ remove() { this.removed = true; } }));
+        const children = [...clonedSurfaces, attributed({ id: `title-${index}`, 'data-drift': 'left' }), ...links];
+        const cloneClasses = new Set(sectionClasses);
+        return {
+          ...styled(), ...attributed({ id: `section-${index}`, 'data-split': 'case', 'aria-labelledby': `title-${index}` }),
+          children, links, surfaces: clonedSurfaces, classes: cloneClasses,
+          classList: {
+            add: (...names) => names.forEach(name => cloneClasses.add(name)),
+            remove: (...names) => names.forEach(name => cloneClasses.delete(name)),
+          },
+          querySelectorAll(selector) {
+            if (selector === '.split-surface') return clonedSurfaces.filter(node => !node.removed);
+            if (selector === '*') return children.filter(node => !node.removed);
+            if (selector === 'a') return links;
+            return [];
+          },
+          contains: node => children.includes(node),
+        };
+      },
     };
   });
   const proof = water ? {
@@ -210,24 +241,97 @@ test('text selection freezes its section and releasing it resumes the scroll pos
   assert.deepEqual(positions(page.sections[0]), before);
 });
 
-test('mobile resize reduces displacement at the same scroll position', () => {
+test('mobile splits both visual halves with their sheets and keeps the semantic source intact', () => {
   const page = setup();
   page.scroll(400); page.flush();
   const desktop = Math.abs(translation(positions(page.sections[0])[0]));
   page.resize(390); page.flush();
-  assert.ok(Math.abs(translation(positions(page.sections[0])[0])) < desktop / 2);
+  const section = page.sections[0];
+  assert.equal(section.copies.length, 2);
+  assert.ok(Math.abs(translation(section.copies[0].style.transform)) < desktop / 2);
   assert.ok(page.trace.includes('child-read'), 'resize refreshes local pivots');
   page.scroll(5000); page.flush();
-  for (const pose of positions(page.sections[0])) {
-    assert.ok(Math.abs(translation(pose)) <= 14);
+  assert.ok(positions(section).every(pose => pose === restingPose));
+  assert.ok(section.classes.has('split-rendered'));
+  section.copies.forEach((copy, side) => {
+    const pose = copy.style.transform;
+    assert.ok(Math.abs(translation(pose)) <= 52);
     assert.equal(rotation(pose), 0);
-    assert.ok(translation(pose) > 0);
-    assert.equal(pose, page.sections[0].surfaces[1].style.transform, 'all stacked copy travels with the right sheet');
-  }
-  assert.ok(translation(page.sections[0].surfaces[0].style.transform) < 0, 'left sheet still parts in the opposite direction');
+    assert.ok(side === 0 ? translation(pose) < 0 : translation(pose) > 0);
+    assert.equal(pose, section.surfaces[side].style.transform, 'each visible half travels with its own sheet');
+  });
   page.resize(1280); page.flush();
-  assert.equal(page.sections[0].parts[0].style.transform, page.sections[0].surfaces[0].style.transform, 'desktop restores the original two-sided layout');
-  assert.ok(translation(page.sections[0].parts[0].style.transform) < 0);
+  assert.ok(!section.classes.has('split-rendered'));
+  assert.equal(section.parts[0].style.transform, section.surfaces[0].style.transform, 'desktop restores the original two-sided layout');
+  assert.ok(translation(section.parts[0].style.transform) < 0);
+  page.resize(390); page.flush();
+  assert.equal(section.copies.length, 2, 'responsive changes reuse the same visual copies');
+});
+
+test('mobile copies preserve touch links without duplicate IDs or keyboard stops', () => {
+  const page = setup();
+  page.resize(390); page.flush();
+  page.scroll(400); page.flush();
+  const section = page.sections[0];
+  for (const copy of section.copies) {
+    assert.equal(copy.attributes['aria-hidden'], 'true');
+    for (const node of [copy, ...copy.querySelectorAll('*')]) {
+      assert.equal(node.attributes.id, undefined);
+      assert.equal(node.attributes['data-split'], undefined);
+    }
+    for (const link of copy.links) {
+      assert.equal(link.tabIndex, -1);
+      assert.equal(link.attributes.href, '#work');
+      assert.equal(link.attributes['data-cta'], 'book_call');
+    }
+  }
+  page.focus(section.copies[0].links[0]);
+  assert.ok(section.classes.has('split-rendered'), 'touch focus leaves the visible linked half in place');
+  page.focus(section.parts[0]);
+  assert.ok(!section.classes.has('split-rendered'), 'keyboard focus restores the semantic source and its real control');
+  assert.ok(section.surfaces.every(surface => surface.style.transform === restingPose));
+  page.focus(null);
+  assert.ok(section.classes.has('split-rendered'));
+  page.reduced(true);
+  assert.ok(!section.classes.has('split-rendered'));
+  assert.ok(section.copies.every(copy => copy.style.transform === undefined));
+});
+
+test('selecting a visible mobile half freezes its pose until selection ends', () => {
+  const page = setup();
+  page.resize(390); page.flush();
+  page.scroll(350); page.flush();
+  const section = page.sections[0];
+  const before = section.copies.map(copy => copy.style.transform);
+  page.select(section.copies[0].links[0]); page.flush();
+  page.scroll(500); page.flush();
+  assert.deepEqual(section.copies.map(copy => copy.style.transform), before);
+  assert.ok(section.classes.has('split-rendered'));
+  page.select(null); page.flush();
+  assert.notDeepEqual(section.copies.map(copy => copy.style.transform), before);
+});
+
+test('selecting original text across mobile sections restores all enclosed sources', () => {
+  const page = setup({ count: 3 });
+  page.resize(390); page.flush();
+  page.scroll(1600); page.flush();
+  assert.ok(page.sections[1].classes.has('split-rendered'));
+  page.select(page.sections[0].parts[0], page.sections[2].parts[1]); page.flush();
+  assert.ok(page.sections.every(section => !section.classes.has('split-rendered')));
+  assert.ok(page.sections.every(section => section.surfaces.every(surface => surface.style.transform === restingPose)));
+});
+
+test('mobile hero starts intact and opens centrally while its heading is still in view', () => {
+  const page = setup({ hero: true });
+  page.resize(390); page.flush();
+  const section = page.sections[0];
+  assert.ok(!section.classes.has('split-rendered'));
+  page.scroll(47); page.flush();
+  assert.ok(!section.classes.has('split-rendered'));
+  page.scroll(100); page.flush();
+  assert.ok(section.classes.has('split-rendered'));
+  assert.ok(translation(section.copies[0].style.transform) < 0);
+  assert.ok(translation(section.copies[1].style.transform) > 0);
 });
 
 test('keeps sheet and content in the same rigid pose around a common world pivot', () => {

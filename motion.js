@@ -6,6 +6,7 @@
     element,
     index,
     hero: element.dataset.split === 'hero',
+    copies: [],
     movers: [
       ...[...element.querySelectorAll('[data-drift]')].map(part => ({
         element: part, side: part.dataset.drift === 'left' ? 0 : 1, content: true,
@@ -51,12 +52,14 @@
   function reset() {
     for (const section of sections) {
       section.progress = -1;
+      section.element.classList.toggle('split-rendered', false);
       if (section.open) section.element.classList.toggle('split-open', false);
       section.open = false;
       for (const mover of section.movers) {
         mover.element.style.removeProperty('transform');
         mover.element.style.removeProperty('transform-origin');
       }
+      for (const copy of section.copies) copy.style.removeProperty('transform');
     }
     if (water) {
       water.progress = -1;
@@ -72,6 +75,31 @@
   }
 
   function cacheGeometry() {
+    const mobile = root.clientWidth <= 900;
+    if (mobile) {
+      for (const section of sections) {
+        if (section.copies.length) continue;
+        // Keep one semantic source in flow. The two visual halves preserve
+        // the stacked layout and slice its ink along the same seam as the ice.
+        // Source links remain the keyboard/AT targets. Visible copied links
+        // retain their destinations for accurate touch hit areas, but are
+        // excluded from the accessibility tree and sequential keyboard focus.
+        const copies = [0, 1].map(side => {
+          const copy = section.element.cloneNode(true);
+          for (const surface of copy.querySelectorAll('.split-surface')) surface.remove();
+          for (const node of [copy, ...copy.querySelectorAll('*')]) {
+            for (const name of ['id', 'data-split', 'data-drift', 'aria-labelledby', 'aria-describedby']) node.removeAttribute(name);
+          }
+          copy.classList.remove('split-section', 'split-open', 'split-rendered');
+          copy.classList.add('split-copy', side === 0 ? 'split-copy-left' : 'split-copy-right');
+          copy.setAttribute('aria-hidden', 'true');
+          for (const link of copy.querySelectorAll('a')) link.tabIndex = -1;
+          return copy;
+        });
+        section.copies = copies;
+        section.element.append(...copies);
+      }
+    }
     // Measurements happen with transforms removed. A common section-space
     // pivot, expressed in each element's local space, keeps ink on its sheet.
     // These child reads run only after setup or a real layout change.
@@ -82,11 +110,13 @@
     }));
     for (const { section, rect, bounds } of measurements) {
       section.height = rect.bottom - rect.top;
+      section.documentTop = rect.top + window.scrollY;
       section.movers.forEach((mover, index) => {
         const pivotX = rect.left + rect.width * (mover.side === 0 ? .12 : .88);
         const pivotY = rect.bottom;
         mover.element.style.transformOrigin = `${round(pivotX - bounds[index].left)}px ${round(pivotY - bounds[index].top)}px`;
       });
+      for (const copy of section.copies) copy.style.transformOrigin = '50% 100%';
     }
     if (water && water.renderer) water.renderer.resize();
     layoutDirty = false;
@@ -102,27 +132,35 @@
     const height = Math.max(1, window.innerHeight);
     const width = root.clientWidth;
     const mobile = width <= 900;
-    // Stacked mobile copy has no room for a large horizontal excursion.
-    const distance = mobile ? Math.min(width * .035, 14) : Math.min(width * .19, 252);
+    const distance = mobile ? Math.min(width * .12, 52) : Math.min(width * .19, 252);
     const active = document.activeElement;
     const selection = window.getSelection();
     const selectedRange = selection && !selection.isCollapsed && selection.rangeCount
       ? selection.getRangeAt(0) : null;
+    const selectionInCopies = selectedRange && sections.some(section => section.copies.some(copy =>
+      copy.contains(selection.anchorNode) || copy.contains(selection.focusNode)));
     const readingBoundary = height * .58;
 
     // Only stable parent geometry is read on scroll, before any pose writes.
     const states = sections.map(section => {
       const rect = section.element.getBoundingClientRect();
-      const interacting = section.element.contains(active) ||
+      const copyFocused = section.copies.some(copy => copy.contains(active));
+      const copySelected = selectionInCopies && section.copies.some(copy => selectedRange.intersectsNode(copy));
+      const interacting = (!copyFocused && section.element.contains(active)) ||
         (selection && !selection.isCollapsed &&
-          (selectedRange ? selectedRange.intersectsNode(section.element) :
+          (selectedRange ? !copySelected && selectedRange.intersectsNode(section.element) :
             section.element.contains(selection.anchorNode) || section.element.contains(selection.focusNode)));
       // The opening hero parts as its lower edge approaches the viewport,
       // completing before the proof reaches the reading area. Capping the
       // boundary by its own height keeps the initial page intact on tall screens.
       const boundary = section.hero ? Math.min(height * .92, section.height) : readingBoundary;
       const range = section.hero ? height * .64 : readingBoundary;
-      const progress = interacting ? 0 : clamp((boundary - rect.bottom) / range);
+      // On a tall, stacked hero the center crack needs to begin while its
+      // headline is still visible, rather than waiting for the bottom edge.
+      const mobileHeroProgress = (Math.min(height * .16, section.documentTop - 48) - rect.top) /
+        Math.min(section.height * .75, height * .72);
+      const progress = interacting ? 0 : copySelected ? Math.max(0, section.progress) :
+        clamp(mobile && section.hero ? mobileHeroProgress : (boundary - rect.bottom) / range);
       return { section, progress };
     });
     const waterRect = water && water.element.getBoundingClientRect();
@@ -136,6 +174,7 @@
       const open = progress > .001;
       if (open !== section.open) section.element.classList.toggle('split-open', open);
       section.open = open;
+      section.element.classList.toggle('split-rendered', mobile && open);
 
       // A small crack leads the heavier drift; tilt starts only once the
       // sheets have separated. Smooth endpoints avoid the old mechanical snap.
@@ -153,11 +192,13 @@
         const angle = mobile ? 0 : round(direction * turn * .95 * weight * balance);
         return `translate3d(${x}px, ${y}px, 0) rotate(${angle}deg)`;
       });
-      // Stacked mobile copy belongs to one unbroken right-hand sheet; its
-      // fracture sits in the left gutter, outside every full-width text line.
+      // On phones, both the ink and ice split at the center. Keep the semantic
+      // source still, so keyboard focus can restore the intact reading layout.
       for (const mover of section.movers) {
-        mover.element.style.transform = poses[mobile && mover.content ? 1 : mover.side];
+        mover.element.style.transform = mobile && mover.content
+          ? 'translate3d(0px, 0px, 0) rotate(0deg)' : poses[mover.side];
       }
+      section.copies.forEach((copy, side) => { copy.style.transform = mobile ? poses[side] : ''; });
     }
     if (water && waterRect.bottom > 0 && waterRect.top < height) updateWater(waterProgress, mobile);
   }
