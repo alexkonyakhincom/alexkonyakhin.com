@@ -85,9 +85,9 @@ label, one-line qualifier.
 | Numeral | Label | Qualifier |
 |---|---|---|
 | 300k+ | monthly active users | employee app I owned as head of product |
-| 3× | monthly turnover | mobile printing network, April 2024 to June 2026 |
-| 20,000 | job applications | first three months of a recruitment journey I led |
-| 3 | companies co-founded | 2015 to 2022 |
+| 3× | monthly card turnover | Copix, April 2024 to June 2026 |
+| 20,000 | candidate applications | first three months of a hiring feature I proposed and led |
+| 3 | companies founded or co-founded | 2015 to 2022 |
 
 ### 3.4 Work
 
@@ -104,7 +104,7 @@ measurement. I led developers, a designer and QA, and brought hypotheses and
 decisions to senior stakeholders.
 
 Results row: 300k+ monthly active users during my time on the product ·
-20,000 job applications in the first three months of the recruitment journey
+20,000 candidate applications in the first three months of the hiring feature
 
 Three short contributions, each a bold lead and one or two sentences:
 
@@ -112,8 +112,9 @@ Three short contributions, each a bold lead and one or two sentences:
   full stack: event coverage in Firebase, a pipeline into BigQuery, and
   custom Looker dashboards that gave senior managers visibility into how the
   workforce used the app.
-- A recruitment journey. We opened the app to people who were not yet
-  employees, so candidates for cashier and store roles could apply directly.
+- A hiring feature that also solved an App Store problem. Apple had started rejecting the app as employee-only, while store reviews showed people downloading it in the hope of finding a job. I proposed opening it to everyone, so candidates for cashier and store roles could apply directly. Apple accepted it as a public app, and about 20,000 applications came in over the first three months.
+  (Owner's account, 9 November 2026. The app's name stays out: it would
+  identify the client.)
 - A learning game. An employee's idea that I shaped into an in-app game on
   existing training content and piloted across 16 operational clusters.
 
@@ -134,6 +135,8 @@ Note (muted): Network-wide results during the collaboration, alongside
 pricing and network changes.
 
 ### 3.5 When founders call me
+
+Placed directly after the proof band and before Work (owner decision, 9 November 2026), so the buyer's own situation comes before the cases.
 
 Small heading, then three bold lines, no paragraphs:
 
@@ -374,3 +377,37 @@ the same order, in plain text, with the same contact destinations.
 - Further cases from earlier roles (for example apps shipped as project
   manager at Globus for a large client). Held until the owner has reviewed
   the confidentiality obligations that apply to that work.
+
+## Revisions, 9 November 2026 (owner-approved in session)
+
+- **Proof band.** A small visible heading, "Work that moved", sits on the paper
+  above the band and labels the section. The band itself is the icebreaker's
+  lead described in the README (`motion.js`, `water.js`).
+- **Header.** A fourth navigation item, "Book a call", links to the booking
+  page with `data-cta-location="header"`. It is hidden at 900px and below,
+  where the hero button is already on the first screen.
+- **Retail case.** A four-step list under "Analytics from events to
+  decisions": Events · Firebase, Pipeline · BigQuery, Dashboards · Looker,
+  Decisions · Senior managers. It restates the paragraph; it adds no claim.
+- **How I work.** A timeline figure above the steps: Month 1 (paid first
+  month), Month 2, Month 3, with a checkpoint mark between months. Caption:
+  "Checkpoint: continue, adjust the scope, or hand over."
+- **Who does what.** The same three sentences, set as three columns ("I own",
+  "You own", "Your CTO and team own").
+- **Colour.** The contact section and footer use the same deep teal as the
+  water (`--deep`).
+- No chart for the Copix result: only its two endpoints are verified.
+- **Portrait.** A new owner-supplied photo: `portrait.jpg` (688×860) sits under
+  the Background heading and is the `og:image`; `ava_alex_konyakhin.png` is a
+  192px square crop of the same photo for the header and favicon.
+- **Own products.** Each link carries a one-line description from the owner,
+  checked against the product sites: NicePass, "A Wallet pass restaurant guests
+  get in 30 seconds, built to bring them back."; Stopwell, "Flight search built
+  around your event: it scores how rested you arrive, not the price. Closed
+  beta."; VPNKill, "A packet-level VPN kill switch for macOS."; Rostok, "For
+  dance teachers: lessons, students and progress in one place. Launching soon."
+- **Testimonial.** The Copix case ends with a quote from Nail, founder of
+  Copix, in the owner's translation with light grammar edits. A major rewording
+  needs Nail's permission again.
+- **Availability.** Owner decision: the page says nothing about how much time
+  is available, in either direction.

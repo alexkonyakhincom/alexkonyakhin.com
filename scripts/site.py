@@ -15,6 +15,7 @@ PUBLIC_FILES = (
     "motion.js",
     "water.js",
     "ava_alex_konyakhin.png",
+    "portrait.jpg",
     "llms.txt",
     "robots.txt",
     "CNAME",
