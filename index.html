@@ -20,6 +20,7 @@
   <link rel="icon" href="/ava_alex_konyakhin.png" type="image/png">
   <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
+  <script src="/water.js" defer></script>
   <script src="/motion.js" defer></script>
   <script>
     window.trackCta = function () {};
@@ -92,27 +93,48 @@
       </ul>
     </section>
 
-    <section class="proof split-section" data-split="proof" aria-label="Key facts">
-      <div class="split-surface split-surface-left" aria-hidden="true"></div>
-      <div class="split-surface split-surface-right" aria-hidden="true"></div>
+    <section class="proof water-proof" data-water-proof aria-label="Key facts">
+      <div class="proof-water" aria-hidden="true">
+        <canvas data-water-canvas></canvas>
+        <span class="water-ice water-ice-near"></span>
+        <span class="water-ice water-ice-far"></span>
+        <span class="water-ice water-ice-chip"></span>
+        <span class="water-ice water-ice-last"></span>
+      </div>
       <ul class="proof-band">
-        <li data-drift="left">
-          <strong class="proof-num">300k+</strong>
+        <li data-float>
+          <span class="proof-figure">
+            <strong class="proof-num">300k+</strong>
+            <span class="proof-reflection" data-value="300k+" aria-hidden="true"></span>
+            <span class="proof-ripple" aria-hidden="true"></span>
+          </span>
           <span class="proof-label">monthly active users</span>
           <span class="proof-note">employee app I owned as head of product</span>
         </li>
-        <li data-drift="left">
-          <strong class="proof-num">3×</strong>
+        <li data-float>
+          <span class="proof-figure">
+            <strong class="proof-num">3×</strong>
+            <span class="proof-reflection" data-value="3×" aria-hidden="true"></span>
+            <span class="proof-ripple" aria-hidden="true"></span>
+          </span>
           <span class="proof-label">monthly turnover</span>
           <span class="proof-note">mobile printing network, April 2024 to June 2026</span>
         </li>
-        <li data-drift="right">
-          <strong class="proof-num">20,000</strong>
+        <li data-float>
+          <span class="proof-figure">
+            <strong class="proof-num">20,000</strong>
+            <span class="proof-reflection" data-value="20,000" aria-hidden="true"></span>
+            <span class="proof-ripple" aria-hidden="true"></span>
+          </span>
           <span class="proof-label">job applications</span>
           <span class="proof-note">first three months of a recruitment journey I led</span>
         </li>
-        <li data-drift="right">
-          <strong class="proof-num">3</strong>
+        <li data-float>
+          <span class="proof-figure">
+            <strong class="proof-num">3</strong>
+            <span class="proof-reflection" data-value="3" aria-hidden="true"></span>
+            <span class="proof-ripple" aria-hidden="true"></span>
+          </span>
           <span class="proof-label">companies co-founded</span>
           <span class="proof-note">2015 to 2022</span>
         </li>
