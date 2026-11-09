@@ -1,5 +1,5 @@
-/* One orthographic water scene: surface, transmitted lettering, reflections,
-   and contact waves share coordinates and normals. The controller owns time.
+/* Decorative water and reflections. Readable figures remain native DOM text;
+   only their reflections share the surface normals. The controller owns time.
    Original procedural shader; no assets, dependencies, or idle loop here. */
 (() => {
   'use strict';
@@ -12,10 +12,9 @@
     uniform sampler2D u_letters;
     uniform vec4 u_canvas;
     uniform vec4 u_scene;
-    uniform vec4 u_rises;
     uniform vec4 u_rect[4];
     uniform vec4 u_atlas[4];
-    uniform vec4 u_pulse[5];
+    uniform vec4 u_pulse;
     const float TAU = 6.28318530718;
 
     float hash(vec2 p) {
@@ -60,8 +59,8 @@
       // light follows the actual curved wave fronts rather than painted bands.
       field.yz = vec2(field.y * (1.0 + warpX.y * 60.0 / 235.0) + field.z * warpY.y * 60.0 / 197.0,
         field.y * warpX.z * 60.0 / 235.0 + field.z * (1.0 + warpY.z * 60.0 / 197.0));
-      for (int i = 0; i < 5; i++) {
-        vec4 pulse = u_pulse[i];
+      {
+        vec4 pulse = u_pulse;
         float age = u_scene.w - pulse.z;
         if (pulse.w > .001 && age >= 0.0 && age < 2.7) {
           vec2 delta = (pixel - pulse.xy) / vec2(1.0, .61);
@@ -103,18 +102,18 @@
       float sky = smoothstep(.08, .88, reflected.z);
       float cloud = noise(reflected.xy * 3.1 + vec2(2.0, 9.0));
       cloud = mix(cloud, noise(reflected.xy * 6.7 + 4.0), .22);
-      vec3 environment = mix(vec3(.27, .47, .39), vec3(.94, .97, .91), sky);
-      environment += (cloud - .5) * .16;
+      vec3 environment = mix(vec3(.48, .65, .55), vec3(.88, .93, .86), sky);
+      environment += (cloud - .5) * .07;
       // The deeper transmitted body stays quiet. Changing surface normals
       // reveal the bright sky and darker horizon as distinct moving shapes.
-      vec3 water = vec3(.43, .62, .53);
-      vec3 color = mix(water, environment, .57 + fresnel * .38);
+      vec3 water = vec3(.64, .75, .67);
+      vec3 color = mix(water, environment, .37 + fresnel * .20);
       vec3 halfLight = normalize(view + normalize(vec3(-.31, .82, .48)));
       float aligned = max(dot(normal, halfLight), 0.0);
       float brokenCrest = smoothstep(.18, .70, noise(pixel / 48.0 + vec2(u_scene.w * .035, 0.0)));
       float sheen = pow(aligned, 34.0);
       float glint = pow(aligned, 170.0) * brokenCrest;
-      color += vec3(.10, .12, .09) * sheen + vec3(.22, .24, .19) * glint;
+      color += vec3(.035, .045, .03) * sheen + vec3(.065, .075, .055) * glint;
       // Preserve readable dark semantic captions, including over wave troughs.
       vec3 linearColor = pow(max(color, vec3(.001)), vec3(2.2));
       float luminance = dot(linearColor, vec3(.2126, .7152, .0722));
@@ -124,55 +123,20 @@
 
       for (int i = 0; i < 4; i++) {
         vec4 target = u_rect[i];
-        if (target.z < 1.0 || target.w < 1.0 || u_scene.z < .5) continue;
-        float rise = u_rises[i];
-        float line = target.y + target.w * .82;
-        // Surface height and the lettering's contact line use the same waves.
-        float waterline = line + field.x * .42;
-        vec4 body = target;
-        body.y += (1.0 - rise) * target.w * 1.22;
+        if (target.z < 1.0 || target.w < 1.0) continue;
+        // The source glyph never moves or enters the water. A quiet reflection
+        // starts below its native text box and follows the shared wave field.
+        float line = target.y + target.w * 1.06;
+        float waterline = line + field.x * .12;
         float below = pixel.y - waterline;
-        if (pixel.x > target.x - 28.0 && pixel.x < target.x + target.z + 28.0 &&
-            pixel.y > target.y - target.w * .25 && pixel.y < line + target.w * 2.0) {
-          // Reflection samples the exposed glyph through the current normal.
-          if (below > 0.0 && below < target.w * .75) {
-            vec2 mirror = vec2(pixel.x + normal.x * 19.0,
-              waterline - below + normal.y * 12.0);
-            float reflection = glyph(mirror, body, u_atlas[i]);
-            reflection *= smoothstep(2.0, 9.0, below) * exp(-below / (target.w * .38)) * .23;
-            reflection *= 1.0 - smoothstep(waterline - 2.0, waterline + 2.0, mirror.y);
-            color = mix(color, vec3(.18, .35, .28), reflection);
-          }
-
-          // Snell-like vertical compression and shared-normal displacement
-          // make the transmitted part belong below this particular surface.
-          if (below >= -1.0) {
-            vec2 transmitted = vec2(pixel.x + normal.x * (11.0 + below * .07),
-              waterline + below / .57 + normal.y * 8.0);
-            float softness = min(2.0, max(0.0, below) * .025);
-            float under = glyph(transmitted, body, u_atlas[i]) * .5;
-            under += glyph(transmitted + vec2(softness, 0.0), body, u_atlas[i]) * .25;
-            under += glyph(transmitted - vec2(softness, 0.0), body, u_atlas[i]) * .25;
-            under *= exp(-max(0.0, below) / (target.w * .9)) * .60;
-            under *= smoothstep(-1.0, 2.0, below);
-            color = mix(color, vec3(.25, .43, .34), under);
-          }
-
-          if (below < 2.0) {
-            float air = 1.0 - smoothstep(-1.0, 1.0, below);
-            float edge = glyph(pixel - vec2(1.0, 2.0), body, u_atlas[i]) * air;
-            color = mix(color, vec3(.13, .26, .21), edge * .65);
-            float letter = glyph(pixel, body, u_atlas[i]);
-            float highlight = max(0.0, letter - glyph(pixel - vec2(.8, 1.0), body, u_atlas[i]));
-            vec3 ink = vec3(.125, .235, .204) + highlight * vec3(.32, .38, .30);
-            color = mix(color, ink, letter * air);
-          }
-
-          // A narrow meniscus is the physical boundary, not an ellipse behind
-          // the whole word. It appears only where a glyph meets the water.
-          float meniscus = (1.0 - smoothstep(.25, 1.7, abs(below))) *
-            glyph(vec2(pixel.x, waterline), body, u_atlas[i]);
-          color = mix(color, vec3(.85, .92, .81), meniscus * .65);
+        if (pixel.x > target.x - 16.0 && pixel.x < target.x + target.z + 16.0 &&
+            below > 0.0 && below < target.w * .72) {
+          vec2 mirror = vec2(pixel.x + normal.x * 13.0,
+            waterline - below / .78 + normal.y * 7.0);
+          float reflection = glyph(mirror, target, u_atlas[i]);
+          reflection *= smoothstep(2.0, 10.0, below) * exp(-below / (target.w * .32)) * .14;
+          reflection *= 1.0 - smoothstep(target.w * .55, target.w * .72, below);
+          color = mix(color, vec3(.25, .43, .34), reflection);
         }
       }
       gl_FragColor = vec4(color, 1.0);
@@ -189,15 +153,14 @@
         preserveDrawingBuffer: false, powerPreference: 'low-power',
       });
     } catch (_) { return null; }
-    if (!gl || gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS) < 20) return null;
+    if (!gl || gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS) < 12) return null;
 
     let program, buffer, vertex, fragment, texture, uniforms;
     let available = false, configured = false, disposed = false;
     let configuration = null, lastFrame = null;
-    let previousRises = null, previousFracture = 0, lastRupture = -10, activity = 1;
-    const pulses = new Float32Array(20);
+    let previousFracture = 0, lastRupture = -10, activity = 1;
+    const pulse = new Float32Array(4);
     const rects = new Float32Array(16), atlasRects = new Float32Array(16);
-    const rises = new Float32Array(4);
     const finite = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 
     function release() {
@@ -242,8 +205,8 @@
       const position = gl.getAttribLocation(program, 'a_position');
       gl.enableVertexAttribArray(position);
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-      uniforms = Object.fromEntries(['canvas', 'scene', 'rises', 'rect', 'atlas', 'pulse', 'letters']
-        .map(name => [name, gl.getUniformLocation(program, `u_${name}${['rect', 'atlas', 'pulse'].includes(name) ? '[0]' : ''}`)]));
+      uniforms = Object.fromEntries(['canvas', 'scene', 'rect', 'atlas', 'pulse', 'letters']
+        .map(name => [name, gl.getUniformLocation(program, `u_${name}${['rect', 'atlas'].includes(name) ? '[0]' : ''}`)]));
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -257,6 +220,8 @@
 
     function configure(input) {
       if (!input || disposed) return false;
+      configured = false;
+      canvas.style.opacity = '0';
       configuration = {
         width: Math.max(1, finite(input.width, canvas.clientWidth)),
         height: Math.max(1, finite(input.height, canvas.clientHeight)),
@@ -323,8 +288,9 @@
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlas);
         configured = true;
-        pulses.fill(0);
-        previousRises = null;
+        pulse.fill(0);
+        previousFracture = lastFrame ? lastFrame.fracture : 0;
+        lastRupture = -10;
         resize();
         return true;
       } catch (_) {
@@ -337,7 +303,9 @@
     function resize() {
       if (!available || !configuration || disposed) return;
       const { width, height } = configuration;
-      const scale = Math.min(window.devicePixelRatio || 1, 1.25, 1440 / width, 2000 / height);
+      // Only water is rasterized: native text keeps its own device resolution.
+      // Bound the decorative surface for a shared frame cadence with the ice.
+      const scale = Math.min(window.devicePixelRatio || 1, 1, 1280 / width, 1600 / height);
       const w = Math.max(1, Math.round(width * scale));
       const h = Math.max(1, Math.round(height * scale));
       if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
@@ -375,17 +343,16 @@
         const t = Math.max(0, Math.min(1, (value - start) / (end - start)));
         return t * t * (3 - 2 * t);
       };
-      for (let index = 0; index < 5; index++) {
-        const offset = index * 4, age = time - pulses[offset + 2];
-        if (pulses[offset + 3] <= .001 || age < 0 || age >= 2.7) continue;
-        const dx = x - pulses[offset], dy = (y - pulses[offset + 1]) / .61;
+      const age = time - pulse[2];
+      if (pulse[3] > .001 && age >= 0 && age < 2.7) {
+        const dx = x - pulse[0], dy = (y - pulse[1]) / .61;
         const radius = Math.max(1, Math.hypot(dx, dy));
-        let distortion = Math.sin(Math.atan2(dy, dx) * 3 + pulses[offset + 2] * 1.3) * Math.min(radius * .06, 7);
-        distortion += (noise(px / 47 + pulses[offset] * .002, py / 47 + pulses[offset + 1] * .002) - .5) * 7;
+        let distortion = Math.sin(Math.atan2(dy, dx) * 3 + pulse[2] * 1.3) * Math.min(radius * .06, 7);
+        distortion += (noise(px / 47 + pulse[0] * .002, py / 47 + pulse[1] * .002) - .5) * 7;
         const distance = radius + distortion - age * 42, spread = 8 + age * 7;
-        const broken = .5 + .5 * noise(dx / 26 + pulses[offset] * .002, dy / 26 + pulses[offset + 1] * .002);
+        const broken = .5 + .5 * noise(dx / 26 + pulse[0] * .002, dy / 26 + pulse[1] * .002);
         const envelope = Math.exp(-distance * distance / (spread * spread) - age * 1.5) * broken * smooth(0, .15, age) * (1 - smooth(1.7, 2.7, age));
-        height += Math.sin(distance * .19) * envelope * pulses[offset + 3] * 1.65 * activity;
+        height += Math.sin(distance * .19) * envelope * pulse[3] * 1.65 * activity;
       }
       return height;
     }
@@ -396,35 +363,37 @@
       const energy = Math.max(0, Math.min(1, finite(frame.energy)));
       activity = Math.max(0, Math.min(1, finite(frame.activity, 1)));
       const fracture = Math.max(0, Math.min(1, finite(frame.fracture)));
-      const values = frame.rises || [1, 1, 1, 1];
-      for (let index = 0; index < 4; index++) {
-        rises[index] = Math.max(-.08, Math.min(1.12, finite(values[index], 1)));
-        if (previousRises && previousRises[index] < .42 && rises[index] >= .42) {
-          const offset = index * 4;
-          pulses.set([rects[offset] + rects[offset + 2] * .5,
-            rects[offset + 1] + rects[offset + 3] * .82, time, .65 + energy * .45], offset);
-        }
-      }
-      if (fracture > .03 && fracture < .98 && fracture > previousFracture + .0001 && time - lastRupture > .7) {
-        pulses.set([configuration.width * .5, configuration.heroHeight * (.15 + fracture * .8), time, 1.3 + energy * .5], 16);
+      const visibleTop = Math.min(configuration.height, Math.max(0, finite(frame.visibleTop)));
+      const visibleBottom = Math.min(configuration.height, Math.max(visibleTop, finite(frame.visibleBottom, configuration.height)));
+      if (lastFrame && time < lastFrame.time) { pulse.fill(0); lastRupture = -10; }
+      if (fracture > .03 && fracture < .98 && fracture > previousFracture + .0001 && time - lastRupture > .8) {
+        pulse.set([configuration.width * .5, configuration.heroHeight, time, .55 + energy * .25]);
         lastRupture = time;
       }
-      if (lastFrame && time < lastFrame.time) pulses.fill(0);
       // The controller forces this terminal frame before pausing time. Clear
       // events too, so an old ring cannot return when the next scroll wakes it.
-      if (activity === 0) pulses.fill(0);
-      previousRises = Array.from(rises);
+      if (activity === 0) pulse.fill(0);
       previousFracture = fracture;
-      lastFrame = { time, rises: Array.from(rises), energy, activity, fracture, showFigures: frame.showFigures !== false };
+      lastFrame = { time, energy, activity, fracture, visibleTop, visibleBottom };
+      if (visibleBottom <= visibleTop) { canvas.style.opacity = '0'; return false; }
       gl.useProgram(program);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.uniform4f(uniforms.canvas, canvas.width, canvas.height, configuration.width, configuration.height);
-      gl.uniform4f(uniforms.scene, activity, fracture, frame.showFigures === false ? 0 : 1, time);
-      gl.uniform4fv(uniforms.rises, rises);
+      gl.uniform4f(uniforms.scene, activity, fracture, 0, time);
       gl.uniform4fv(uniforms.rect, rects);
       gl.uniform4fv(uniforms.atlas, atlasRects);
-      gl.uniform4fv(uniforms.pulse, pulses);
+      gl.uniform4fv(uniforms.pulse, pulse);
+      // A cheap uniform clear avoids exposed black strips during scroll. The
+      // expensive procedural shader runs only in the supplied visible band.
+      gl.disable(gl.SCISSOR_TEST);
+      gl.clearColor(.67, .78, .70, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      const scaleY = canvas.height / configuration.height;
+      const top = Math.floor(visibleTop * scaleY);
+      const bottom = Math.ceil(visibleBottom * scaleY);
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(0, canvas.height - bottom, canvas.width, bottom - top);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       canvas.style.opacity = '1';
       return true;
