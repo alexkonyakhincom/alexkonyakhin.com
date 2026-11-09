@@ -411,3 +411,7 @@ the same order, in plain text, with the same contact destinations.
   needs Nail's permission again.
 - **Availability.** Owner decision: the page says nothing about how much time
   is available, in either direction.
+- **When founders call me (10 November 2026).** Same three sentences, each
+  split into a quiet setup clause and a bold problem clause, with a small line
+  drawing per situation. Three columns on desktop, rows on phones. The Serbian
+  page mirrors it.
