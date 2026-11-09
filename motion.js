@@ -34,7 +34,7 @@
   const round = value => Math.round(value * 10000) / 10000;
   const clock = () => window.performance ? window.performance.now() : 0;
   let pending = 0, layoutDirty = true, lastTime = null, wakeUntil = 0, lastInput = 0;
-  let waterTime = 0, lastDraw = -Infinity, sceneVisible = false;
+  let waterTime = 0, lastDraw = -Infinity, lastActivity = 0, sceneVisible = false;
 
   function cancel() {
     if (pending) window.cancelAnimationFrame(pending);
@@ -243,10 +243,14 @@
         scene.renderer = window.createProofWater(scene.canvas);
         if (scene.renderer) scene.renderer.configure(scene.layout);
       }
-      if (scene.renderer && sceneVisible && (now - lastDraw >= 32 || sourceSelected)) {
-        const drawn = scene.renderer.render({ time: waterTime, rises, energy, fracture, showFigures: !sourceSelected });
+      // Always draw the last calm frame, even between the capped render ticks,
+      // so contact waves disappear before the scene goes idle.
+      const finishing = activity === 0 && lastActivity > 0;
+      if (scene.renderer && sceneVisible && (now - lastDraw >= 32 || sourceSelected || finishing)) {
+        const drawn = scene.renderer.render({ time: waterTime, rises, energy, activity, fracture, showFigures: !sourceSelected });
         scene.element.classList.toggle('scene-rendered', drawn === true && !sourceSelected);
         lastDraw = now;
+        lastActivity = activity;
       } else if (!scene.renderer || scene.renderer.ready === false) scene.element.classList.toggle('scene-rendered', false);
       const release = smoothstep(.3, .9, fracture);
       scene.floes.forEach((floe, index) => {
