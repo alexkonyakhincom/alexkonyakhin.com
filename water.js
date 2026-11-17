@@ -1,8 +1,8 @@
 /* The icebreaker's lead, seen from above and drawn in Canvas 2D. The page's
-   paper is the ice sheet; a channel of dark water opens through it and the
+   paper is the ice sheet; a channel of grey-green water opens through it and the
    proof figures rest on four large floes. Every readable figure stays native
    DOM text above this canvas; nothing here owns, moves or hides content.
-   The controller owns time and progress. No assets, dependencies or loops. */
+   Each scroll position has one repeatable frame. */
 (() => {
   'use strict';
   const TAU = Math.PI * 2;
@@ -88,7 +88,6 @@
       if (c.area < 4) continue;
       const jitter = rand() * .08, pick = rand(), size = rand(), turn = rand(), heading = rand() * TAU;
       const shade = rand(), tint = TINTS[Math.floor(rand() * TINTS.length)];
-      const phase = rand() * TAU, pace = .45 + rand() * .6;
       const plate = { x: c.x, y: c.y, points: polygon.map(p => [p[0] - c.x, p[1] - c.y]), front: front(c.x, c.y) + jitter, tint };
       if (seed.sheet) {
         // Fused pack near the channel takes a little colour; the seam does not.
@@ -96,13 +95,13 @@
         Object.assign(plate, { kind: 'sheet', shade: shade * .5 * depth, crack: depth });
       } else {
         const packed = c.y < topEdge(c.x) + S * .55 || c.y > bottomEdge(c.x) - S * .55;
-        const sinks = pick < (packed ? .14 : .5);
+        const sinks = pick < (packed ? .3 : compact ? .83 : .72);
         const scale = sinks ? .8 : packed ? .84 + size * .11 : .52 + size * .34;
         const travel = (1 - scale) * Math.sqrt(c.area) * .32;
         Object.assign(plate, {
           kind: sinks ? 'sink' : 'floe', scale, shade: .25 + shade * .75,
           dx: Math.cos(heading) * travel, dy: Math.sin(heading) * travel * .7,
-          turn: (turn - .5) * 1.1 * (1 - scale), phase, pace, bob: .5 + (1 - scale) * 5,
+          turn: (turn - .5) * 1.1 * (1 - scale),
         });
       }
       plates.push(plate);
@@ -161,25 +160,25 @@
     }
 
     const brash = [];
-    for (let i = Math.min(420, Math.floor(W * H / 2600)); i > 0; i--) {
+    for (let i = Math.min(60, Math.floor(W * H / (compact ? 31000 : 14500))); i > 0; i--) {
       const x = rand() * W, y = lerp(topEdge(x) - 6, bottomEdge(x) + 6, rand());
-      const radius = 1.4 + rand() ** 2 * 5.5, sides = 4 + Math.floor(rand() * 3), spin = rand() * TAU;
+      const radius = 1.4 + rand() ** 2 * 3.5, sides = 4 + Math.floor(rand() * 3), spin = rand() * TAU;
       const points = [];
       for (let k = 0; k < sides; k++) {
         const angle = spin + k / sides * TAU, r = radius * (.6 + rand() * .6);
         points.push([Math.cos(angle) * r, Math.sin(angle) * r * .8]);
       }
-      brash.push({ x, y, points, front: front(x, y) + rand() * .1, phase: rand() * TAU, pace: .5 + rand() * .8 });
+      brash.push({ x, y, points, front: front(x, y) + rand() * .1 });
     }
 
     const glints = [];
-    for (let i = Math.min(280, Math.floor(W * H / 4200)); i > 0; i--) {
+    for (let i = Math.min(40, Math.floor(W * H / (compact ? 37000 : 18000))); i > 0; i--) {
       glints.push({
         x: rand() * W, y: rand() * H, length: 5 + rand() * 18, tilt: (rand() - .5) * .3,
-        phase: rand() * TAU, pace: .5 + rand() * .9, bend: (rand() - .5) * 3,
+        strength: .08 + rand() * .10, bend: (rand() - .5) * 3,
       });
     }
-    return { W, H, plates, floes, brash, glints, depth: compact ? 4 : 6 };
+    return { W, H, plates, floes, brash, glints, depth: compact ? 2 : 3 };
   }
 
   window.createIceLead = canvas => {
@@ -228,15 +227,15 @@
       const { W, H } = model, c = sea.context;
       c.setTransform(kx, 0, 0, ky, 0, 0);
       const body = c.createLinearGradient(0, 0, W * .25, H);
-      body.addColorStop(0, '#0b2a2d'); body.addColorStop(.5, '#113b3c'); body.addColorStop(1, '#0b2b2f');
+      body.addColorStop(0, '#88a49f'); body.addColorStop(.5, '#779692'); body.addColorStop(1, '#829d99');
       c.fillStyle = body; c.fillRect(0, 0, W, H);
       const rand = random(77);
       for (let i = 0; i < 7; i++) {
         const x = rand() * W, y = rand() * H, radius = (.18 + rand() * .3) * Math.max(W * .5, H);
         const patch = c.createRadialGradient(x, y, 0, x, y, radius);
         const light = i % 3 !== 2;
-        patch.addColorStop(0, light ? 'rgba(42,118,112,.34)' : 'rgba(3,18,22,.4)');
-        patch.addColorStop(1, light ? 'rgba(42,118,112,0)' : 'rgba(3,18,22,0)');
+        patch.addColorStop(0, light ? 'rgba(194,214,208,.12)' : 'rgba(65,97,95,.13)');
+        patch.addColorStop(1, light ? 'rgba(194,214,208,0)' : 'rgba(65,97,95,0)');
         c.fillStyle = patch; c.fillRect(0, 0, W, H);
       }
     }
@@ -261,7 +260,7 @@
       }
     }
 
-    function paintIce(progress, time) {
+    function paintIce(progress) {
       const { W, H, plates, floes } = model, c = ice.context;
       const local = value => clamp((progress * 1.46 - value) / .46);
       c.setTransform(kx, 0, 0, ky, 0, 0);
@@ -290,10 +289,8 @@
           }
           continue;
         }
-        const sway = time * plate.pace + plate.phase;
-        const x = plate.x + plate.dx * open + Math.sin(sway) * plate.bob * open * .6;
-        const y = plate.y + plate.dy * open + Math.cos(sway * .83) * plate.bob * open * .4;
-        const angle = plate.turn * open + Math.sin(sway * .7) * .012 * plate.bob * open;
+        const x = plate.x + plate.dx * open, y = plate.y + plate.dy * open;
+        const angle = plate.turn * open;
         const cos = Math.cos(angle), sin = Math.sin(angle), scale = lerp(1, plate.scale, open);
         let alpha = 1;
         if (plate.kind === 'sink') {
@@ -376,10 +373,10 @@
 
     function render(frame = {}) {
       if (!model || disposed) return false;
-      const progress = clamp(finite(frame.progress)), time = Math.max(0, finite(frame.time));
+      const progress = clamp(finite(frame.progress));
       const { W, H, glints, brash, depth } = model;
       const local = value => clamp((progress * 1.46 - value) / .46);
-      const sunk = paintIce(progress, time);
+      const sunk = paintIce(progress);
 
       main.setTransform(1, 0, 0, 1, 0, 0);
       main.globalAlpha = 1; main.globalCompositeOperation = 'source-over';
@@ -389,16 +386,15 @@
       main.setTransform(kx, 0, 0, ky, 0, 0);
       // Plates pushed under the surface stay faintly visible below it.
       for (const [plate, x, y, scale, cos, sin, under] of sunk) {
-        main.globalAlpha = .17 * under;
+        main.globalAlpha = .07 * under;
         main.beginPath(); trace(main, plate.points, x, y + depth, scale * .96, cos, sin);
         main.fillStyle = '#7fc4b8'; main.fill();
       }
       main.lineCap = 'round'; main.lineWidth = 1;
       main.strokeStyle = '#b4e2da';
       for (const glint of glints) {
-        const pulse = Math.max(0, Math.sin(time * glint.pace + glint.phase));
-        main.globalAlpha = .07 + .4 * pulse ** 4;
-        const half = glint.length * (.6 + .4 * pulse) / 2, rise = glint.tilt * half;
+        main.globalAlpha = glint.strength;
+        const half = glint.length / 2, rise = glint.tilt * half;
         main.beginPath();
         main.moveTo(glint.x - half, glint.y - rise);
         main.quadraticCurveTo(glint.x, glint.y + glint.bend, glint.x + half, glint.y + rise);
@@ -407,8 +403,8 @@
       main.globalAlpha = 1;
       main.setTransform(1, 0, 0, 1, 0, 0);
 
-      softPass('rgb(92,178,166)', 11, 0, depth, .34);
-      softPass('rgb(2,14,17)', 8, 4, depth + 5, .5);
+      softPass('rgb(152,186,178)', 8, 0, depth, .18);
+      softPass('rgb(39,60,59)', 7, 2, depth + 2, .24);
 
       // The submerged sidewall: the ice silhouette, offset and tinted.
       const w = wall.context;
@@ -419,18 +415,17 @@
       w.drawImage(ice.element, 0, depth * ky / 2);
       w.globalCompositeOperation = 'source-in';
       const tone = w.createLinearGradient(0, 0, 0, canvas.height);
-      tone.addColorStop(0, '#8fbcc0'); tone.addColorStop(1, '#79aab1');
+      tone.addColorStop(0, '#b2c7c5'); tone.addColorStop(1, '#a0b9b7');
       w.fillStyle = tone; w.fillRect(0, 0, canvas.width, canvas.height);
       main.drawImage(wall.element, 0, 0);
       // Brash: crumbs of ice in the open water, hidden wherever a plate lies.
       main.setTransform(kx, 0, 0, ky, 0, 0);
-      main.fillStyle = '#eef4f2';
+      main.fillStyle = '#c1d2ce';
       main.beginPath();
       for (const bit of brash) {
         const open = ease(local(bit.front));
         if (open <= .02) continue;
-        const sway = time * bit.pace + bit.phase;
-        trace(main, bit.points, bit.x + Math.sin(sway) * 1.6 * open, bit.y + Math.cos(sway * .8) * 1.1 * open, open, 1, 0);
+        trace(main, bit.points, bit.x, bit.y, open, 1, 0);
       }
       main.fill();
       main.setTransform(1, 0, 0, 1, 0, 0);

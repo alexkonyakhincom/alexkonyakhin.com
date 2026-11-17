@@ -1,19 +1,17 @@
 # Alexey Konyakhin
 
-Fractional CPO for founder-led software companies. The founder knows where the product is going; Alexey makes the company get there. The direction stays with the founder. Alexey owns priorities, measurement and delivery alongside the client's existing team, so the important work moves without every decision coming back to the founder. For companies with paying customers and an in-house development team; EU and UK first, with US East Coast mornings also workable.
-
-## Location and languages
-
-- Based in Belgrade, Serbia, on Central European Time.
-- Working languages: English and Serbian.
-- Invoicing in EUR from a registered business in Serbia.
-- Product and engineering work since 2013.
+Fractional CPO for founder-led software companies with paying customers and an in-house development team. Alexey helps when the team ships but the business priority keeps slipping. The founder sets the direction. Alexey works with the team to decide what comes first, what can wait and how to measure the result.
 
 ## Engagement
 
 A paid first month comes first: agree the business problem, look at the evidence the company already has, and set one priority with clear owners and a practical plan. If it fits, the work continues month by month as fractional CPO: priorities, trade-offs, dependencies across product, engineering and operations, and keeping every team tied to the goal the founder set. When the numbers say something should not be built, he says so. Baseline and success criteria are set up front; at each checkpoint the engagement continues, changes scope, or finishes with a clean handover. Days per week and scope are agreed individually.
 
-Alexey owns priorities, trade-offs, measurement, delivery and keeping every team aligned to the founder's goal. The founder or CEO owns the direction, the business goal, budget, access and decision authority. The CTO and team own technical quality, estimates and day-to-day execution. Not included: setting the company's direction, unlimited development, round-the-clock availability, an agency team, or guaranteed results.
+Alexey owns product priorities, trade-offs and delivery within the agreed budget. He tracks progress against the founder’s goal. The founder or CEO owns the direction, business goal, budget and access, and decides when any of those change. The CTO and team own technical quality, estimates and day-to-day execution. For example, if the goal is checkout completion, Alexey can defer a dashboard request so the team can fix failing payments. A change of budget or goal goes back to the founder. The scope excludes unlimited development, round-the-clock availability, an agency team, or guaranteed results.
+
+- Based in Belgrade, Serbia, on Central European Time.
+- EU and UK first. US East Coast mornings also work.
+- Working languages: English and Serbian.
+- Invoicing in EUR from a registered business in Serbia.
 
 ## Work
 
@@ -29,6 +27,8 @@ Product work with the founding team (Russia, 2024 to 2026). Website: https://cop
 
 ## Background
 
+Alexey has worked in product and engineering since 2013 and founded or co-founded three companies between 2015 and 2022.
+
 - 2025 to now: CPO, commercial real-estate platform.
 - 2024 to 2026: Product work with Copix, mobile printing network.
 - 2023 to now: COO and product lead, Erasoft.io, the team behind the retail employee app.
@@ -37,8 +37,6 @@ Product work with the founding team (Russia, 2024 to 2026). Website: https://cop
 - 2017 to 2019: Co-founder, Togezzer, internal comms for distributed teams.
 - 2015 to 2017: Co-founder, Knedlik Tech, travel mobile app.
 - 2013 to 2015: PM and tech lead, Globus, mobile and web portfolio.
-
-Three companies founded or co-founded between 2015 and 2022.
 
 ## Products
 

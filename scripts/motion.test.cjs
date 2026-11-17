@@ -28,7 +28,7 @@ function setup({ reduced = false, lead: withLead = true, height = 960, width: in
     ...classed(name, true), textContent: name,
     style: new Proxy({}, { set(target, key, value) { contentChanges.push(`${name}.${String(key)}`); target[key] = value; return true; } }),
   });
-  const figures = ['300k+', '3×', '20,000', '3'].map((text, index) => ({
+  const figures = ['300k+', '16', '3×', '2.15×'].map((text, index) => ({
     ...content(text),
     getBoundingClientRect() { trace.push('child-read'); return rect(1100, 180, 64 + index * (width - 128) / 4, (width - 128) / 4 - 40); },
   }));
@@ -101,74 +101,73 @@ test('both pages give the scene one decorative canvas and leave the figures as t
 
 test('starts as intact ice with no idle animation loop', () => {
   const page = setup();
-  assert.ok(page.root.classes.has('lead-live'));
   assert.equal(page.queue.size, 0);
   assert.equal(frames(page).length, 0, 'nothing is drawn while the lead is below the fold');
   page.scroll(2); page.flush();
+  assert.ok(page.root.classes.has('lead-live'));
   assert.ok(last(page).progress < .01);
   page.settle();
   assert.equal(page.windowEvents.get('scroll').options.passive, true);
   assert.deepEqual(page.contentChanges, []);
 });
 
-test('coalesces scroll events and draws on every visible animation frame', () => {
+test('coalesces a burst of scroll events into one frame at the final position', () => {
   const page = setup();
-  for (let i = 0; i < 20; i++) page.scroll(400);
+  for (let i = 1; i <= 20; i++) page.scroll(20 * i);
   assert.equal(page.queue.size, 1);
-  const before = frames(page).length;
-  for (let i = 0; i < 12; i++) page.flush(1000 / 120);
-  assert.equal(frames(page).length - before, 12);
+  page.flush();
+  assert.equal(frames(page).length, 1);
+  close(last(page).progress, expected(400));
+  assert.equal(page.queue.size, 0);
 });
 
 test('scroll opens the lead and settles on the scroll position', () => {
   const page = setup();
-  page.scroll(300); page.advance(150);
-  const early = last(page).progress;
-  assert.ok(early > 0 && early < expected(300), 'heavy ice follows the scroll with momentum');
-  page.settle();
+  page.scroll(300); page.flush();
   close(last(page).progress, expected(300));
   page.scroll(900); page.settle();
   assert.equal(last(page).progress, 1);
   assert.deepEqual(page.contentChanges, []);
 });
 
-test('drift continues briefly after input, then everything stops', () => {
+test('stopping the scroll freezes the scene and pointer movement leaves it still', () => {
   const page = setup();
-  page.scroll(900); page.advance(600);
-  const moving = last(page).time;
-  page.advance(600);
-  assert.ok(last(page).time > moving);
-  page.settle();
+  page.scroll(450); page.flush();
+  assert.equal(page.queue.size, 0);
   const total = frames(page).length;
+  page.pointer();
+  assert.equal(page.queue.size, 0);
+  page.scroll(450);
   page.advance(2000);
   assert.equal(frames(page).length, total);
-  page.pointer();
-  assert.equal(page.queue.size, 1, 'pointer movement over the water wakes the drift');
-  page.settle();
 });
 
 test('reversing mid-break is continuous and returns to the same state', () => {
   const page = setup();
-  page.scroll(300); page.settle();
-  const destination = last(page).progress;
-  page.scroll(700); page.advance(120);
-  const before = last(page).progress;
-  page.scroll(300); page.flush(1);
-  assert.ok(Math.abs(last(page).progress - before) < .02);
-  page.settle();
-  close(last(page).progress, destination);
+  page.scroll(300); page.flush();
+  const start = last(page);
+  page.scroll(450); page.flush();
+  const middle = last(page);
+  page.scroll(460); page.flush();
+  assert.ok(last(page).progress - middle.progress > 0 && last(page).progress - middle.progress < .02);
+  page.scroll(450); page.flush();
+  assert.deepEqual(last(page), middle);
+  page.scroll(300); page.flush();
+  assert.deepEqual(last(page), start);
 });
 
 test('progress never leaves the unit interval or goes non-finite', () => {
   const page = setup();
   for (const position of [5000, 0, 900, 200, 3000, 450]) { page.scroll(position); page.advance(90); }
   page.settle();
-  assert.ok(frames(page).every(frame => frame.progress >= 0 && frame.progress <= 1 && Number.isFinite(frame.time)));
+  assert.ok(frames(page).every(frame => Number.isFinite(frame.progress) && frame.progress >= 0 && frame.progress <= 1));
 });
 
 test('measures geometry once per layout and configures before drawing', () => {
   const page = setup();
-  page.scroll(400); page.advance(500);
+  page.scroll(400); page.flush();
+  page.trace.length = 0;
+  page.scroll(450); page.flush();
   assert.ok(!page.trace.includes('child-read'), 'scroll frames read only the lead bounds');
   assert.equal(count(page, 'configure'), 1);
   page.resize(390); page.flush();
@@ -188,7 +187,7 @@ test('the stylesheet fallback stays in charge when the renderer is missing or fa
   const failed = setup({ rendererSuccess: false });
   failed.scroll(400); failed.advance(100);
   assert.ok(!failed.root.classes.has('lead-live'));
-  failed.renderer(true); failed.advance(100);
+  failed.renderer(true); failed.scroll(400); failed.flush();
   assert.ok(failed.root.classes.has('lead-live'));
   assert.deepEqual([...absent.contentChanges, ...failed.contentChanges], []);
 });
@@ -196,13 +195,13 @@ test('the stylesheet fallback stays in charge when the renderer is missing or fa
 test('reduced motion shows the finished scene as one still frame', () => {
   const page = setup({ reduced: true });
   assert.equal(page.queue.size, 0);
-  assert.deepEqual(frames(page), [{ progress: 1, time: 0 }]);
+  assert.deepEqual(frames(page), [{ progress: 1 }]);
   assert.ok(page.root.classes.has('lead-live'));
   page.scroll(600); page.pointer(); page.advance(1000);
   assert.equal(frames(page).length, 1);
   page.resize(390);
   assert.equal(page.queue.size, 0);
-  assert.deepEqual(last(page), { progress: 1, time: 0 });
+  assert.deepEqual(last(page), { progress: 1 });
   assert.equal(count(page, 'configure'), 2);
 });
 
@@ -211,7 +210,7 @@ test('switching the motion preference cancels or resumes the animation', () => {
   page.scroll(400); page.advance(200);
   page.reduced(true);
   assert.equal(page.queue.size, 0);
-  assert.deepEqual(last(page), { progress: 1, time: 0 });
+  assert.deepEqual(last(page), { progress: 1 });
   const total = frames(page).length;
   page.scroll(700); page.advance(1000);
   assert.equal(frames(page).length, total);

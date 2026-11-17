@@ -22,24 +22,28 @@ MAILTO = "mailto:me@alexkonyakhin.com"
 TELEGRAM = "https://t.me/pieceofwave"
 BOOKING = "https://calendar.app.google/ats6knZjWvwpJUbp9"
 
+H1_EN = "Your team ships. The business priority keeps slipping."
+SUBHEAD_EN = "I’m a fractional CPO for founder-led software companies. You set the direction. I work with your team to decide what comes first, what can wait, and how we’ll know it worked."
+H1_SR = "Vaš tim objavljuje nove verzije. Najvažniji posao i dalje čeka."
+SUBHEAD_SR = "Radim kao fractional CPO za softverske kompanije koje vode osnivači. Vi određujete pravac. Sa vašim timom odlučujem šta radimo prvo, šta može da sačeka i kako ćemo znati da smo postigli cilj."
+
 REQUIRED_HTML = [
     # Task 3: header and first screen (spec §3.1–3.2)
     "Fractional CPO · Belgrade",
-    "You know where your product is going. I make the company get there.",
-    "Fractional CPO for founder-led software companies. The direction stays yours. I own priorities, measurement and delivery alongside your team, so the important work moves without every decision coming back to you.",
-    "For companies with paying customers and an in-house development team. "
-    "EU and UK first; US East Coast mornings work too.",
-    "Based in Belgrade, Serbia · Central European Time",
-    "Working languages: English and Serbian",
-    "Invoicing in EUR from a registered business in Serbia",
-    "Product and engineering since 2013",
+    H1_EN, SUBHEAD_EN,
+    "For companies with paying customers and an in-house development team.",
     "Book a 30-minute call",
     "See the work",
+    "How an employee app became a hiring channel",
+    "Apple had started rejecting a retail app I led because it was for employees only. "
+    "App Store reviews showed that people were downloading it to look for work. "
+    "I proposed opening the app to everyone so people could apply for store jobs directly. "
+    "Apple approved the public app. In the first three months, the retailer received about 20,000 applications through it.",
     # Task 4: proof band (spec §3.3)
     "300k+ monthly active users", "employee app I owned as head of product",
-    "3× monthly card turnover", "Copix, April 2024 to June 2026",
-    "20,000 candidate applications", "first three months of a hiring feature I proposed and led",
-    "3 companies founded or co-founded", "2015 to 2022",
+    "16 operational clusters", "pilot of an employee training game",
+    "3× monthly card turnover", "Copix network-wide, April 2024 to June 2026",
+    "2.15× turnover per active printer", "across the Copix network over the same period",
     # Task 5: work section (spec §3.4)
     "Employee app for a major retail chain",
     "Head of product for the whole app · Retail · Russia",
@@ -50,8 +54,6 @@ REQUIRED_HTML = [
     "Analytics from events to decisions.",
     "I led the team's implementation of the full stack: event coverage in Firebase, a pipeline into BigQuery, "
     "and custom Looker dashboards that gave senior managers visibility into how the workforce used the app.",
-    "A hiring feature that also solved an App Store problem.",
-    "Apple had started rejecting the app as employee-only, while store reviews showed people downloading it in the hope of finding a job. I proposed opening it to everyone, so candidates for cashier and store roles could apply directly. Apple accepted it as a public app, and about 20,000 applications came in over the first three months.",
     "A learning game.",
     "An employee's idea that I shaped into an in-app game on existing training content and piloted across 16 operational clusters.",
     "Copix, mobile printing network",
@@ -62,10 +64,14 @@ REQUIRED_HTML = [
     "Network-wide results during the collaboration, alongside pricing and network changes.",
     # Task 6: situations and How I work (spec §3.5–3.6)
     "When founders call me",
-    "The team ships, but the business priority keeps slipping.",
+    "Every new request jumps the queue. The roadmap changes every week.",
     "One initiative crosses product, engineering and operations with no owner.",
     "Too many decisions still come back to you.",
     "How I work",
+    "Based in Belgrade, Serbia · Central European Time",
+    "EU and UK first. US East Coast mornings work too.",
+    "I work in English and Serbian.",
+    "I invoice in EUR from a registered business in Serbia.",
     "A paid first month.",
     "We agree the business problem, look at the evidence you already have, and set one priority with clear owners "
     "and a practical plan. Scope follows the access, people and budget you can actually give it.",
@@ -74,10 +80,15 @@ REQUIRED_HTML = [
     "Checkpoints, not lock-in.",
     "Baseline and success criteria are set up front. At each review we continue, adjust the scope, or finish with a clean handover.",
     "Who does what",
-    "I own priorities, trade-offs, measurement, delivery and keeping every team aligned to your goal. You own the direction, the business goal, budget, access and decision authority. Your CTO and team own technical quality, estimates and day-to-day execution.",
+    "I own product priorities, trade-offs and delivery within the agreed budget. I track progress against your goal. "
+    "You own the direction, business goal, budget and access. You decide when any of those change. "
+    "Your CTO and team own technical quality, estimates and day-to-day execution.",
+    "If payments are failing, I can move a dashboard request down the list so the team can fix checkout first. "
+    "If we need a bigger budget or a different goal, that decision comes back to you.",
     "Not included: setting your direction for you, unlimited development, round-the-clock availability, an agency team behind me, or guaranteed results.",
     # Task 7: background timeline and own products (spec §3.7); each row checked as "years role"
     "Background",
+    "I’ve worked in product and engineering since 2013 and founded or co-founded three companies between 2015 and 2022.",
     "2025 – now CPO, commercial real-estate platform",
     "2024 – 2026 Product work with Copix, mobile printing network",
     "2023 – now COO and product lead, Erasoft.io, the team behind the retail employee app",
@@ -101,7 +112,7 @@ REQUIRED_LLMS = [
     "https://linkedin.com/in/alexkonyakhin", "https://t.me/pieceofwave", "https://calendar.app.google/ats6knZjWvwpJUbp9",
     "https://alexkonyakhin.com/sr/",
     "Rostok", "https://rostok.dance/",
-    "16 operational clusters", "since 2013", "Three companies founded or co-founded", "Erasoft.io", "2015", "2022",
+    "16 operational clusters", "since 2013", "founded or co-founded three companies", "Erasoft.io", "2015", "2022",
 ]
 FORBIDDEN = [
     "17+", "40+", "×5 ARR", "5× over", "3× conversion", "$1M", "₽", "RUB",
@@ -138,33 +149,30 @@ BLOCK_TAGS = {
 }
 
 TITLE = "Alexey Konyakhin · Fractional CPO · Belgrade (CET)"
-DESCRIPTION = (
-    "Fractional CPO based in Belgrade, Central European Time. You set the direction; I own priorities, measurement and delivery with your existing team. Paid first month, then monthly. EU, UK and US East Coast."
-)
 GA_ID = "G-K466B003HF"
 PROD_HOSTS = "'alexkonyakhin.com', 'www.alexkonyakhin.com'"
 TITLE_SR = "Alexey Konyakhin · Fractional CPO · Beograd"
 DESCRIPTION_SR = (
-    "Fractional CPO iz Beograda. Vi određujete pravac; ja preuzimam prioritete, merenje i isporuku zajedno sa vašim postojećim timom. Plaćeni prvi mesec, zatim mesečno. Srbija, EU i UK."
+    "Fractional CPO iz Beograda za softverske kompanije koje vode osnivači. Vi određujete pravac. Sa vašim timom odlučujem šta radimo prvo i kako merimo rezultat."
 )
 REQUIRED_HTML_SR = [
     # header and first screen (spec §3.1–3.2)
     "Preskoči na sadržaj",
     "Fractional CPO · Beograd",
     "Projekti", "Kako radim", "Iskustvo",
-    "Vi znate kuda ide vaš proizvod. Ja se staram da kompanija tamo stigne.",
-    "Fractional CPO za softverske kompanije koje vode osnivači. Pravac ostaje vaš. Ja preuzimam prioritete, merenje i isporuku zajedno sa vašim timom, tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.",
-    "Za kompanije koje imaju korisnike koji plaćaju i interni razvojni tim. Srbija, region, EU i UK.",
-    "Beograd · sastanci uživo ili onlajn",
-    "Radni jezici: srpski i engleski",
-    "Registrovani preduzetnik u Srbiji · fakturisanje u RSD ili EUR",
-    "Proizvod i inženjering od 2013.",
-    "Zakažite razgovor od 30 minuta", "Pogledajte projekte",
+    H1_SR, SUBHEAD_SR,
+    "Za kompanije sa sopstvenim razvojnim timom i korisnicima koji već plaćaju proizvod.",
+    "Zakažite razgovor od 30 minuta", "Pogledajte primer",
+    "Kako je aplikacija za zaposlene postala kanal za zapošljavanje",
+    "Apple je odbijao aplikaciju jednog maloprodajnog lanca jer je bila namenjena samo zaposlenima. "
+    "U recenzijama sam video da je ljudi već preuzimaju da bi našli posao. "
+    "Predložio sam da svima omogućimo da se kroz aplikaciju prijave za rad u prodavnicama i vodio razvoj te funkcije. "
+    "Apple je odobrio aplikaciju za javnu upotrebu. U prva tri meseca stiglo je oko 20.000 prijava za posao.",
     # proof band (§3.3)
     "300k+ mesečno aktivnih korisnika", "aplikacija za zaposlene koju sam vodio kao head of product",
-    "3× mesečni promet karticama", "Copix, april 2024 – jun 2026",
-    "20.000 prijava kandidata", "u prva tri meseca funkcije za zapošljavanje koju sam predložio i vodio",
-    "3 osnovane ili suosnovane kompanije", "2015 – 2022",
+    "16 operativnih klastera", "u kojima smo isprobali igru za obuku zaposlenih",
+    "3× veći mesečni promet karticama", "cela mreža Copix, od aprila 2024. do juna 2026.",
+    "2,15× veći promet po aktivnom štampaču", "prosek za mrežu Copix, uz promene cena i same mreže",
     # work (§3.4)
     "Aplikacija za zaposlene velikog maloprodajnog lanca",
     "Head of product za celu aplikaciju · Maloprodaja · Rusija",
@@ -175,8 +183,6 @@ REQUIRED_HTML_SR = [
     "Analitika: od događaja do odluka.",
     "Vodio sam implementaciju kompletnog analitičkog sistema sa timom: pokrivenost događaja u Firebase-u, "
     "pipeline ka BigQuery-ju i prilagođene Looker dashboarde koji su rukovodstvu dali uvid u to kako zaposleni koriste aplikaciju.",
-    "Funkcija za zapošljavanje koja je rešila i problem sa App Store-om.",
-    "Apple je počeo da odbija aplikaciju jer je bila namenjena samo zaposlenima, a recenzije u App Store-u su pokazivale da je ljudi preuzimaju u nadi da će naći posao. Predložio sam da je otvorimo za sve, tako da kandidati za posao kasira i radnika u prodavnicama mogu direktno da se prijave. Apple ju je prihvatio kao javnu aplikaciju, a u prva tri meseca stiglo je oko 20.000 prijava.",
     "Igra za učenje.",
     "Ideja jednog zaposlenog koju sam pretvorio u igru unutar aplikacije, zasnovanu na postojećim materijalima za obuku, "
     "i pilotirao u 16 operativnih klastera.",
@@ -188,9 +194,13 @@ REQUIRED_HTML_SR = [
     "Rezultati cele mreže tokom saradnje, uz promene cena i same mreže.",
     # situations and process (§3.5–3.6)
     "Kada me osnivači zovu",
-    "Tim isporučuje, ali poslovni prioritet stalno pada u drugi plan.",
+    "Svaki novi zahtev je hitan, a dogovoreni prioritet se odlaže.",
     "Jedna inicijativa obuhvata proizvod, inženjering i operacije, a nema vlasnika.",
     "Previše odluka i dalje dolazi do vas.",
+    "Radim sa timovima iz Srbije, regiona, EU i Ujedinjenog Kraljevstva.",
+    "Beograd · srednjoevropsko vreme · sastanci uživo ili onlajn",
+    "Radim na srpskom i engleskom.",
+    "Kao registrovani preduzetnik u Srbiji izdajem fakture u dinarima ili evrima.",
     "Plaćeni prvi mesec.",
     "Dogovaramo se oko poslovnog problema, gledamo dokaze koje već imate i postavljamo jedan prioritet sa jasnim vlasnicima "
     "i praktičnim planom. Obim prati pristup, ljude i budžet koje zaista možete da obezbedite.",
@@ -200,9 +210,14 @@ REQUIRED_HTML_SR = [
     "Polazno stanje i kriterijumi uspeha postavljaju se unapred. Na svakom pregledu nastavljamo, menjamo obim ili "
     "završavamo urednom primopredajom.",
     "Ko šta radi",
-    "Ja vodim prioritete, kompromise, merenje, isporuku i usklađenost svih timova sa vašim ciljem. Vi ste vlasnik pravca, poslovnog cilja, budžeta, pristupa i prava odlučivanja. Vaš CTO i tim odgovorni su za tehnički kvalitet, procene i svakodnevnu isporuku.",
+    "Ja odlučujem šta tim radi prvo i šta odlažemo. Odgovaram za isporuku u okviru dogovorenog budžeta i pratim napredak ka vašem cilju. "
+    "Vi određujete pravac, poslovni cilj, budžet i pristup ljudima i podacima. Vi odlučujete kada se ti uslovi menjaju. "
+    "Vaš CTO i tim odgovorni su za tehnički kvalitet, procene i svakodnevnu isporuku.",
+    "Ako ih greška pri plaćanju zaustavlja, zahtev za novi dashboard može da sačeka. "
+    "Sa timom prvo rešavam grešku, pa merimo koliko kupaca uspešno završi kupovinu. Vi odlučujete o svakoj promeni cilja ili budžeta.",
     "Nije uključeno: određivanje pravca umesto vas, neograničen razvoj, stalna dostupnost, agencijski tim iza mene niti garantovani rezultati.",
     # background (§3.7)
+    "Od 2013. radim na razvoju softvera i vođenju proizvoda. Od 2015. do 2022. bio sam osnivač ili suosnivač tri kompanije.",
     "2025 – danas CPO, platforma za komercijalne nekretnine",
     "2024 – 2026 Rad na proizvodu sa Copixom, mreža mobilne štampe",
     "2023 – danas COO i product lead, Erasoft.io, tim koji stoji iza aplikacije za zaposlene u maloprodaji",
@@ -245,14 +260,9 @@ class PageSpec:
     ld_description: str
 
 
-H1_EN = "You know where your product is going. I make the company get there."
-SUBHEAD_EN = "Fractional CPO for founder-led software companies. The direction stays yours. I own priorities, measurement and delivery alongside your team, so the important work moves without every decision coming back to you."
-H1_SR = "Vi znate kuda ide vaš proizvod. Ja se staram da kompanija tamo stigne."
-SUBHEAD_SR = "Fractional CPO za softverske kompanije koje vode osnivači. Pravac ostaje vaš. Ja preuzimam prioritete, merenje i isporuku zajedno sa vašim timom, tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas."
-
 PAGES = {
     "index.html": PageSpec(
-        "en", TITLE, DESCRIPTION, "en_GB", REQUIRED_HTML, "/sr/", "sr-Latn", "Srpski",
+        "en", TITLE, SUBHEAD_EN, "en_GB", REQUIRED_HTML, "/sr/", "sr-Latn", "Srpski",
         home_href="/", canonical="https://alexkonyakhin.com/", og_title=H1_EN, og_description=SUBHEAD_EN,
         ld_description="Fractional CPO for founder-led software companies in the EU and UK, based in Belgrade.",
     ),
@@ -276,6 +286,7 @@ class PageFacts:
     identity_href: str = ""
     h1_count: int = 0
     heading_counts: dict = field(default_factory=dict)
+    section_labels: list = field(default_factory=list)
     ids: list = field(default_factory=list)
     hrefs: list = field(default_factory=list)
     fragments: list = field(default_factory=list)
@@ -311,6 +322,8 @@ class _PageParser(HTMLParser):
             f.h1_count += 1
         if tag in ("h1", "h2", "h3", "h4"):
             f.heading_counts[tag] = f.heading_counts.get(tag, 0) + 1
+        if tag == "section":
+            f.section_labels.append(a.get("aria-labelledby"))
         if a.get("id"):
             f.ids.append(a["id"])
         asset = a.get("href") if tag == "link" else a.get("src") if tag in ("img", "script") else None
@@ -450,6 +463,10 @@ def check_structure(facts, lang):
     fails = []
     if facts.h1_count != 1:
         fails.append(f"FAIL: expected one h1, found {facts.h1_count}")
+    if facts.section_labels[:3] != ["hero-title", "hiring-title", "proof-title"]:
+        fails.append("FAIL: the hero must lead directly into the hiring story and then the project figures")
+    if "hiring-story" not in facts.fragments:
+        fails.append("FAIL: missing link to the hiring story")
     duplicates = sorted({i for i in facts.ids if facts.ids.count(i) > 1})
     if duplicates:
         fails.append(f"FAIL: duplicate ids: {duplicates}")
