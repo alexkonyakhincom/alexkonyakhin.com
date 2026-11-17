@@ -1,7 +1,7 @@
 /* The icebreaker's lead, seen from above and drawn in Canvas 2D. The page's
-   paper is the ice sheet; a channel of grey-green water opens through it and a
-   founder's quote rests on one large floe. The quote stays native DOM text
-   above this canvas; nothing here owns, moves or hides content.
+   paper is the ice sheet; a channel of grey-green water opens through it and the
+   proof figures rest on four large floes. Every readable figure stays native
+   DOM text above this canvas; nothing here owns, moves or hides content.
    Each scroll position has one repeatable frame. */
 (() => {
   'use strict';

@@ -39,7 +39,13 @@ REQUIRED_HTML = [
     "App Store reviews showed that people were downloading it to look for work. "
     "I proposed opening one part of it to everyone: a job application form that anyone could fill in. The rest of the app stayed for employees only. That was enough for Apple to treat the app as public and approve it. "
     "In the first three months, the retailer received about 20,000 applications through it.",
-    # Lead quote between the hiring story and the situations (excerpt of the Copix quote)
+    # Results band on the ice: four figures, with the Copix caveat on the Copix floes
+    "Results",
+    "300k+ monthly active users", "employee app I owned as head of product",
+    "16 operational clusters", "pilot of an employee training game",
+    "3× monthly card turnover", "Copix network-wide, April 2024 to June 2026",
+    "2.15× turnover per active printer", "across the Copix network, alongside pricing and network changes",
+    # Lead quote between the results and the situations (excerpt of the Copix quote)
     "We handed over bare code from a previous team, left in shambles. […] We're safe to scale for several years ahead.",
     # Task 5: work section (spec §3.4)
     "Employee app for a major retail chain",
@@ -167,6 +173,12 @@ REQUIRED_HTML_SR = [
     "U recenzijama sam video da je ljudi već preuzimaju da bi našli posao. "
     "Predložio sam da za sve otvorimo samo jedan njen deo, prijavu za posao koju svako može da popuni, i vodio razvoj te funkcije. Ostatak aplikacije ostao je samo za zaposlene. To je bilo dovoljno da Apple aplikaciju prihvati kao javnu i odobri je. "
     "U prva tri meseca stiglo je oko 20.000 prijava za posao.",
+    # results band on the ice
+    "Rezultati",
+    "300k+ mesečno aktivnih korisnika", "aplikacija za zaposlene koju sam vodio kao head of product",
+    "16 operativnih klastera", "u kojima smo isprobali igru za obuku zaposlenih",
+    "3× veći mesečni promet karticama", "cela mreža Copix, od aprila 2024. do juna 2026.",
+    "2,15× veći promet po aktivnom štampaču", "prosek za mrežu Copix, uz promene cena i same mreže",
     # lead quote (excerpt of the Copix quote)
     "Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. […] Možemo bezbedno da rastemo još nekoliko godina.",
     # work (§3.4)
@@ -459,8 +471,8 @@ def check_structure(facts, lang):
     fails = []
     if facts.h1_count != 1:
         fails.append(f"FAIL: expected one h1, found {facts.h1_count}")
-    if facts.section_labels[:3] != ["hero-title", "hiring-title", "situations-title"]:
-        fails.append("FAIL: the hero must lead into the hiring story and then the founder situations")
+    if facts.section_labels[:4] != ["hero-title", "hiring-title", "proof-title", "situations-title"]:
+        fails.append("FAIL: the page must run hero, hiring story, results, then the founder situations")
     if "hiring-story" not in facts.fragments:
         fails.append("FAIL: missing link to the hiring story")
     duplicates = sorted({i for i in facts.ids if facts.ids.count(i) > 1})

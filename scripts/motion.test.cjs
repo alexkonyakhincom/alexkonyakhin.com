@@ -85,7 +85,7 @@ const close = (actual, expected, tolerance = .001) => assert.ok(Math.abs(actual 
 // The lead sits at 960px in a 960px viewport: progress = (864 - (960 - scroll)) / 528.
 const expected = scroll => Math.max(0, Math.min(1, (960 * .9 - (960 - scroll)) / (960 * .55)));
 
-test('both pages give the scene one decorative canvas and one floe, the quote, as native text', () => {
+test('both pages give the scene one decorative canvas and leave the figures as text', () => {
   for (const name of ['index.html', 'sr/index.html']) {
     const html = read(name);
     const canvases = [...html.matchAll(/<canvas\b[^>]*>/g)].map(match => match[0]);
@@ -93,9 +93,9 @@ test('both pages give the scene one decorative canvas and one floe, the quote, a
     assert.match(canvases[0], /data-lead-canvas/);
     assert.match(canvases[0], /aria-hidden="true"/);
     assert.equal([...html.matchAll(/<div class="lead" data-lead>/g)].length, 1);
-    assert.equal([...html.matchAll(/<figure class="quote quote-lead" data-floe>/g)].length, 1);
-    assert.equal([...html.matchAll(/data-floe/g)].length, 1, 'the ice carries the quote and nothing else');
-    assert.doesNotMatch(html, /proof-num|proof-band/, 'the stat band must not return');
+    assert.equal([...html.matchAll(/<li data-floe>/g)].length, 4);
+    assert.equal([...html.matchAll(/<strong class="proof-num">[^<]+<\/strong>/g)].length, 4);
+    assert.equal([...html.matchAll(/data-floe/g)].length, 4, 'the ice carries the four figures and nothing else');
     assert.doesNotMatch(html, /data-split|data-water|scene-floe/, 'the retired scene must leave no markup behind');
   }
 });
