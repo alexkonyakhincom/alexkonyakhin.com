@@ -20,7 +20,10 @@
   <link rel="icon" href="/ava_alex_konyakhin.png" type="image/png">
   <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
+  <script src="/water.js" defer></script>
+  <script src="/motion.js" defer></script>
   <script>
+    document.documentElement.classList.add('lead-live');
     window.trackCta = function () {};
     if (['alexkonyakhin.com', 'www.alexkonyakhin.com'].includes(window.location.hostname)) {
       window.dataLayer = window.dataLayer || [];
@@ -92,10 +95,13 @@
     <!-- Excerpt of the full quote in the Copix case. Final wording is pending the founder-approved edit;
          change both places together. Optional extras the styles already support inside the figcaption:
          <img class="quote-photo" …> before the name, and a link around the name or the company. -->
-    <figure class="quote quote-lead">
-      <blockquote><p>Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. […] Možemo bezbedno da rastemo još nekoliko godina.</p></blockquote>
-      <figcaption><span class="quote-name">Nail</span>, osnivač Copixa</figcaption>
-    </figure>
+    <div class="lead" data-lead>
+      <canvas class="lead-canvas" data-lead-canvas aria-hidden="true"></canvas>
+      <figure class="quote quote-lead" data-floe>
+          <blockquote><p>Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. […] Možemo bezbedno da rastemo još nekoliko godina.</p></blockquote>
+          <figcaption><span class="quote-name">Nail</span>, osnivač Copixa</figcaption>
+      </figure>
+    </div>
 
     <section class="section situations-section" aria-labelledby="situations-title">
       <h2 id="situations-title">Kada me osnivači zovu</h2>

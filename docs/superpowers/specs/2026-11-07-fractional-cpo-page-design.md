@@ -483,3 +483,20 @@ opening one part of it to everyone: a job application form that anyone could
 fill in. The rest of the app stayed for employees only. That was enough for
 Apple to treat the app as public and approve it." `llms.txt` and the Serbian
 page say the same, and `scripts/check.py` forbids the old phrase.
+
+## Revision, 18 November 2026: the ice returns under the lead quote
+
+Owner decision: the page read as flat without the ice scene. It returns, but
+without the stat band the review removed.
+
+- The scroll-tied ice channel (`motion.js`, `water.js`, the latest muted
+  grey-green version) sits between the hiring-channel story and "When founders
+  call me".
+- The only thing on the ice is the lead excerpt of the Copix founder's quote,
+  on one large floe. No figures are shown there, so each figure still appears
+  once, in Work.
+- On phones the floe is inset from both screen edges so water shows on each
+  side.
+- Reduced motion gets the finished scene as one still frame; without
+  JavaScript the quote sits on a static floe in grey-green water.
+- The Serbian page mirrors this.
