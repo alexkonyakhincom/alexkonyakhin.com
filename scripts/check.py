@@ -25,9 +25,8 @@ BOOKING = "https://calendar.app.google/ats6knZjWvwpJUbp9"
 REQUIRED_HTML = [
     # Task 3: header and first screen (spec §3.1–3.2)
     "Fractional CPO · Belgrade",
-    "Fractional CPO for founder-led software companies.",
-    "I take ownership of product direction, priorities and delivery alongside your existing team, "
-    "so the important work moves without every decision coming back to you.",
+    "You know where your product is going. I make the company get there.",
+    "Fractional CPO for founder-led software companies. The direction stays yours. I own priorities, measurement and delivery alongside your team, so the important work moves without every decision coming back to you.",
     "For companies with paying customers and an in-house development team. "
     "EU and UK first; US East Coast mornings work too.",
     "Based in Belgrade, Serbia · Central European Time",
@@ -44,7 +43,7 @@ REQUIRED_HTML = [
     # Task 5: work section (spec §3.4)
     "Employee app for a major retail chain",
     "Head of product for the whole app · Retail · Russia",
-    "I owned the product: direction, priorities, research, delivery and measurement. "
+    "I owned the product: priorities, research, delivery and measurement. "
     "I led developers, a designer and QA, and brought hypotheses and decisions to senior stakeholders.",
     "Monthly active users", "300k+", "during my time on the product",
     "Candidate applications", "20,000", "first three months of the hiring feature",
@@ -71,14 +70,12 @@ REQUIRED_HTML = [
     "We agree the business problem, look at the evidence you already have, and set one priority with clear owners "
     "and a practical plan. Scope follows the access, people and budget you can actually give it.",
     "Then month by month.",
-    "If it fits, I continue as your fractional CPO: product direction, trade-offs, dependencies across product, "
-    "engineering and operations, and keeping the work tied to the goal we agreed. Days per week and scope are agreed individually.",
+    "If it fits, I continue as your fractional CPO: priorities, trade-offs, dependencies across product, engineering and operations, and keeping every team tied to the goal you set. When the numbers say something should not be built, I say so. Days per week and scope are agreed individually.",
     "Checkpoints, not lock-in.",
     "Baseline and success criteria are set up front. At each review we continue, adjust the scope, or finish with a clean handover.",
     "Who does what",
-    "I own product direction, priorities, trade-offs, stakeholder alignment and measurement. You own the business goal, "
-    "budget, access and decision authority. Your CTO and team own technical quality, estimates and day-to-day execution.",
-    "Not included: unlimited development, round-the-clock availability, an agency team behind me, or guaranteed results.",
+    "I own priorities, trade-offs, measurement, delivery and keeping every team aligned to your goal. You own the direction, the business goal, budget, access and decision authority. Your CTO and team own technical quality, estimates and day-to-day execution.",
+    "Not included: setting your direction for you, unlimited development, round-the-clock availability, an agency team behind me, or guaranteed results.",
     # Task 7: background timeline and own products (spec §3.7); each row checked as "years role"
     "Background",
     "2025 – now CPO, commercial real-estate platform",
@@ -142,25 +139,21 @@ BLOCK_TAGS = {
 
 TITLE = "Alexey Konyakhin · Fractional CPO · Belgrade (CET)"
 DESCRIPTION = (
-    "Fractional CPO based in Belgrade, Central European Time. I own product direction, "
-    "priorities and delivery with your existing team. Paid first month, then monthly. "
-    "EU, UK and US East Coast."
+    "Fractional CPO based in Belgrade, Central European Time. You set the direction; I own priorities, measurement and delivery with your existing team. Paid first month, then monthly. EU, UK and US East Coast."
 )
 GA_ID = "G-K466B003HF"
 PROD_HOSTS = "'alexkonyakhin.com', 'www.alexkonyakhin.com'"
 TITLE_SR = "Alexey Konyakhin · Fractional CPO · Beograd"
 DESCRIPTION_SR = (
-    "Fractional CPO iz Beograda. Preuzimam pravac proizvoda, prioritete i isporuku zajedno sa vašim "
-    "postojećim timom. Plaćeni prvi mesec, zatim mesečno. Srbija, EU i UK."
+    "Fractional CPO iz Beograda. Vi određujete pravac; ja preuzimam prioritete, merenje i isporuku zajedno sa vašim postojećim timom. Plaćeni prvi mesec, zatim mesečno. Srbija, EU i UK."
 )
 REQUIRED_HTML_SR = [
     # header and first screen (spec §3.1–3.2)
     "Preskoči na sadržaj",
     "Fractional CPO · Beograd",
     "Projekti", "Kako radim", "Iskustvo",
-    "Fractional CPO za softverske kompanije koje vode osnivači.",
-    "Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
-    "tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.",
+    "Vi znate kuda ide vaš proizvod. Ja se staram da kompanija tamo stigne.",
+    "Fractional CPO za softverske kompanije koje vode osnivači. Pravac ostaje vaš. Ja preuzimam prioritete, merenje i isporuku zajedno sa vašim timom, tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.",
     "Za kompanije koje imaju korisnike koji plaćaju i interni razvojni tim. Srbija, region, EU i UK.",
     "Beograd · sastanci uživo ili onlajn",
     "Radni jezici: srpski i engleski",
@@ -175,7 +168,7 @@ REQUIRED_HTML_SR = [
     # work (§3.4)
     "Aplikacija za zaposlene velikog maloprodajnog lanca",
     "Head of product za celu aplikaciju · Maloprodaja · Rusija",
-    "Vodio sam proizvod: pravac, prioritete, istraživanje, isporuku i merenje. Vodio sam programere, "
+    "Vodio sam proizvod: prioritete, istraživanje, isporuku i merenje. Vodio sam programere, "
     "dizajnera i QA i iznosio hipoteze i odluke pred najviše rukovodstvo.",
     "Mesečno aktivni korisnici", "300k+", "tokom mog rada na proizvodu",
     "Prijave kandidata", "20.000", "u prva tri meseca funkcije za zapošljavanje",
@@ -202,15 +195,13 @@ REQUIRED_HTML_SR = [
     "Dogovaramo se oko poslovnog problema, gledamo dokaze koje već imate i postavljamo jedan prioritet sa jasnim vlasnicima "
     "i praktičnim planom. Obim prati pristup, ljude i budžet koje zaista možete da obezbedite.",
     "Zatim iz meseca u mesec.",
-    "Ako se uklopimo, nastavljam kao vaš fractional CPO: pravac proizvoda, kompromisi, zavisnosti između proizvoda, "
-    "inženjeringa i operacija, i držanje posla uz cilj koji smo dogovorili. Broj dana nedeljno i obim dogovaramo pojedinačno.",
+    "Ako se uklopimo, nastavljam kao vaš fractional CPO: prioriteti, kompromisi, zavisnosti između proizvoda, inženjeringa i operacija, i držanje svakog tima uz cilj koji ste vi postavili. Kada brojke pokažu da nešto ne treba graditi, to i kažem. Broj dana nedeljno i obim dogovaramo pojedinačno.",
     "Kontrolne tačke, bez vezivanja.",
     "Polazno stanje i kriterijumi uspeha postavljaju se unapred. Na svakom pregledu nastavljamo, menjamo obim ili "
     "završavamo urednom primopredajom.",
     "Ko šta radi",
-    "Ja vodim pravac proizvoda, prioritete, kompromise, usklađivanje stejkholdera i merenje. Vi ste vlasnik poslovnog "
-    "cilja, budžeta, pristupa i prava odlučivanja. Vaš CTO i tim odgovorni su za tehnički kvalitet, procene i svakodnevnu isporuku.",
-    "Nije uključeno: neograničen razvoj, stalna dostupnost, agencijski tim iza mene niti garantovani rezultati.",
+    "Ja vodim prioritete, kompromise, merenje, isporuku i usklađenost svih timova sa vašim ciljem. Vi ste vlasnik pravca, poslovnog cilja, budžeta, pristupa i prava odlučivanja. Vaš CTO i tim odgovorni su za tehnički kvalitet, procene i svakodnevnu isporuku.",
+    "Nije uključeno: određivanje pravca umesto vas, neograničen razvoj, stalna dostupnost, agencijski tim iza mene niti garantovani rezultati.",
     # background (§3.7)
     "2025 – danas CPO, platforma za komercijalne nekretnine",
     "2024 – 2026 Rad na proizvodu sa Copixom, mreža mobilne štampe",
@@ -254,12 +245,10 @@ class PageSpec:
     ld_description: str
 
 
-H1_EN = "Fractional CPO for founder-led software companies."
-SUBHEAD_EN = ("I take ownership of product direction, priorities and delivery alongside your existing team, "
-              "so the important work moves without every decision coming back to you.")
-H1_SR = "Fractional CPO za softverske kompanije koje vode osnivači."
-SUBHEAD_SR = ("Preuzimam odgovornost za pravac proizvoda, prioritete i isporuku zajedno sa vašim postojećim timom, "
-              "tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas.")
+H1_EN = "You know where your product is going. I make the company get there."
+SUBHEAD_EN = "Fractional CPO for founder-led software companies. The direction stays yours. I own priorities, measurement and delivery alongside your team, so the important work moves without every decision coming back to you."
+H1_SR = "Vi znate kuda ide vaš proizvod. Ja se staram da kompanija tamo stigne."
+SUBHEAD_SR = "Fractional CPO za softverske kompanije koje vode osnivači. Pravac ostaje vaš. Ja preuzimam prioritete, merenje i isporuku zajedno sa vašim timom, tako da važan posao napreduje, a da svaka odluka ne mora da prolazi kroz vas."
 
 PAGES = {
     "index.html": PageSpec(

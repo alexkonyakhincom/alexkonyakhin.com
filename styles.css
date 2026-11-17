@@ -64,7 +64,7 @@ p, h1, h2, h3, h4, dl, dd { margin: 0; }
 p { color: var(--body); }
 h1, h2, h3 { text-wrap: balance; }
 h1, h2 { font-family: var(--display); font-weight: 550; }
-h1 { font-size: clamp(3rem, 5.2vw, 4.75rem); font-weight: 550; line-height: 1.045; letter-spacing: -.035em; }
+h1 { font-size: clamp(2.75rem, 4.5vw, 4rem); font-weight: 550; line-height: 1.045; letter-spacing: -.035em; }
 h2 { font-size: clamp(2rem, 3vw, 2.625rem); line-height: 1.12; letter-spacing: -.03em; }
 h3, h4 { font-size: 1.0625rem; line-height: 1.45; font-weight: 600; }
 section[id] { scroll-margin-top: var(--space-7); }
@@ -92,6 +92,7 @@ nav a.nav-cta:hover { border-color: var(--rust); color: var(--rust); text-decora
 .hero-role { display: block; color: var(--rust); }
 .hero-summary { padding-top: var(--space-2); }
 .hero-intro { font-size: 1.125rem; line-height: 1.75; max-width: 42ch; text-wrap: pretty; }
+.hero-intro strong { font-weight: 600; color: var(--ink); }
 .hero-fit { margin-top: var(--space-5); font-size: .875rem; line-height: 1.7; color: var(--muted); max-width: 48ch; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); margin-top: var(--space-6); }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-5); min-height: 54px; padding: .9375rem 1.25rem; border: 1px solid transparent; border-radius: 5px; background: var(--rust); color: var(--paper); font-size: .875rem; font-weight: 500; line-height: 1.5; text-align: left; text-decoration: none; transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform 160ms var(--ease-out); }
@@ -294,7 +295,7 @@ nav a:not(.lang-switch, .nav-cta)::after { content: ""; position: absolute; inse
   nav { gap: var(--space-5); }
   .lang-switch { margin-left: 0; padding-left: var(--space-5); }
   .hero-main { grid-template-columns: 1fr; gap: var(--space-6); }
-  h1 { max-width: 19ch; font-size: clamp(2.75rem, 7.8vw, 4.5rem); }
+  h1 { max-width: 20ch; font-size: clamp(2.5rem, 6.8vw, 4rem); }
   .hero-summary { padding: 0; }
   .hero-intro { max-width: 51ch; font-size: 1.0625rem; }
   .hero-fit { max-width: 61ch; margin-top: var(--space-4); }

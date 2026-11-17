@@ -415,3 +415,31 @@ the same order, in plain text, with the same contact destinations.
   split into a quiet setup clause and a bold problem clause, with a small line
   drawing per situation. Three columns on desktop, rows on phones. The Serbian
   page mirrors it.
+
+## Revisions, 17 November 2026: direction stays with the founder
+
+Owner decision: the page no longer presents Alexey as the one who sets product
+direction. The founder owns direction; Alexey owns priorities, measurement,
+delivery and keeping every team aligned to the founder's goal. Sections 3.2,
+3.4 and 3.6 above are superseded where they say "product direction".
+
+- **H1 and `og:title`:** "You know where your product is going. I make the
+  company get there." The second sentence carries the accent colour.
+- **Subhead and `og:description`:** "Fractional CPO for founder-led software
+  companies. The direction stays yours. I own priorities, measurement and
+  delivery alongside your team, so the important work moves without every
+  decision coming back to you." The first sentence is bold, so the category
+  words stay on the first screen.
+- **Meta description:** "... You set the direction; I own priorities,
+  measurement and delivery with your existing team. ..."
+- **Retail case:** "I owned the product: priorities, research, delivery and
+  measurement."
+- **Then month by month:** "... priorities, trade-offs, dependencies across
+  product, engineering and operations, and keeping every team tied to the goal
+  you set. When the numbers say something should not be built, I say so."
+- **Who does what:** I own "priorities, trade-offs, measurement, delivery and
+  keeping every team aligned to your goal."; you own "the direction, the
+  business goal, budget, access and decision authority."
+- **Not included** now opens with "setting your direction for you".
+- `llms.txt` carries the same changes. The Serbian page mirrors them
+  (unreviewed translation).
