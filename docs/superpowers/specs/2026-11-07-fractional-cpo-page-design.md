@@ -472,3 +472,14 @@ superseded where they describe the proof band or the ice scene.
 - **Left for the owner:** final quote wording and attribution details; an
   availability line; the working-languages list; the retail case's start year;
   whether to show the first-month price.
+
+## Correction, 18 November 2026: what was opened to the public
+
+Owner correction: the whole app was never opened to everyone. Only the job
+application form was made public, and that was enough for Apple to treat the
+app as public. Earlier lines in this spec that say "opening it to everyone"
+are wrong on this point. The hiring-channel story now reads: "I proposed
+opening one part of it to everyone: a job application form that anyone could
+fill in. The rest of the app stayed for employees only. That was enough for
+Apple to treat the app as public and approve it." `llms.txt` and the Serbian
+page say the same, and `scripts/check.py` forbids the old phrase.

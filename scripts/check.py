@@ -37,8 +37,8 @@ REQUIRED_HTML = [
     "How an employee app became a hiring channel",
     "Apple had started rejecting a retail app I led because it was for employees only. "
     "App Store reviews showed that people were downloading it to look for work. "
-    "I proposed opening the app to everyone so people could apply for store jobs directly. "
-    "Apple approved the public app. In the first three months, the retailer received about 20,000 applications through it.",
+    "I proposed opening one part of it to everyone: a job application form that anyone could fill in. The rest of the app stayed for employees only. That was enough for Apple to treat the app as public and approve it. "
+    "In the first three months, the retailer received about 20,000 applications through it.",
     # Lead quote between the hiring story and the situations (excerpt of the Copix quote)
     "We handed over bare code from a previous team, left in shambles. […] We're safe to scale for several years ahead.",
     # Task 5: work section (spec §3.4)
@@ -118,6 +118,8 @@ FORBIDDEN = [
     "Is this your situation?", "One priority. Clear responsibilities.", "Start with a paid first month",
     # Task 7: old heading and the "unnamed" label (spec §5 fallback)
     "About me", "unnamed",
+    # Only the job application form was opened to the public, never the whole app
+    "opening the app to everyone", "opened the app to everyone",
     # Review of 17 November 2026: the stat band is gone and the named company is not tied to the unnamed client
     "Work that moved", "the team behind the retail employee app", "Stopwell", "VPNKill",
 ]
@@ -163,8 +165,8 @@ REQUIRED_HTML_SR = [
     "Kako je aplikacija za zaposlene postala kanal za zapošljavanje",
     "Apple je odbijao aplikaciju jednog maloprodajnog lanca jer je bila namenjena samo zaposlenima. "
     "U recenzijama sam video da je ljudi već preuzimaju da bi našli posao. "
-    "Predložio sam da svima omogućimo da se kroz aplikaciju prijave za rad u prodavnicama i vodio razvoj te funkcije. "
-    "Apple je odobrio aplikaciju za javnu upotrebu. U prva tri meseca stiglo je oko 20.000 prijava za posao.",
+    "Predložio sam da za sve otvorimo samo jedan njen deo, prijavu za posao koju svako može da popuni, i vodio razvoj te funkcije. Ostatak aplikacije ostao je samo za zaposlene. To je bilo dovoljno da Apple aplikaciju prihvati kao javnu i odobri je. "
+    "U prva tri meseca stiglo je oko 20.000 prijava za posao.",
     # lead quote (excerpt of the Copix quote)
     "Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. […] Možemo bezbedno da rastemo još nekoliko godina.",
     # work (§3.4)
