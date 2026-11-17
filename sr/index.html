@@ -20,10 +20,7 @@
   <link rel="icon" href="/ava_alex_konyakhin.png" type="image/png">
   <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
-  <script src="/water.js" defer></script>
-  <script src="/motion.js" defer></script>
   <script>
-    document.documentElement.classList.add('lead-live');
     window.trackCta = function () {};
     if (['alexkonyakhin.com', 'www.alexkonyakhin.com'].includes(window.location.hostname)) {
       window.dataLayer = window.dataLayer || [];
@@ -66,9 +63,9 @@
       <a href="#work">Projekti</a>
       <a href="#how-i-work">Kako radim</a>
       <a href="#background">Iskustvo</a>
-      <a class="nav-cta" data-cta="book_call" data-cta-location="header" href="https://calendar.app.google/ats6knZjWvwpJUbp9">Zakažite razgovor</a>
       <a class="lang-switch" href="/" lang="en" hreflang="en">English</a>
     </nav>
+    <a class="header-cta" data-cta="book_call" data-cta-location="header" href="https://calendar.app.google/ats6knZjWvwpJUbp9">Zakažite razgovor</a>
   </header>
 
   <div class="page-shell">
@@ -92,42 +89,13 @@
       <p>Apple je odbijao aplikaciju jednog maloprodajnog lanca jer je bila namenjena samo zaposlenima. U recenzijama sam video da je ljudi već preuzimaju da bi našli posao. Predložio sam da svima omogućimo da se kroz aplikaciju prijave za rad u prodavnicama i vodio razvoj te funkcije. Apple je odobrio aplikaciju za javnu upotrebu. U prva tri meseca stiglo je <strong>oko 20.000 prijava za posao</strong>.</p>
     </section>
 
-    <section class="proof-section" aria-labelledby="proof-title">
-      <h2 class="proof-title" id="proof-title">Još rezultata sa projekata</h2>
-      <div class="lead" data-lead>
-        <canvas class="lead-canvas" data-lead-canvas aria-hidden="true"></canvas>
-        <ul class="proof-band">
-          <li data-floe>
-            <span class="proof-figure">
-              <strong class="proof-num">300k+</strong>
-            </span>
-            <span class="proof-label">mesečno aktivnih korisnika</span>
-            <span class="proof-note">aplikacija za zaposlene koju sam vodio kao head of product</span>
-          </li>
-          <li data-floe>
-            <span class="proof-figure">
-              <strong class="proof-num">16</strong>
-            </span>
-            <span class="proof-label">operativnih klastera</span>
-            <span class="proof-note">u kojima smo isprobali igru za obuku zaposlenih</span>
-          </li>
-          <li data-floe>
-            <span class="proof-figure">
-              <strong class="proof-num">3×</strong>
-            </span>
-            <span class="proof-label">veći mesečni promet karticama</span>
-            <span class="proof-note">cela mreža Copix, od aprila 2024. do juna 2026.</span>
-          </li>
-          <li data-floe>
-            <span class="proof-figure">
-              <strong class="proof-num">2,15×</strong>
-            </span>
-            <span class="proof-label">veći promet po aktivnom štampaču</span>
-            <span class="proof-note">prosek za mrežu Copix, uz promene cena i same mreže</span>
-          </li>
-        </ul>
-      </div>
-    </section>
+    <!-- Excerpt of the full quote in the Copix case. Final wording is pending the founder-approved edit;
+         change both places together. Optional extras the styles already support inside the figcaption:
+         <img class="quote-photo" …> before the name, and a link around the name or the company. -->
+    <figure class="quote quote-lead">
+      <blockquote><p>Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. […] Možemo bezbedno da rastemo još nekoliko godina.</p></blockquote>
+      <figcaption><span class="quote-name">Nail</span>, osnivač Copixa</figcaption>
+    </figure>
 
     <section class="section situations-section" aria-labelledby="situations-title">
       <h2 id="situations-title">Kada me osnivači zovu</h2>
@@ -194,7 +162,7 @@
           <p class="case-note">Rezultati cele mreže tokom saradnje, uz promene cena i same mreže.</p>
           <figure class="quote">
             <blockquote><p>Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. Za dve godine dobili smo softversku arhitekturu enterprise nivoa, podršku i data pipeline-ove, i rast od 3×. I najvažnije: novi interni tim koji je on izgradio za nas i koji donosi vrednost u svakoj iteraciji. Možemo bezbedno da rastemo još nekoliko godina. Hvala!</p></blockquote>
-            <figcaption>Nail, osnivač Copixa</figcaption>
+            <figcaption><span class="quote-name">Nail</span>, osnivač Copixa</figcaption>
           </figure>
         </div>
       </article>
@@ -267,7 +235,7 @@
       <dl class="timeline">
         <div><dt>2025 – danas</dt><dd>CPO, platforma za komercijalne nekretnine</dd></div>
         <div><dt>2024 – 2026</dt><dd>Rad na proizvodu sa Copixom, mreža mobilne štampe</dd></div>
-        <div><dt>2023 – danas</dt><dd>COO i product lead, Erasoft.io, tim koji stoji iza aplikacije za zaposlene u maloprodaji</dd></div>
+        <div><dt>2023 – danas</dt><dd>COO i product lead, Erasoft.io</dd></div>
         <div><dt>2022</dt><dd>Senior Project Manager, Improvado, međunarodni tim</dd></div>
         <div><dt>2020 – 2022</dt><dd>Osnivač, LTVCAC.agency, performans marketing i JTBD istraživanja</dd></div>
         <div><dt>2017 – 2019</dt><dd>Suosnivač, Togezzer, interna komunikacija za distribuirane timove</dd></div>
@@ -278,8 +246,6 @@
         <p>Pravim i sopstvene proizvode.</p>
         <div class="project-links" aria-label="Sopstveni proizvodi">
           <a href="https://nicepass.cc/"><span><span class="project-name">NicePass</span><span class="project-note">Wallet kartica koju gosti restorana dobijaju za 30 sekundi i zbog koje se vraćaju.</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <a href="https://stopwell.app/"><span><span class="project-name">Stopwell</span><span class="project-note">Pretraga letova oko vašeg događaja: ocenjuje koliko odmorni stižete, a ne cenu. Zatvorena beta.</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <a href="https://vpnkill.com/"><span><span class="project-name">VPNKill</span><span class="project-note">Kill switch za VPN na nivou paketa, za macOS.</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           <a href="https://rostok.dance/"><span><span class="project-name">Rostok</span><span class="project-note">Za učitelje plesa: časovi, učenici i napredak na jednom mestu. Uskoro.</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>

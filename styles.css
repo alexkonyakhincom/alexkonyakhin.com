@@ -74,16 +74,16 @@ section[id] { scroll-margin-top: var(--space-7); }
 .nowrap { white-space: nowrap; }
 
 /* A small personal masthead. The portrait appears only here. */
-.site-header { display: flex; justify-content: space-between; align-items: center; gap: var(--space-6); padding-block: 1.75rem; border-bottom: 1px solid var(--line); }
+.site-header { display: flex; align-items: center; gap: var(--space-6); padding-block: 1.75rem; border-bottom: 1px solid var(--line); }
 .identity { display: flex; gap: var(--space-3); align-items: center; text-decoration: none; flex-shrink: 0; }
 .identity img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; outline: 1px solid rgb(37 51 46 / .1); outline-offset: 3px; }
 .identity-name { display: block; font-size: .9375rem; font-weight: 600; line-height: 1.5; letter-spacing: -.01em; }
 .identity-role { display: block; font-size: .8125rem; color: var(--muted); line-height: 1.6; }
-nav { display: flex; gap: var(--space-6); align-items: center; }
+nav { display: flex; gap: var(--space-6); align-items: center; margin-left: auto; }
 nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; color: var(--body); text-decoration: none; white-space: nowrap; }
 nav a:hover { text-decoration: underline; }
-.nav-cta { min-height: 40px; padding-inline: var(--space-4); border: 1px solid var(--line); border-radius: 5px; color: var(--ink); font-weight: 500; transition: color .18s ease-out, border-color .18s ease-out; }
-nav a.nav-cta:hover { border-color: var(--rust); color: var(--rust); text-decoration: none; }
+.header-cta { display: inline-flex; align-items: center; flex-shrink: 0; min-height: 40px; padding-inline: var(--space-4); border: 1px solid var(--line); border-radius: 5px; color: var(--ink); font-size: .875rem; font-weight: 500; text-decoration: none; white-space: nowrap; transition: color .18s ease-out, border-color .18s ease-out; }
+.header-cta:hover { border-color: var(--rust); color: var(--rust); }
 .lang-switch { margin-left: var(--space-2); padding-left: var(--space-6); border-left: 1px solid var(--line); }
 
 /* Title and argument are distinct, aligned parts of the same opening. */
@@ -116,50 +116,10 @@ nav a.nav-cta:hover { border-color: var(--rust); color: var(--rust); text-decora
 .hiring-story p { max-width: 62ch; font-size: clamp(1rem, 1.35vw, 1.125rem); text-wrap: pretty; }
 .hiring-story strong { color: var(--rust-deep); font-weight: 650; }
 
-/* Proof is set like figures in a report, with its qualifications attached.
-   The caption sits on the paper just above the ice it names. */
-.proof-title { padding-bottom: var(--space-4); font-size: .875rem; font-weight: 550; line-height: 1.6; letter-spacing: 0; }
-.proof-band { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
-.proof-band li { display: flex; flex-direction: column; align-items: flex-start; }
-.proof-num { margin-bottom: var(--space-4); font-family: var(--display); font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 450; line-height: 1; letter-spacing: -.035em; font-variant-numeric: lining-nums tabular-nums; }
-.proof-label { font-size: .875rem; line-height: 1.5; }
-.proof-note { max-width: 27ch; margin-top: var(--space-2); font-size: .8125rem; line-height: 1.65; color: var(--muted); }
-
-/* The lead: an icebreaker's channel through the page's own paper. Without
-   JavaScript the figures rest on static floes in open water; with it, one
-   canvas draws the sheet, plates and water behind the same native text. */
-.lead {
-  position: relative;
-  isolation: isolate;
-  padding-block: 7.5rem 8rem;
-  border: 0;
-  background: #829d99;
-  box-shadow: 0 0 0 100vmax #829d99;
-  clip-path: inset(0 -100vmax);
-}
-.lead-canvas { display: none; position: absolute; z-index: -1; top: 0; left: calc((100% - 100vw) / 2); width: 100vw; height: 100%; pointer-events: none; }
-.lead .proof-band { align-items: start; justify-items: start; gap: 4.5rem clamp(2.75rem, 5vw, 4.5rem); }
-.lead [data-floe] { position: relative; filter: drop-shadow(0 3px 0 #abc1be) drop-shadow(2px 4px 5px rgb(44 72 69 / .18)); }
-.lead [data-floe]::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -1.5rem -1.75rem -1.75rem;
-  background: linear-gradient(160deg, #fdfefc, #edf3f1);
-  clip-path: polygon(5% 8%, 39% 0, 84% 5%, 100% 33%, 95% 83%, 66% 100%, 20% 95%, 0 60%);
-}
-.lead [data-floe]:nth-child(even)::before { clip-path: polygon(0 24%, 22% 2%, 71% 0, 97% 16%, 100% 68%, 80% 98%, 31% 100%, 4% 80%); }
-.lead [data-floe]:nth-child(2) { margin-top: 6.5rem; }
-.lead [data-floe]:nth-child(3) { margin-top: 1.25rem; }
-.lead [data-floe]:nth-child(4) { margin-top: 7.5rem; }
-.lead .proof-figure { display: block; margin-bottom: var(--space-3); font-size: clamp(2.5rem, 4.4vw, 4rem); line-height: 1; }
-.lead .proof-num { display: block; margin: 0; font-size: inherit; font-weight: 500; letter-spacing: -.04em; }
-.lead .proof-label { font-size: .9375rem; font-weight: 550; line-height: 1.5; }
-.lead .proof-note { max-width: 21ch; color: var(--body); line-height: 1.6; }
-.lead-live .lead { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); }
-.lead-live .lead-canvas { display: block; }
-.lead-live .lead [data-floe] { filter: none; }
-.lead-live .lead [data-floe]::before { display: none; }
+/* A founder's words between the story and the fit: the lead excerpt of the
+   quote that the Copix case carries in full. A photo and links are optional. */
+.quote.quote-lead { max-width: 46rem; margin: 0 0 clamp(2.5rem, 5vw, 4.5rem); }
+.quote.quote-lead p { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.625rem); line-height: 1.4; letter-spacing: -.015em; }
 
 /* Open case studies: the brief on the left, the evidence on the right. */
 .section { padding-block: var(--section-gap); }
@@ -186,11 +146,14 @@ nav a.nav-cta:hover { border-color: var(--rust); color: var(--rust); text-decora
 .pipeline li + li::before { content: ""; position: absolute; top: 50%; left: -1.25rem; width: .75rem; height: 1px; background: var(--rust); }
 .pipeline li + li::after { content: ""; position: absolute; top: 50%; left: -.8125rem; width: 5px; height: 5px; border: solid var(--rust); border-width: 1px 1px 0 0; transform: translateY(-50%) rotate(45deg); transform-origin: center; margin-top: .5px; }
 .pipeline li:last-child { background: var(--cream); border-color: transparent; }
-.case-note { padding-top: var(--space-5); border-top: 1px solid var(--line); font-size: .8125rem; color: var(--muted); }
+/* A caveat belongs to the figures directly above it, before anything else. */
+.case-note { margin-top: calc(-1 * var(--space-3)); padding-bottom: var(--space-6); border-bottom: 1px solid var(--line); font-size: .8125rem; color: var(--muted); }
 .quote { margin: var(--space-6) 0 0; padding-left: var(--space-5); border-left: 2px solid var(--rust); }
 .quote blockquote { margin: 0; }
 .quote p { font-size: 1.0625rem; line-height: 1.65; color: var(--ink); text-wrap: pretty; }
-.quote figcaption { margin-top: var(--space-3); font-size: .8125rem; color: var(--muted); }
+.quote figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: 0 .3em; margin-top: var(--space-3); font-size: .8125rem; color: var(--muted); }
+.quote-name { font-weight: 600; color: var(--ink); margin-right: -.3em; }
+.quote-photo { width: 40px; height: 40px; margin-right: var(--space-3); border-radius: 50%; object-fit: cover; }
 .work-contact { display: flex; justify-content: flex-end; padding-top: var(--space-4); }
 .work-contact .button { background: transparent; color: var(--ink); border-color: var(--line); }
 .work-contact .button:hover { border-color: var(--rust); color: var(--rust); }
@@ -281,11 +244,11 @@ nav a.nav-cta:hover { border-color: var(--rust); color: var(--rust); text-decora
 .page-shell { overflow: clip; }
 
 /* Small, interruptible feedback for pointer actions; no touch hover movement. */
-nav a:not(.lang-switch, .nav-cta) { position: relative; }
-nav a:not(.lang-switch, .nav-cta)::after { content: ""; position: absolute; inset: auto 0 .45rem; height: 1px; background: var(--rust); transform: scaleX(0); transform-origin: left; transition: transform 180ms var(--ease-out); }
+nav a:not(.lang-switch) { position: relative; }
+nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 .45rem; height: 1px; background: var(--rust); transform: scaleX(0); transform-origin: left; transition: transform 180ms var(--ease-out); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  nav a:not(.lang-switch, .nav-cta):hover { text-decoration: none; }
-  nav a:not(.lang-switch, .nav-cta):hover::after { transform: scaleX(1); }
+  nav a:not(.lang-switch):hover { text-decoration: none; }
+  nav a:not(.lang-switch):hover::after { transform: scaleX(1); }
   .button:hover svg { transform: translateX(4px); }
   .button:active { transform: scale(.98); }
   .project-links a:hover svg { transform: translate(3px, -3px); }
@@ -300,7 +263,7 @@ nav a:not(.lang-switch, .nav-cta)::after { content: ""; position: absolute; inse
   .contact .button { margin-right: 0; }
 }
 @media (max-width: 900px) {
-  .site-header { gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-5); }
+  .site-header { gap: var(--space-4); padding-block: var(--space-5); }
   nav { gap: var(--space-5); }
   .lang-switch { margin-left: 0; padding-left: var(--space-5); }
   .hero-main { grid-template-columns: 1fr; gap: var(--space-6); }
@@ -310,18 +273,7 @@ nav a:not(.lang-switch, .nav-cta)::after { content: ""; position: absolute; inse
   .hero-fit { max-width: 61ch; margin-top: var(--space-4); }
   .actions { margin-top: var(--space-5); }
   .hiring-story { grid-template-columns: 1fr; gap: var(--space-4); }
-  .proof-band { grid-template-columns: 1fr 1fr; gap: var(--space-7); }
-  .proof-num { font-size: 3rem; margin-bottom: var(--space-3); }
-  .proof-note { max-width: 30ch; }
-  .nav-cta { display: none; }
   .engagement-aside, .steps { grid-column: 1; grid-row: auto; }
-  .lead { padding-block: 6rem 6.5rem; }
-  .lead .proof-band { gap: 4.25rem 2.75rem; }
-  .lead [data-floe]:nth-child(2) { margin-top: 1.75rem; }
-  .lead [data-floe]:nth-child(3) { margin-top: 0; }
-  .lead [data-floe]:nth-child(4) { margin-top: 1.75rem; }
-  .lead .proof-figure { font-size: clamp(2.25rem, 7vw, 3.5rem); }
-  .lead .proof-note { max-width: 26ch; }
   .work > h2 { margin-bottom: var(--space-6); }
   .case { grid-template-columns: 1fr; gap: var(--space-6); padding-bottom: var(--space-7); }
   .case + .case { padding-top: var(--space-7); }
@@ -349,9 +301,18 @@ nav a:not(.lang-switch, .nav-cta)::after { content: ""; position: absolute; inse
   .contact-options { margin-top: 0; }
   .contact .email-address { margin-top: 0; }
 }
+@media (max-width: 720px) {
+  /* Name and booking link share the first row; the section links take the second. */
+  .site-header { flex-wrap: wrap; row-gap: var(--space-2); }
+  .header-cta { order: 2; margin-left: auto; }
+  nav { order: 3; flex-basis: 100%; margin-left: 0; justify-content: space-between; }
+}
 @media (max-width: 420px) {
   .site-header { gap: var(--space-3); }
-  nav { justify-content: space-between; width: 100%; gap: var(--space-3); }
+  nav { gap: var(--space-3); }
+  .header-cta { min-height: 38px; padding-inline: .625rem; font-size: .8125rem; }
+  .identity { gap: var(--space-2); }
+  .identity img { width: 36px; height: 36px; }
   nav a { font-size: .8125rem; }
   .lang-switch { padding-left: var(--space-4); }
   h1 { font-size: clamp(2rem, 9.4vw, 2.5rem); }
@@ -359,17 +320,9 @@ nav a:not(.lang-switch, .nav-cta)::after { content: ""; position: absolute; inse
   .hero-intro { font-size: 1rem; }
   .hero-fit { font-size: .8125rem; }
   .actions { gap: var(--space-2) var(--space-5); }
-  .proof-band { column-gap: var(--space-5); }
-  .proof-num { font-size: 2.625rem; }
-  .proof-label { font-size: .8125rem; }
   .roles { grid-template-columns: 1fr; gap: var(--space-4); }
   .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pipeline li:nth-child(odd)::before, .pipeline li:nth-child(odd)::after { display: none; }
-  .lead { padding-block: 5.5rem 6rem; }
-  .lead .proof-band { gap: 4rem 2.25rem; }
-  .lead [data-floe]::before { inset: -1.125rem -.875rem -1.25rem; }
-  .lead .proof-figure { font-size: clamp(2rem, 9vw, 2.5rem); margin-bottom: var(--space-2); }
-  .lead .proof-label { font-size: .875rem; }
   .case-results { gap: var(--space-5); }
   .case-results dt { font-size: .8125rem; }
   .case-results dd { font-size: 2.75rem; }

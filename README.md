@@ -19,8 +19,6 @@ After editing a source file, run `python3 scripts/site.py build` and reload the 
 - `index.html`: homepage, social metadata and Person structured data.
 - `sr/index.html`: the Serbian homepage, served at `/sr/`.
 - `styles.css`: responsive layout, typography and interaction states.
-- `motion.js` maps scroll position to the fracture in the ice behind the proof figures. The scene holds its position when scrolling stops and retraces the same fracture when scrolling back. The controller measures the figure boxes once per layout change. Reduced motion shows the finished scene as a still image.
-- `water.js` draws the ice in Canvas 2D. A fixed-seed pattern cracks from left to right into a muted grey-green channel, with fewer fragments on narrow screens. Each figure's plate fits its measured text box. The figure and caption are native HTML. When JavaScript or canvas is unavailable, `styles.css` supplies static floes.
 - `ava_alex_konyakhin.png`: square header avatar and favicon.
 - `portrait.jpg`: the larger portrait in the Background section and the link-preview image.
 - `fonts/`: Instrument Sans variable fonts (Latin and Latin Extended subsets), with `instrument-sans-OFL.txt`. The same family handles headings and body text. Self-hosted so the page loads nothing from a font service.
@@ -45,5 +43,3 @@ The existing GA4 measurement ID is retained. Analytics loads only on `alexkonyak
 There is no package-based build, lint or test suite. `python3 scripts/check.py` verifies the page against the spec: required copy, retired claims, exact link destinations, in-page anchors, call-to-action attributes, metadata, structured data, the analytics gate, the AI profile, that every local file the pages or `styles.css` reference is published, and the `dist/` file set. Pass `--forbidden-file PATH` to add private terms from a file kept outside the repository.
 
 Before deployment, run `python3 scripts/check.py`, `git diff --check` and `python3 scripts/site.py build`, then review the local page at 360, 390, 768 and 1280 pixels, at increased zoom, and with keyboard navigation. Check public assets and exact contact destinations without sending messages.
-
-Run `node --test scripts/motion.test.cjs` to check scroll tracking, reversal, idle and pointer behavior, layout measurement, the stylesheet fallback, reduced motion and offscreen rendering. Browser review covers the drawn scene, typography, focus and responsive layout.

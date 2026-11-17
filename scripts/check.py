@@ -39,11 +39,8 @@ REQUIRED_HTML = [
     "App Store reviews showed that people were downloading it to look for work. "
     "I proposed opening the app to everyone so people could apply for store jobs directly. "
     "Apple approved the public app. In the first three months, the retailer received about 20,000 applications through it.",
-    # Task 4: proof band (spec §3.3)
-    "300k+ monthly active users", "employee app I owned as head of product",
-    "16 operational clusters", "pilot of an employee training game",
-    "3× monthly card turnover", "Copix network-wide, April 2024 to June 2026",
-    "2.15× turnover per active printer", "across the Copix network over the same period",
+    # Lead quote between the hiring story and the situations (excerpt of the Copix quote)
+    "We handed over bare code from a previous team, left in shambles. […] We're safe to scale for several years ahead.",
     # Task 5: work section (spec §3.4)
     "Employee app for a major retail chain",
     "Head of product for the whole app · Retail · Russia",
@@ -91,14 +88,14 @@ REQUIRED_HTML = [
     "I’ve worked in product and engineering since 2013 and founded or co-founded three companies between 2015 and 2022.",
     "2025 – now CPO, commercial real-estate platform",
     "2024 – 2026 Product work with Copix, mobile printing network",
-    "2023 – now COO and product lead, Erasoft.io, the team behind the retail employee app",
+    "2023 – now COO and product lead, Erasoft.io 2022",
     "2022 Senior Project Manager, Improvado, international team",
     "2020 – 2022 Founder, LTVCAC.agency, performance marketing and JTBD research",
     "2017 – 2019 Co-founder, Togezzer, internal comms for distributed teams",
     "2015 – 2017 Co-founder, Knedlik Tech, travel mobile app",
     "2013 – 2015 PM and tech lead, Globus, mobile and web portfolio",
     "I also build my own products.",
-    "NicePass", "Stopwell", "VPNKill", "Rostok",
+    "NicePass", "Rostok",
     # Task 8: contact and footer (spec §3.8–3.9)
     "Let's talk about your product.",
     "Tell me about your product, the team you have and what is not moving. I will tell you honestly whether I can help.",
@@ -121,6 +118,8 @@ FORBIDDEN = [
     "Is this your situation?", "One priority. Clear responsibilities.", "Start with a paid first month",
     # Task 7: old heading and the "unnamed" label (spec §5 fallback)
     "About me", "unnamed",
+    # Review of 17 November 2026: the stat band is gone and the named company is not tied to the unnamed client
+    "Work that moved", "the team behind the retail employee app", "Stopwell", "VPNKill",
 ]
 EXACT_HREFS = {
     MAILTO,
@@ -129,8 +128,6 @@ EXACT_HREFS = {
     "https://linkedin.com/in/alexkonyakhin",
     "https://copix.app/",
     "https://nicepass.cc/",
-    "https://stopwell.app/",
-    "https://vpnkill.com/",
     "https://rostok.dance/",
 }
 REQUIRED_CTAS = {
@@ -168,11 +165,8 @@ REQUIRED_HTML_SR = [
     "U recenzijama sam video da je ljudi već preuzimaju da bi našli posao. "
     "Predložio sam da svima omogućimo da se kroz aplikaciju prijave za rad u prodavnicama i vodio razvoj te funkcije. "
     "Apple je odobrio aplikaciju za javnu upotrebu. U prva tri meseca stiglo je oko 20.000 prijava za posao.",
-    # proof band (§3.3)
-    "300k+ mesečno aktivnih korisnika", "aplikacija za zaposlene koju sam vodio kao head of product",
-    "16 operativnih klastera", "u kojima smo isprobali igru za obuku zaposlenih",
-    "3× veći mesečni promet karticama", "cela mreža Copix, od aprila 2024. do juna 2026.",
-    "2,15× veći promet po aktivnom štampaču", "prosek za mrežu Copix, uz promene cena i same mreže",
+    # lead quote (excerpt of the Copix quote)
+    "Predali smo goli kod koji nam je ostao od prethodnog tima, u potpunom haosu. […] Možemo bezbedno da rastemo još nekoliko godina.",
     # work (§3.4)
     "Aplikacija za zaposlene velikog maloprodajnog lanca",
     "Head of product za celu aplikaciju · Maloprodaja · Rusija",
@@ -220,13 +214,13 @@ REQUIRED_HTML_SR = [
     "Od 2013. radim na razvoju softvera i vođenju proizvoda. Od 2015. do 2022. bio sam osnivač ili suosnivač tri kompanije.",
     "2025 – danas CPO, platforma za komercijalne nekretnine",
     "2024 – 2026 Rad na proizvodu sa Copixom, mreža mobilne štampe",
-    "2023 – danas COO i product lead, Erasoft.io, tim koji stoji iza aplikacije za zaposlene u maloprodaji",
+    "2023 – danas COO i product lead, Erasoft.io 2022",
     "2022 Senior Project Manager, Improvado, međunarodni tim",
     "2020 – 2022 Osnivač, LTVCAC.agency, performans marketing i JTBD istraživanja",
     "2017 – 2019 Suosnivač, Togezzer, interna komunikacija za distribuirane timove",
     "2015 – 2017 Suosnivač, Knedlik Tech, mobilna aplikacija za putovanja",
     "2013 – 2015 PM i tech lead, Globus, portfolio mobilnih i veb projekata",
-    "Pravim i sopstvene proizvode.", "NicePass", "Stopwell", "VPNKill", "Rostok",
+    "Pravim i sopstvene proizvode.", "NicePass", "Rostok",
     # contact and footer (§3.8–3.9)
     "Razgovarajmo o vašem proizvodu.",
     "Recite mi nešto o svom proizvodu, timu koji imate i onome što ne napreduje. Iskreno ću vam reći da li mogu da pomognem.",
@@ -463,8 +457,8 @@ def check_structure(facts, lang):
     fails = []
     if facts.h1_count != 1:
         fails.append(f"FAIL: expected one h1, found {facts.h1_count}")
-    if facts.section_labels[:3] != ["hero-title", "hiring-title", "proof-title"]:
-        fails.append("FAIL: the hero must lead directly into the hiring story and then the project figures")
+    if facts.section_labels[:3] != ["hero-title", "hiring-title", "situations-title"]:
+        fails.append("FAIL: the hero must lead into the hiring story and then the founder situations")
     if "hiring-story" not in facts.fragments:
         fails.append("FAIL: missing link to the hiring story")
     duplicates = sorted({i for i in facts.ids if facts.ids.count(i) > 1})

@@ -31,7 +31,7 @@ Alexey has worked in product and engineering since 2013 and founded or co-founde
 
 - 2025 to now: CPO, commercial real-estate platform.
 - 2024 to 2026: Product work with Copix, mobile printing network.
-- 2023 to now: COO and product lead, Erasoft.io, the team behind the retail employee app.
+- 2023 to now: COO and product lead, Erasoft.io.
 - 2022: Senior Project Manager, Improvado, international team.
 - 2020 to 2022: Founder, LTVCAC.agency, performance marketing and JTBD research.
 - 2017 to 2019: Co-founder, Togezzer, internal comms for distributed teams.
@@ -40,7 +40,7 @@ Alexey has worked in product and engineering since 2013 and founded or co-founde
 
 ## Products
 
-Alexey also builds his own products: NicePass (https://nicepass.cc/), a Wallet pass restaurant guests get in 30 seconds, built to bring them back; Stopwell (https://stopwell.app/), flight search built around the traveller's event that scores how rested they arrive, in closed beta; VPNKill (https://vpnkill.com/), a packet-level VPN kill switch for macOS; and Rostok (https://rostok.dance/), a tool for dance teachers that keeps lessons, students and progress in one place, before launch.
+Alexey also builds his own products: NicePass (https://nicepass.cc/), a Wallet pass restaurant guests get in 30 seconds, built to bring them back; and Rostok (https://rostok.dance/), a tool for dance teachers that keeps lessons, students and progress in one place, before launch.
 
 ## Contact
 

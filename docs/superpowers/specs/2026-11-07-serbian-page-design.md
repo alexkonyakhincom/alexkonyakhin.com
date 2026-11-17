@@ -272,3 +272,11 @@ reviewed by a native speaker:
   odgovorni su za".
 - Own-product descriptions and the Copix founder's quote are translated from
   the English page; the portrait files are shared.
+
+## Revisions, 17 November 2026: review fixes
+
+Mirrors the English spec's review-fix revisions of the same date: no stat band,
+a lead excerpt of the Copix quote ("Predali smo goli kod … u potpunom haosu.
+[…] Možemo bezbedno da rastemo još nekoliko godina."), the caveat directly
+under the Copix figures, "COO i product lead, Erasoft.io", own products reduced
+to NicePass and Rostok, and the header booking link beside the name on phones.
