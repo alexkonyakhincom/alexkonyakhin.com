@@ -443,3 +443,32 @@ delivery and keeping every team aligned to the founder's goal. Sections 3.2,
 - **Not included** now opens with "setting your direction for you".
 - `llms.txt` carries the same changes. The Serbian page mirrors them
   (unreviewed translation).
+
+## Revisions, 17 November 2026: review fixes
+
+Applied from the owner's review brief of 17 November 2026, on top of the
+"founder proof first" page (hero "Your team ships. The business priority keeps
+slipping.", then the hiring-channel story). Earlier sections of this spec are
+superseded where they describe the proof band or the ice scene.
+
+- **Stat band removed.** The "Work that moved" band, its ice-floe scene,
+  `motion.js`, `water.js` and the motion tests are deleted. Each figure now
+  appears once, in Work; 20,000 also stays in the hiring-channel story.
+- **Lead quote.** Between the hiring-channel story and "When founders call me"
+  sits a short excerpt of the Copix founder's quote: its first and closing
+  sentences, verbatim, joined by "[…]". The full quote stays in the Copix case.
+  The wording is a placeholder until the owner supplies the founder-approved
+  edit; change both places together. A surname, a photo (`.quote-photo`) and a
+  link are optional and styled, but not present.
+- **Copix caveat.** "Network-wide results during the collaboration, alongside
+  pricing and network changes." sits directly under the two Copix figures,
+  above the quote. If a Copix figure is ever shown elsewhere, the caveat goes
+  with it.
+- **Background.** The Erasoft row reads "COO and product lead, Erasoft.io";
+  the clause tying it to the retail app is removed and forbidden by the check.
+  Own products are NicePass and Rostok only.
+- **Header.** "Book a call" is its own element after the navigation. At 720px
+  and below it sits beside the name and the section links take the second row.
+- **Left for the owner:** final quote wording and attribution details; an
+  availability line; the working-languages list; the retail case's start year;
+  whether to show the first-month price.

@@ -12,8 +12,6 @@ ROOT = Path(__file__).resolve().parent.parent
 PUBLIC_FILES = (
     "index.html",
     "styles.css",
-    "motion.js",
-    "water.js",
     "ava_alex_konyakhin.png",
     "portrait.jpg",
     "llms.txt",
