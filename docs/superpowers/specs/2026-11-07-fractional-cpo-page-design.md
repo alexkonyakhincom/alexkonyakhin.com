@@ -516,3 +516,10 @@ appear on the ice and again in Work.
 - On phones the floes are inset from both screen edges, with smaller notes, to
   answer the review's crowding complaint.
 - The Serbian page mirrors this ("Rezultati").
+
+## Revision, 18 November 2026 (evening): the hiring story follows the ice
+
+Owner decision: the order under the hero is now Results on the ice, then the
+hiring-channel story, then the short founder quote, then "When founders call
+me". The story no longer sits directly under the hero. The hero's "See the
+work" link still points at the story. The Serbian page mirrors this.

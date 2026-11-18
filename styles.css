@@ -118,6 +118,10 @@ nav a:hover { text-decoration: underline; }
 
 /* Proof is set like figures in a report, with its qualifications attached.
    The caption sits on the paper just above the ice it names. */
+/* The results open directly under the hero; the story that follows the ice
+   needs no rule of its own, because the sheet's edge already divides them. */
+.proof-section { margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+.proof-section + .hiring-story { margin-top: 0; border-top: 0; }
 .proof-title { padding-bottom: var(--space-4); font-size: .875rem; font-weight: 550; line-height: 1.6; letter-spacing: 0; }
 .proof-band { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
 .proof-band li { display: flex; flex-direction: column; align-items: flex-start; }

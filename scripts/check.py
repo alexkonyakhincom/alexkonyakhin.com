@@ -471,8 +471,8 @@ def check_structure(facts, lang):
     fails = []
     if facts.h1_count != 1:
         fails.append(f"FAIL: expected one h1, found {facts.h1_count}")
-    if facts.section_labels[:4] != ["hero-title", "hiring-title", "proof-title", "situations-title"]:
-        fails.append("FAIL: the page must run hero, hiring story, results, then the founder situations")
+    if facts.section_labels[:4] != ["hero-title", "proof-title", "hiring-title", "situations-title"]:
+        fails.append("FAIL: the page must run hero, results, hiring story, then the founder situations")
     if "hiring-story" not in facts.fragments:
         fails.append("FAIL: missing link to the hiring story")
     duplicates = sorted({i for i in facts.ids if facts.ids.count(i) > 1})
