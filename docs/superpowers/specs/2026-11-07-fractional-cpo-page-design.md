@@ -500,3 +500,19 @@ without the stat band the review removed.
 - Reduced motion gets the finished scene as one still frame; without
   JavaScript the quote sits on a static floe in grey-green water.
 - The Serbian page mirrors this.
+
+## Revision, 18 November 2026 (later): the figures return to the ice
+
+Owner decision: the quote alone on the ice looked odd. The four figures are
+back on four floes under the small heading "Results": 300k+, 16, 3× and 2.15×.
+This knowingly reverses the review's "each figure once" rule: all four now
+appear on the ice and again in Work.
+
+- The Copix caveat travels with the Copix floes: "Copix network-wide, April
+  2024 to June 2026" and "across the Copix network, alongside pricing and
+  network changes".
+- The short founder quote is a plain block again, between the ice and "When
+  founders call me". The full quote stays in the Copix case.
+- On phones the floes are inset from both screen edges, with smaller notes, to
+  answer the review's crowding complaint.
+- The Serbian page mirrors this ("Rezultati").

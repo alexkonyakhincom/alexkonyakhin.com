@@ -116,34 +116,55 @@ nav a:hover { text-decoration: underline; }
 .hiring-story p { max-width: 62ch; font-size: clamp(1rem, 1.35vw, 1.125rem); text-wrap: pretty; }
 .hiring-story strong { color: var(--rust-deep); font-weight: 650; }
 
-/* The lead: an icebreaker's channel through the page's own paper, with a
-   founder's words on the one large floe in it. The quote is the lead excerpt
-   of the one the Copix case carries in full; a photo and links are optional.
-   Without JavaScript the floe is a static shape in open water; with it, one
+/* Proof is set like figures in a report, with its qualifications attached.
+   The caption sits on the paper just above the ice it names. */
+.proof-title { padding-bottom: var(--space-4); font-size: .875rem; font-weight: 550; line-height: 1.6; letter-spacing: 0; }
+.proof-band { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
+.proof-band li { display: flex; flex-direction: column; align-items: flex-start; }
+.proof-num { margin-bottom: var(--space-4); font-family: var(--display); font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 450; line-height: 1; letter-spacing: -.035em; font-variant-numeric: lining-nums tabular-nums; }
+.proof-label { font-size: .875rem; line-height: 1.5; }
+.proof-note { max-width: 27ch; margin-top: var(--space-2); font-size: .8125rem; line-height: 1.65; color: var(--muted); }
+
+/* The lead: an icebreaker's channel through the page's own paper. Without
+   JavaScript the figures rest on static floes in open water; with it, one
    canvas draws the sheet, plates and water behind the same native text. */
 .lead {
   position: relative;
   isolation: isolate;
-  padding-block: 6.5rem 7rem;
+  padding-block: 7.5rem 8rem;
+  border: 0;
   background: #829d99;
   box-shadow: 0 0 0 100vmax #829d99;
   clip-path: inset(0 -100vmax);
 }
 .lead-canvas { display: none; position: absolute; z-index: -1; top: 0; left: calc((100% - 100vw) / 2); width: 100vw; height: 100%; pointer-events: none; }
-.quote.quote-lead { position: relative; width: fit-content; max-width: min(34rem, 100%); margin: 0 0 0 clamp(0rem, 9vw, 8rem); filter: drop-shadow(0 3px 0 #abc1be) drop-shadow(2px 4px 5px rgb(44 72 69 / .18)); }
-.quote.quote-lead::before {
+.lead .proof-band { align-items: start; justify-items: start; gap: 4.5rem clamp(2.75rem, 5vw, 4.5rem); }
+.lead [data-floe] { position: relative; filter: drop-shadow(0 3px 0 #abc1be) drop-shadow(2px 4px 5px rgb(44 72 69 / .18)); }
+.lead [data-floe]::before {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -1.75rem -2rem -2rem -1.75rem;
+  inset: -1.5rem -1.75rem -1.75rem;
   background: linear-gradient(160deg, #fdfefc, #edf3f1);
-  clip-path: polygon(3% 10%, 36% 0, 82% 4%, 100% 30%, 97% 84%, 64% 100%, 18% 96%, 0 62%);
+  clip-path: polygon(5% 8%, 39% 0, 84% 5%, 100% 33%, 95% 83%, 66% 100%, 20% 95%, 0 60%);
 }
-.quote.quote-lead p { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.625rem); line-height: 1.4; letter-spacing: -.015em; }
+.lead [data-floe]:nth-child(even)::before { clip-path: polygon(0 24%, 22% 2%, 71% 0, 97% 16%, 100% 68%, 80% 98%, 31% 100%, 4% 80%); }
+.lead [data-floe]:nth-child(2) { margin-top: 6.5rem; }
+.lead [data-floe]:nth-child(3) { margin-top: 1.25rem; }
+.lead [data-floe]:nth-child(4) { margin-top: 7.5rem; }
+.lead .proof-figure { display: block; margin-bottom: var(--space-3); font-size: clamp(2.5rem, 4.4vw, 4rem); line-height: 1; }
+.lead .proof-num { display: block; margin: 0; font-size: inherit; font-weight: 500; letter-spacing: -.04em; }
+.lead .proof-label { font-size: .9375rem; font-weight: 550; line-height: 1.5; }
+.lead .proof-note { max-width: 21ch; color: var(--body); line-height: 1.6; }
 .lead-live .lead { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); }
 .lead-live .lead-canvas { display: block; }
-.lead-live .quote.quote-lead { filter: none; }
-.lead-live .quote.quote-lead::before { display: none; }
+.lead-live .lead [data-floe] { filter: none; }
+.lead-live .lead [data-floe]::before { display: none; }
+
+/* A founder's words between the figures and the fit: the lead excerpt of the
+   quote that the Copix case carries in full. A photo and links are optional. */
+.quote.quote-lead { max-width: 46rem; margin: clamp(2.5rem, 5vw, 4rem) 0 clamp(2.5rem, 5vw, 4.5rem); }
+.quote.quote-lead p { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.625rem); line-height: 1.4; letter-spacing: -.015em; }
 
 /* Open case studies: the brief on the left, the evidence on the right. */
 .section { padding-block: var(--section-gap); }
@@ -297,8 +318,16 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   .hero-fit { max-width: 61ch; margin-top: var(--space-4); }
   .actions { margin-top: var(--space-5); }
   .hiring-story { grid-template-columns: 1fr; gap: var(--space-4); }
-  .lead { padding-block: 5.5rem 6rem; }
-  .quote.quote-lead { margin-left: clamp(1rem, 6vw, 4rem); max-width: min(34rem, calc(100% - 2 * clamp(1rem, 6vw, 4rem))); }
+  .proof-band { grid-template-columns: 1fr 1fr; gap: var(--space-7); }
+  .proof-num { font-size: 3rem; margin-bottom: var(--space-3); }
+  .proof-note { max-width: 30ch; }
+  .lead { padding-block: 6rem 6.5rem; }
+  .lead .proof-band { gap: 4.25rem 2.75rem; }
+  .lead [data-floe]:nth-child(2) { margin-top: 1.75rem; }
+  .lead [data-floe]:nth-child(3) { margin-top: 0; }
+  .lead [data-floe]:nth-child(4) { margin-top: 1.75rem; }
+  .lead .proof-figure { font-size: clamp(2.25rem, 7vw, 3.5rem); }
+  .lead .proof-note { max-width: 26ch; }
   .engagement-aside, .steps { grid-column: 1; grid-row: auto; }
   .work > h2 { margin-bottom: var(--space-6); }
   .case { grid-template-columns: 1fr; gap: var(--space-6); padding-bottom: var(--space-7); }
@@ -347,9 +376,14 @@ nav a:not(.lang-switch)::after { content: ""; position: absolute; inset: auto 0 
   .hero-fit { font-size: .8125rem; }
   .actions { gap: var(--space-2) var(--space-5); }
   .roles { grid-template-columns: 1fr; gap: var(--space-4); }
-  .lead { padding-block: 4.75rem 5.25rem; }
-  .quote.quote-lead { margin-left: 1.25rem; max-width: calc(100% - 2.5rem); padding-left: var(--space-4); }
-  .quote.quote-lead::before { inset: -1.25rem -1rem -1.25rem -1rem; }
+  /* Phones: the floes are inset from both screen edges and given room, so
+     no plate crowds its text or runs off the side. */
+  .lead { padding-block: 5rem 5.5rem; }
+  .lead .proof-band { gap: 4.5rem 2.5rem; padding-inline: .875rem; }
+  .lead [data-floe]::before { inset: -1.125rem -.875rem -1.25rem; }
+  .lead .proof-figure { font-size: clamp(2rem, 9vw, 2.5rem); margin-bottom: var(--space-2); }
+  .lead .proof-label { font-size: .875rem; }
+  .lead .proof-note { font-size: .75rem; line-height: 1.55; }
   .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pipeline li:nth-child(odd)::before, .pipeline li:nth-child(odd)::after { display: none; }
   .case-results { gap: var(--space-5); }

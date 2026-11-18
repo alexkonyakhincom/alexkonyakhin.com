@@ -13,7 +13,7 @@
   let renderer = null, unavailable = false, layout = null, layoutDirty = true;
   let pending = 0, drawn = null;
 
-  // Without a renderer the stylesheet's static floe carries the quote.
+  // Without a renderer the stylesheet's static floes carry the figures.
   const live = enabled => root.classList.toggle('lead-live', enabled);
 
   function measure() {
