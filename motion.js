@@ -52,7 +52,11 @@
     const height = Math.max(1, window.innerHeight);
     if (bounds.bottom <= 0 || bounds.top >= height) return;
     if (layoutDirty) measure();
-    draw(clamp((height * .9 - bounds.top) / (height * .55)));
+    // The break starts as the lead comes up the screen. If the lead is already
+    // on screen at the top of the page, it starts intact and waits for scrolling.
+    const start = Math.min(height * .9, bounds.top + (window.scrollY || 0));
+    const range = Math.max(120, Math.min(height * .55, start - height * .1));
+    draw(clamp((start - bounds.top) / range));
   }
 
   function queueFrame() {
