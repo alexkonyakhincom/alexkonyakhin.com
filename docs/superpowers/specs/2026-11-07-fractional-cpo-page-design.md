@@ -523,3 +523,10 @@ Owner decision: the order under the hero is now Results on the ice, then the
 hiring-channel story, then the short founder quote, then "When founders call
 me". The story no longer sits directly under the hero. The hero's "See the
 work" link still points at the story. The Serbian page mirrors this.
+
+## Revision, 19 November 2026: VPNKill returns to own products
+
+Owner decision: VPNKill is listed again, between NicePass and Rostok. It is a
+free app already shipped to the Mac App Store that takes none of the owner's
+time, and it shows engineering depth. Its line reads "A packet-level VPN kill
+switch for macOS. Free on the Mac App Store." Stopwell stays off the page.

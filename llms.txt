@@ -40,7 +40,7 @@ Alexey has worked in product and engineering since 2013 and founded or co-founde
 
 ## Products
 
-Alexey also builds his own products: NicePass (https://nicepass.cc/), a Wallet pass restaurant guests get in 30 seconds, built to bring them back; and Rostok (https://rostok.dance/), a tool for dance teachers that keeps lessons, students and progress in one place, before launch.
+Alexey also builds his own products: NicePass (https://nicepass.cc/), a Wallet pass restaurant guests get in 30 seconds, built to bring them back; VPNKill (https://vpnkill.com/), a packet-level VPN kill switch for macOS, free on the Mac App Store; and Rostok (https://rostok.dance/), a tool for dance teachers that keeps lessons, students and progress in one place, before launch.
 
 ## Contact
 
