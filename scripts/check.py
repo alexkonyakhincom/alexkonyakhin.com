@@ -101,7 +101,7 @@ REQUIRED_HTML = [
     "2015 – 2017 Co-founder, Knedlik Tech, travel mobile app",
     "2013 – 2015 PM and tech lead, Globus, mobile and web portfolio",
     "I also build my own products.",
-    "NicePass", "Rostok",
+    "NicePass", "VPNKill", "A packet-level VPN kill switch for macOS. Free on the Mac App Store.", "Rostok",
     # Task 8: contact and footer (spec §3.8–3.9)
     "Let's talk about your product.",
     "Tell me about your product, the team you have and what is not moving. I will tell you honestly whether I can help.",
@@ -127,7 +127,7 @@ FORBIDDEN = [
     # Only the job application form was opened to the public, never the whole app
     "opening the app to everyone", "opened the app to everyone",
     # Review of 17 November 2026: the stat band is gone and the named company is not tied to the unnamed client
-    "Work that moved", "the team behind the retail employee app", "Stopwell", "VPNKill",
+    "Work that moved", "the team behind the retail employee app", "Stopwell",
 ]
 EXACT_HREFS = {
     MAILTO,
@@ -136,6 +136,7 @@ EXACT_HREFS = {
     "https://linkedin.com/in/alexkonyakhin",
     "https://copix.app/",
     "https://nicepass.cc/",
+    "https://vpnkill.com/",
     "https://rostok.dance/",
 }
 REQUIRED_CTAS = {
@@ -234,7 +235,7 @@ REQUIRED_HTML_SR = [
     "2017 – 2019 Suosnivač, Togezzer, interna komunikacija za distribuirane timove",
     "2015 – 2017 Suosnivač, Knedlik Tech, mobilna aplikacija za putovanja",
     "2013 – 2015 PM i tech lead, Globus, portfolio mobilnih i veb projekata",
-    "Pravim i sopstvene proizvode.", "NicePass", "Rostok",
+    "Pravim i sopstvene proizvode.", "NicePass", "VPNKill", "Kill switch za VPN na nivou paketa, za macOS. Besplatan u Mac App Store-u.", "Rostok",
     # contact and footer (§3.8–3.9)
     "Razgovarajmo o vašem proizvodu.",
     "Recite mi nešto o svom proizvodu, timu koji imate i onome što ne napreduje. Iskreno ću vam reći da li mogu da pomognem.",
