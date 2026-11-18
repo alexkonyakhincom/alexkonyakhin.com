@@ -8,7 +8,7 @@ const source = read('motion.js');
 
 // Synthetic layout verifies DOM ownership and scheduling. Browser checks still
 // own the drawn scene, legibility, real pointer targets and performance.
-function setup({ reduced = false, lead: withLead = true, height = 960, width: initialWidth = 1280, rendererAvailable = true, rendererSuccess = true } = {}) {
+function setup({ reduced = false, lead: withLead = true, height = 960, width: initialWidth = 1280, leadTop = 960, rendererAvailable = true, rendererSuccess = true } = {}) {
   let scroll = 0, nextFrame = 0, width = initialWidth, now = 0, renderSuccess = rendererSuccess;
   const queue = new Map(), windowEvents = new Map(), documentEvents = new Map(), leadEvents = new Map();
   const trace = [], sceneTrace = [], contentChanges = [];
@@ -30,15 +30,15 @@ function setup({ reduced = false, lead: withLead = true, height = 960, width: in
   });
   const figures = ['300k+', '16', '3×', '2.15×'].map((text, index) => ({
     ...content(text),
-    getBoundingClientRect() { trace.push('child-read'); return rect(1100, 180, 64 + index * (width - 128) / 4, (width - 128) / 4 - 40); },
+    getBoundingClientRect() { trace.push('child-read'); return rect(leadTop + 140, 180, 64 + index * (width - 128) / 4, (width - 128) / 4 - 40); },
   }));
-  const canvas = { getBoundingClientRect() { trace.push('child-read'); return rect(960, 520); } };
+  const canvas = { getBoundingClientRect() { trace.push('child-read'); return rect(leadTop, 520); } };
   const lead = withLead ? {
     ...content('lead'), figures, canvas,
     querySelector(selector) { return selector === '[data-lead-canvas]' ? canvas : null; },
     querySelectorAll(selector) { return selector === '[data-floe]' ? figures : []; },
     addEventListener(name, fn) { leadEvents.set(name, fn); },
-    getBoundingClientRect() { trace.push('read'); return rect(960, 520, 64, width - 128); },
+    getBoundingClientRect() { trace.push('read'); return rect(leadTop, 520, 64, width - 128); },
   } : null;
   const root = { ...classed('root'), clientWidth: width };
   let onPreference;
@@ -49,7 +49,7 @@ function setup({ reduced = false, lead: withLead = true, height = 960, width: in
     addEventListener(name, fn) { documentEvents.set(name, fn); },
   };
   const window = {
-    innerHeight: height, matchMedia: () => preference, performance: { now: () => now },
+    innerHeight: height, get scrollY() { return scroll; }, matchMedia: () => preference, performance: { now: () => now },
     requestAnimationFrame(fn) { queue.set(++nextFrame, fn); return nextFrame; },
     cancelAnimationFrame(id) { queue.delete(id); },
     addEventListener(name, fn, options) { windowEvents.set(name, { fn, options }); },
@@ -109,6 +109,21 @@ test('starts as intact ice with no idle animation loop', () => {
   assert.ok(last(page).progress < .01);
   page.settle();
   assert.equal(page.windowEvents.get('scroll').options.passive, true);
+  assert.deepEqual(page.contentChanges, []);
+});
+
+test('a lead already on screen at the top of the page starts intact and breaks with the scroll', () => {
+  const page = setup({ height: 768, leadTop: 420 });
+  assert.equal(last(page).progress, 0, 'no crack before the first scroll');
+  page.scroll(100); page.flush();
+  const early = last(page).progress;
+  assert.ok(early > 0 && early < 1);
+  page.scroll(200); page.flush();
+  assert.ok(last(page).progress > early);
+  page.scroll(360); page.flush();
+  assert.equal(last(page).progress, 1, 'fully open before the lead reaches the top of the screen');
+  page.scroll(0); page.flush();
+  assert.equal(last(page).progress, 0, 'scrolling back to the top closes it again');
   assert.deepEqual(page.contentChanges, []);
 });
 
